@@ -1,6 +1,19 @@
 # Finite-work H100 timing sample — provisioning proposal
 
-Status: local preparation in progress; no new GPU provisioned or budget approved.
+Status: local checks completed and saved read-only plan verified; no new GPU
+provisioned or budget approved.
+
+Window `work-sample-1009b`: thirteen creations, zero changes to existing
+resources, zero resources created. Saved plan SHA-256:
+`74397e689b9a7cc87a87f817412dafcb29f1ce264199c2439279e602864a37a5`.
+Expiry: 2026-10-09 21:38:20 UTC. Apply requires at least eighty minutes remaining.
+Local evidence: [qualification manifest](../../results/manifests/finite-work-sample-local-qualification.json).
+All 104 unit tests and both Terraform mock checks passed; both Kind workers
+completed fourteen four-case functional jobs. Independent review recomputed
+112 cases, 100 passing and 12 invalid. The 100-case storage projection completed
+all fourteen jobs: approximately 599 MiB raw, 2.43 GiB with the planning margin,
+and a largest per-job bound of approximately 356 MiB. These are CPU preparation
+checks; H100 timings are still unmeasured.
 
 Measure the actual time needed for a declared amount of work. The earlier
 time-budgeted sample was partial and cannot supply timings for all methods.

@@ -1,0 +1,102 @@
+{
+  "window": "work-sample-1009b",
+  "planned_resources": [
+    {
+      "address": "azurerm_linux_virtual_machine.gpu",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_logic_app_action_custom.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_logic_app_trigger_recurrence.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_logic_app_workflow.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_network_interface.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_network_security_group.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_public_ip.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_resource_group.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_role_assignment.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_role_definition.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_subnet.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_subnet_network_security_group_association.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_virtual_network.window",
+      "actions": [
+        "create"
+      ]
+    }
+  ],
+  "plan_sha256": "74397e689b9a7cc87a87f817412dafcb29f1ce264199c2439279e602864a37a5",
+  "expires_at_utc": "2026-10-09T21:38:20Z",
+  "approval_required": true,
+  "created_resources": 0,
+  "workload_bundle_sha256": "2d9a9effb018d27687ef3dec050c22ae1a2c5e41f7209896c41c685adf634dd8",
+  "host_script_sha256": "55a351982a285a854f1d6a79ad96a485cc3d8ee9214b700907322f767ede47d8",
+  "schema_version": 2,
+  "state": "PREPARED_AWAITING_USER_BUDGET_APPROVAL",
+  "gpu_created": false,
+  "proposed_total_budget_usd": 15,
+  "max_window_minutes": 90,
+  "retail_compute_usd_per_hour": 6.98,
+  "planned_gpu_vms": 1,
+  "planned_jobs": 14,
+  "selected_cases_per_job": 100,
+  "GPU_jobs_parallel": false,
+  "local_qualification": "results/manifests/finite-work-sample-local-qualification.json",
+  "proposal": "docs/environment/finite-work-sample-window.md",
+  "timestamp_utc": "2026-10-09T20:09:51.561912+00:00"
+}
