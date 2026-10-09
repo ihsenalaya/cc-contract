@@ -107,7 +107,7 @@ def collect_and_release(directory):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("action", choices=["plan", "apply", "qualify", "collect-release", "release", "destroy"])
+    p.add_argument("action", choices=["plan", "run", "apply", "qualify", "collect-release", "release", "destroy"])
     p.add_argument("--window", required=True)
     p.add_argument("--ssh-source-cidr")
     p.add_argument("--approved-plan-sha256")
@@ -116,7 +116,20 @@ def main():
         p.error("use a unique lowercase window name")
     directory = STATE / args.window
     directory.mkdir(exist_ok=True, mode=0o700)
-    if args.action == "plan":
+    if args.action == "run":
+        # One approved command drives the entire cycle, including cleanup on failure.
+        if args.approved_plan_sha256 != sha(directory / "plan.tfplan"):
+            p.error("explicit user-approved matching plan hash required")
+        child = [sys.executable, str(Path(__file__).resolve())]
+        try:
+            command(child + ["apply", "--window", args.window, "--approved-plan-sha256", args.approved_plan_sha256])
+            command(child + ["qualify", "--window", args.window])
+        finally:
+            if (directory / "collection.json").exists():
+                command(child + ["destroy", "--window", args.window])
+            else:
+                print("Evidence export unverified: any allocated compute is released by recovery/expiry; persistent disk is preserved. Inspect private logs.", file=sys.stderr)
+    elif args.action == "plan":
         if not args.ssh_source_cidr:
             p.error("--ssh-source-cidr is required for planning")
         if (directory / "inputs.json").exists():

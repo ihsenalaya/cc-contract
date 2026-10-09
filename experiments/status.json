@@ -11,10 +11,10 @@
         "results/manifests/initial-local-qualification.json"
       ],
       "remaining": [
-        "Kind recreation and network evidence",
-        "Azure temporary infrastructure qualification",
-        "CPU/GPU attestation",
-        "Real CUDA and inference qualification"
+        "Approval and real temporary Azure lifecycle/expiry validation",
+        "CPU/GPU attestation evidence review",
+        "54 real CUDA qualification observations",
+        "PyTorch compatibility and reference/inference extensions"
       ]
     },
     {
@@ -26,7 +26,7 @@
       ],
       "remaining": [
         "Float oracle calibration and independent reference checks",
-        "Real GPU validation and repeat variability",
+        "Real GPU oracle validation and repeat variability",
         "Oracle freeze"
       ]
     },
@@ -38,9 +38,9 @@
         "results/manifests/initial-local-qualification.json"
       ],
       "remaining": [
-        "T04/T06 dedicated generators",
-        "T07/T08 capability qualification",
-        "Real CUDA adapter and C4 replay"
+        "Full IR-to-CUDA execution adapter (native E0 probe is separate)",
+        "T04 generator and T06 scenario corpus matrices",
+        "T07/T08 capability qualification and C4 replay"
       ]
     },
     {
@@ -115,5 +115,16 @@
         "Actual experimental runs"
       ]
     }
-  ]
+  ],
+  "local_preparation": {
+    "state": "LOCAL_VALIDATED",
+    "scope": "Kind recreation, network, CPU initial corpus, CUDA build/reference/no-device handling, Terraform mock plan",
+    "evidence": "results/manifests/local-infrastructure-qualification.json"
+  },
+  "gpu_window": {
+    "state": "BLOCKED",
+    "cause": "user_approval_of_costed_first_window_required",
+    "proposal": "docs/environment/first-gpu-window.md",
+    "resources_created": 0
+  }
 }

@@ -1,0 +1,24 @@
+{
+  "timestamp_utc": "2026-10-09T09:55:16.988012+00:00",
+  "source": "https://prices.azure.com/api/retail/prices",
+  "filter": "armRegionName eq 'eastus2' and armSkuName eq 'Standard_NCC40ads_H100_v5' and priceType eq 'Consumption'",
+  "currency": "USD",
+  "linux_regular_consumption": {
+    "currencyCode": "USD",
+    "retailPrice": 6.98,
+    "armRegionName": "eastus2",
+    "effectiveStartDate": "2024-12-01T00:00:00Z",
+    "productName": "Virtual Machines NCCadsv5 Srs",
+    "skuName": "NCC40adsH100v5",
+    "unitOfMeasure": "1 Hour",
+    "type": "Consumption",
+    "isPrimaryMeterRegion": true,
+    "armSkuName": "Standard_NCC40ads_H100_v5"
+  },
+  "actual_subscription_invoice": "NOT_AVAILABLE",
+  "first_window_maximum_gpu_hours": 2,
+  "maximum_list_compute_estimate_usd": 13.96,
+  "proposed_total_budget_usd": 20,
+  "budget_approved": false,
+  "not_a_guaranteed_invoice_ceiling": true
+}

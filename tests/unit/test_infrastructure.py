@@ -1,5 +1,6 @@
 """Control-flow tests with explicit CPU fixtures; no hardware evidence."""
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -24,7 +25,7 @@ class InfrastructureTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             outputs = {"vm_id": {"value": "/subscriptions/fixture/resourceGroups/cc-contract-fixture/providers/Microsoft.Compute/virtualMachines/cc-contract-fixture"}}
             state = {"instanceView": {"statuses": [{"code": "PowerState/deallocated"}]}}
-            with patch.object(window, "ensure_window", return_value=({}, outputs)), patch.object(window, "command") as cmd, patch.object(window, "az_json", return_value=state):
+            with patch.object(window, "ensure_window", return_value=({}, outputs)), patch.object(window, "command") as cmd, patch.object(window, "az_json", return_value=state), patch("sys.stdout", new_callable=io.StringIO):
                 window.release(Path(tmp))
                 self.assertEqual(cmd.call_args[0][0][1], "vm")
                 self.assertEqual(cmd.call_args[0][0][2], "deallocate")
@@ -38,6 +39,19 @@ class InfrastructureTests(unittest.TestCase):
                     window.collect_and_release(directory)
                 release.assert_called_once_with(directory)
                 self.assertFalse((directory / "collection.json").exists())
+
+    def test_finalized_archive_is_verified_and_never_overwritten(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            archive = directory / "guest-evidence-fixture.tar.gz"
+            archive.write_bytes(b"CPU fixture finalized archive")
+            before = archive.read_bytes()
+            (directory / "collection.json").write_text(json.dumps({"archive_file": archive.name, "archive_sha256": hashlib.sha256(before).hexdigest()}))
+            with patch.object(window, "ensure_window", return_value=({}, {})), patch.object(window, "release") as release:
+                window.collect_and_release(directory)
+                release.assert_called_once_with(directory)
+            self.assertEqual(archive.read_bytes(), before)
 
     def test_critical_attestation_error_blocks_cuda_even_with_success_text(self):
         with tempfile.TemporaryDirectory() as tmp:

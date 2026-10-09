@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T09:55:16.988012+00:00",
+  "scope": "LOCAL_QUALIFICATION_ONLY",
+  "unit_tests_passed": 17,
+  "initial_oracle_corpus": {
+    "legal_passes": 24,
+    "controlled_mutants_detected": 24,
+    "invalid_rejections": 12,
+    "independent_scientific_comparison": false
+  },
+  "kind_recreation": {
+    "verified": true,
+    "scope": "CPU_SIMULATION_ONLY",
+    "build_image_id": "sha256:bb576952781fdf42938d7a67044b32428b5cfcd826c7e9525dd182a4dff89093",
+    "git_commit": "b55adc850fd7c787a53ed137c30b47b2f676d0b8",
+    "workers": [
+      "cc-contract-worker2",
+      "cc-contract-worker"
+    ],
+    "runs": [
+      {
+        "pod": "kind-20261009t093021z-1351c18c-0-46mpl",
+        "node": "cc-contract-worker2",
+        "runtime_image_id": "sha256:75cebb5c46fef27829b6bef6a014774e2bbff23145644cf4383c08489947e1e3",
+        "run_id": "local-20261009T093033Z-7ce5f2a01e29",
+        "raw_sha256": "ea1f21f99ce6433dfdb0740ec7561dfc5ba399f3b2704fd0528bf41e915486ae"
+      },
+      {
+        "pod": "kind-20261009t093021z-1351c18c-1-flvbm",
+        "node": "cc-contract-worker",
+        "runtime_image_id": "sha256:75cebb5c46fef27829b6bef6a014774e2bbff23145644cf4383c08489947e1e3",
+        "run_id": "local-20261009T093033Z-49827d465ec2",
+        "raw_sha256": "327754a1ff80f5f93a4117d3101fc8dbc16e27c206dd89cd13d007fd63595e43"
+      }
+    ],
+    "evidence_sha256": {
+      "apply.log": "392c2dfbaf740ffb19a7399af82d8f22f098bc381fdcdc1f988539582eeb948a",
+      "dry-run.log": "d905ad4a5ffd86e70ed80a6340fe22cca943de6a4b090069e8f0a25a3e693e5b",
+      "events.json": "67343b57d70a20702b556924bfffb0f44dd7e1d4d5224561d289bce18198fd2b",
+      "job.json": "ec60af7ce030feb8b30d8897db535c04df6942d0e5be3bb2d114745978a272b6",
+      "kind-20261009t093021z-1351c18c-0-46mpl.jsonl": "ad33adcde599ba13343b9bb84f48a4706e7237a2f8be3e65288418868b768dcc",
+      "kind-20261009t093021z-1351c18c-1-flvbm.jsonl": "33ff77c31e2e7a49343f23fed4d2d2bc002dbeb5e6393eeb34d3d94dcf9258da",
+      "manifests.json": "4dee122ac7d6cdd99862ac889dcc451c06d3411441076855ef26591d47ffedd2",
+      "namespace.json": "63276bef925dc52463623aa505a06f5051386ecead2665d28dde9288a8406222",
+      "pods.json": "cfd57f4fdce673986146f9b655b7c16b44a3c78589d3a11889902dcde79bf99b"
+    },
+    "evidence_directory": ".local/integration/kind-20261009t093021z-1351c18c"
+  },
+  "bidirectional_network": {
+    "verified": true,
+    "records": [
+      {
+        "scope": "KIND_CPU_NETWORK",
+        "index": 0,
+        "peer_index": 1,
+        "node": "cc-contract-worker2",
+        "peer_dns": "net-20261009t093039z-16a19f8e-1.net-20261009t093039z-16a19f8e.cc-contract.svc.cluster.local",
+        "peer_ip": "10.244.2.4",
+        "verdict": "PASS",
+        "gpu_executed": false
+      },
+      {
+        "scope": "KIND_CPU_NETWORK",
+        "index": 1,
+        "peer_index": 0,
+        "node": "cc-contract-worker",
+        "peer_dns": "net-20261009t093039z-16a19f8e-0.net-20261009t093039z-16a19f8e.cc-contract.svc.cluster.local",
+        "peer_ip": "10.244.1.4",
+        "verdict": "PASS",
+        "gpu_executed": false
+      }
+    ],
+    "sha256": {
+      "apply.log": "8c0e67779c7b9d6769f96ca74dc2e480ceeea485c38f4fc47083c8cfc3c46e56",
+      "dry-run.log": "49d37f4d73ca6dfa32cd45bb718430079bfc99e44e2ca2cab998072f293fa2e6",
+      "manifests.json": "72356c5a5fb1aec2237596c7b3739d03d1a7841bf88cdcb88f8250fb0782b61a",
+      "model.json": "d1357a0fcf7c7289e7c8a2ae364e2400568208feb7203141001ef17fb1d4598e",
+      "net-20261009t093039z-16a19f8e-0-wpvhx.json": "c3a9320abe04987c2854eb8c122d03e53b87705d0c15c4a91faf0018f6a26def",
+      "net-20261009t093039z-16a19f8e-1-hss5f.json": "195624819de67a1cefdbeb03ea51ac22bfd3cf770a7d7d81a47ff6f5a8501ea0",
+      "pods.json": "64340ca6038c02d98c44b348b04f61e40cc3760719805b34005ffeb8ddaf9bf9"
+    }
+  },
+  "cuda_image_local_validation": {
+    "scope": "CPU_REFERENCE_AND_NO_GPU_REJECTION_ONLY",
+    "verified": true,
+    "git_commit": "e8f34fddc62479a6995dcf260a4242e1494cc26b",
+    "image_id": "sha256:98eda97f53d3b77c9dee5629ab11e9484f644e7d7c38d57ffaa3feb6a4c74302",
+    "workers": [
+      "cc-contract-worker2",
+      "cc-contract-worker"
+    ],
+    "hashes": {
+      "apply.log": "70564349c56b18ed403e75fae2ad13d6129a4592a7141b1847343d0bb6eb27ed",
+      "base.json": "19151f0da58a2316b1e561297919d9c737f59c11551f5a26d0d9c7a9e68ae21e",
+      "cuda-20261009t095038z-aa4bf711-0-9vnb2.jsonl": "6cc08cbe5ddb73e4317e060baaf5b70b1112eef8233e3592025ba37cf97c1b62",
+      "cuda-20261009t095038z-aa4bf711-1-x8rvc.jsonl": "6cc08cbe5ddb73e4317e060baaf5b70b1112eef8233e3592025ba37cf97c1b62",
+      "dry-run.log": "c8f2746ccd710c77e601f9579fcde764b239c19dc0980479a867ec7b394627c8",
+      "manifests.json": "c6a37546d773e7d9a3c04a9e9e82107dd4462a7aeb9570f00387ad5206cf1514",
+      "pods.json": "2fa8af75cbedc79495f67857fc759bc8e5edd30cda3810f69189f94242e20e94"
+    }
+  },
+  "cuda_registry_reference": "ghcr.io/ihsenalaya/cc-contract-cuda@sha256:98eda97f53d3b77c9dee5629ab11e9484f644e7d7c38d57ffaa3feb6a4c74302",
+  "cpu_registry_reference": "ghcr.io/ihsenalaya/cc-contract-cpu@sha256:bb576952781fdf42938d7a67044b32428b5cfcd826c7e9525dd182a4dff89093",
+  "azure_mock_plan": {
+    "passed": true,
+    "tests": 1,
+    "provider": "5.9.0",
+    "terraform": "1.12.2",
+    "log_sha256": "de8f335dd70752dbfa0f376f43a5b3f91f5c15e8a2246f287501a070b5f6dcdd"
+  },
+  "real_gpu_execution": "NOT_RUN",
+  "real_attestation": "NOT_RUN",
+  "cloud_expiry_runtime_validation": "NOT_RUN",
+  "azure_resources_created": 0
+}
