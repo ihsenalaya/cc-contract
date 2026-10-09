@@ -12,9 +12,19 @@ from cc_contract.reducer import reduce
 from cc_contract.runner import ModelExecutor, campaign, qualify
 from cc_contract.cli import canonical
 from cc_contract.native import InfrastructureFailure
+from cc_contract.torch_workload import inference_verdict
 
 
 class ExtendedTests(unittest.TestCase):
+    def test_paired_agreement_cannot_mask_incorrect_generation_metadata(self):
+        record={'metadata_exact':True,'diagnostics':[{'logits':{'verdict':'PASS'},'hidden':{'verdict':'PASS'}}]}
+        self.assertEqual(inference_verdict([record]),'PASS')
+        record['metadata_exact']=False
+        self.assertEqual(inference_verdict([record]),'FAIL')
+        record['metadata_exact']=True
+        record['diagnostics'][0]['logits']['verdict']='INCONCLUSIVE'
+        self.assertEqual(inference_verdict([record]),'INCONCLUSIVE')
+
     def test_qualification_preserves_recomputable_case_evidence(self):
         records=[]
         report=qualify(ModelExecutor(),records.append)

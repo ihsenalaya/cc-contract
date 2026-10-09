@@ -120,6 +120,14 @@ def tiny_transformer(torch):
             'shape':list(first.shape),'parameters':sum(p.numel() for p in model.parameters())}
 
 
+def inference_verdict(records):
+    if any(not r['metadata_exact'] for r in records):
+        return 'FAIL'
+    if any(s[k]['verdict']!='PASS' for r in records for s in r['diagnostics'] for k in ('logits','hidden')):
+        return 'INCONCLUSIVE'
+    return 'PASS'
+
+
 def _inference(torch, directory, corpus, output, device, start):
     from transformers import AutoModelForCausalLM,AutoTokenizer
     environment=prepare(torch,device)
@@ -176,6 +184,7 @@ def _inference(torch, directory, corpus, output, device, start):
             with (output/'records.jsonl').open('ab') as file:
                 file.write(canonical(result)); file.flush(); os.fsync(file.fileno())
     manifest={**start,'environment':environment,'model':model_manifest,'cases':len(results),
+              'verdict':inference_verdict(results),'verdict_scope':'exact_metadata_and_paired_diagnostics_only',
               'paired_path_divergences':sum(any(s['logits']['verdict']!='PASS' or s['hidden']['verdict']!='PASS' for s in r['diagnostics']) for r in results),
               'state':'COMPLETE_PAIRED_DIAGNOSTIC','independent_campaigns':1,
               'raw_sha256':hashlib.sha256((output/'records.jsonl').read_bytes()).hexdigest()}
@@ -228,6 +237,7 @@ def main():
     result.setdefault('image_digest',os.environ.get('CC_IMAGE_DIGEST','NOT_APPLICABLE_LOCAL_PROCESS'))
     result.setdefault('seed',17001)
     print(json.dumps(result,indent=2))
+    if result.get('verdict')=='FAIL': return 1
     return 77 if result.get('verdict')=='UNSUPPORTED' else 0 if result.get('verdict')=='PASS' or result.get('state')=='COMPLETE_PAIRED_DIAGNOSTIC' else 1
 
 
