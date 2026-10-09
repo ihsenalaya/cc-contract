@@ -15,6 +15,11 @@ spec.loader.exec_module(window)
 
 
 class InfrastructureTests(unittest.TestCase):
+    def test_windows_cli_encoding_is_preserved(self):
+        raw = '{"name":"abonnement expérimental"}'.encode("cp1252")
+        with patch.object(window.subprocess, "check_output", return_value=raw):
+            self.assertEqual(window.az_json("account", "show")["name"], "abonnement expérimental")
+
     def test_deallocate_no_json_response_and_state_is_confirmed(self):
         with tempfile.TemporaryDirectory() as tmp:
             outputs = {"vm_id": {"value": "/subscriptions/fixture/resourceGroups/cc-contract-fixture/providers/Microsoft.Compute/virtualMachines/cc-contract-fixture"}}

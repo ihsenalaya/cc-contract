@@ -1,10 +1,21 @@
 // Bounded legal CUDA qualification. Never changes CC, driver, MIG or device state.
 #include <cuda_runtime.h>
 #include <chrono>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+static const char *run_id, *commit, *image_digest;
+static std::string utc_timestamp() {
+  const std::time_t now = std::time(nullptr);
+  std::tm utc = *std::gmtime(&now);
+  char result[32];
+  std::strftime(result, sizeof(result), "%Y-%m-%dT%H:%M:%SZ", &utc);
+  return result;
+}
 
 static void checked(cudaError_t status, const char* operation) {
   if (status != cudaSuccess) throw std::runtime_error(std::string(operation) + ": " + cudaGetErrorString(status));
@@ -61,6 +72,7 @@ static bool sequence(int size, int generation, const std::string& family, bool k
     for (int i = 0; i < size; ++i) correct &= observed[i] == expected[i];
     pass &= correct;
     std::cout << "{\"record_type\":\"case\",\"scope\":\"REAL_CUDA_CC_NOT_YET_QUALIFIED\",\"gpu_executed\":true,\"seed\":0,\"family\":\"" << family
+              << "\",\"run_id\":\"" << run_id << "\",\"timestamp_utc\":\"" << utc_timestamp() << "\",\"git_commit\":\"" << commit << "\",\"image_digest\":\"" << image_digest
               << "\",\"repeat\":" << repeat << ",\"size\":" << size << ",\"generation\":" << gen << ",\"kernel\":" << (kernel ? "true" : "false")
               << ",\"duration_seconds\":" << duration << ",\"synchronization\":\"" << (family == "T03" ? "event_wait_then_stream_sync" : "same_stream_then_stream_sync")
               << "\",\"verdict\":\"" << (correct ? "PASS" : "INCONCLUSIVE") << "\",\"oracle_verdict\":\"" << (correct ? "PASS" : "FAIL")
@@ -98,6 +110,10 @@ int main(int argc, char** argv) {
     return 77;
   }
   try {
+    run_id = std::getenv("CC_RUN_ID");
+    commit = std::getenv("CC_COMMIT");
+    image_digest = std::getenv("CC_IMAGE_DIGEST");
+    if (!run_id || !commit || !image_digest) throw std::runtime_error("GPU run provenance variables required");
     int driver = 0, runtime = 0;
     checked(cudaDriverGetVersion(&driver), "driver version");
     checked(cudaRuntimeGetVersion(&runtime), "runtime version");

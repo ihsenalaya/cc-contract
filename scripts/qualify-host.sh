@@ -42,7 +42,10 @@ grep -q 'SecureBoot enabled' secure-boot.stdout || task_allowed=0
 grep -q 'Attested Guest Successfully' cpu-attestation.stdout || task_allowed=0
 grep -q 'GPU Attestation is Successful' gpu-attestation.stdout || task_allowed=0
 if [ "$task_allowed" -eq 1 ]; then
-  capture cuda-reference sudo -n docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --runtime=nvidia --gpus all --ulimit memlock=-1:-1 "$task_image"
+  task_commit="$(sudo -n docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$task_image")"
+  [[ "$task_commit" =~ ^[a-f0-9]{40}$ ]]
+  task_run_id="gpu-$(date -u +%Y%m%dT%H%M%SZ)-$(cat /proc/sys/kernel/random/uuid)"
+  capture cuda-reference sudo -n docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --runtime=nvidia --gpus all --ulimit memlock=-1:-1 --env "CC_RUN_ID=$task_run_id" --env "CC_COMMIT=$task_commit" --env "CC_IMAGE_DIGEST=$task_image" "$task_image"
 else
   printf '%s\tcuda-reference\tNOT_RUN_ATTESTATION_OR_CC_GATE\n' "$(date -u +%FT%TZ)" >> commands.tsv
   task_failed=1
