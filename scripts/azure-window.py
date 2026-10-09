@@ -13,6 +13,7 @@ import re
 import shlex
 import subprocess
 import sys
+import time
 from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,51 @@ def sha(path):
     return digest.hexdigest()
 
 
+def record_phase(directory, phase, state, **details):
+    event={'timestamp_utc':datetime.now(timezone.utc).isoformat(),
+           'monotonic_ns':time.monotonic_ns(),'phase':phase,'state':state,**details}
+    with (directory/'run-phases.jsonl').open('a') as output:
+        output.write(json.dumps(event,separators=(',',':'))+'\n')
+        output.flush();os.fsync(output.fileno())
+
+
+def run_phase(directory, phase, args):
+    started=time.monotonic()
+    record_phase(directory,phase,'STARTED')
+    try:
+        command(args)
+    except BaseException as error:
+        record_phase(directory,phase,'FAILED',elapsed_seconds=time.monotonic()-started,
+                     error_type=type(error).__name__)
+        raise
+    record_phase(directory,phase,'FINISHED',elapsed_seconds=time.monotonic()-started)
+
+
+def verify_workload_plan(directory):
+    bound=json.loads((directory/'inputs.json').read_text())
+    expected=bool(bound.get('workload_sha256') or (directory/'workload-bundle.json').exists()
+                  or (directory/'approved-workload-plan.json').exists())
+    if not expected:return None
+    if not (directory/'approved-workload-plan.json').is_file() or not (directory/'workload-bundle.json').is_file():
+        raise ValueError('Required workload approval bindings missing; no provisioning allowed')
+    scope=json.loads((directory/'approved-workload-plan.json').read_text())
+    if scope['workload_bundle_sha256']!=sha(directory/'workload-bundle.json') or scope['host_script_sha256']!=sha(ROOT/'scripts/qualify-host.sh'):
+        raise ValueError('Planned workload or host script changed; create a new reviewable plan')
+    bundle=verify_bundle(directory/'workload-bundle.json')
+    if bound['workload_sha256']!=scope['workload_bundle_sha256'] or bound['host_script_sha256']!=scope['host_script_sha256']:
+        raise ValueError('Workload scope differs from planned inputs')
+    # Read the actual saved binary plan, rather than trusting editable metadata
+    # to assert what Terraform is about to provision.
+    saved=json.loads(subprocess.check_output(['terraform',f'-chdir={MODULE}',
+        'show','-json',str(directory/'plan.tfplan')],text=True))
+    for variable,field in (('workload_sha256','workload_bundle_sha256'),('host_script_sha256','host_script_sha256')):
+        if saved['variables'][variable]['value']!=scope[field]:
+            raise ValueError('Saved Terraform plan workload bindings differ')
+    if any(saved['variables'].get(name,{}).get('value')!=value for name,value in bound.items()):
+        raise ValueError('Saved Terraform plan inputs, identity or expiry differ')
+    return bundle
+
+
 def preserve_applied_identity(directory):
     # Cleanup empties Terraform state. Save the actual VM UUID before workloads
     # so CPU attestation remains verifiable after the temporary VM is destroyed.
@@ -62,9 +108,33 @@ def preserve_applied_identity(directory):
 
 def verify_bundle(path, check_archive=True):
     bundle=json.loads(path.read_text())
-    for kind in ('cuda','ir','torch'):
+    sample=bundle.get('transport')=='SEQUENTIAL_IR_SAMPLE'
+    kinds=('cuda','ir') if sample else ('cuda','ir','torch')
+    if sample and set(bundle['images'])!=set(kinds):
+        raise ValueError('Sequential sample may pull only CUDA and IR images')
+    for kind in kinds:
         if not re.fullmatch(r'ghcr.io/ihsenalaya/cc-contract-'+kind+r'@sha256:[a-f0-9]{64}',bundle['images'][kind]):
             raise ValueError('Bundle image must be an immutable project digest')
+    if sample:
+        if sha(ROOT/'scripts/run-sequential-sample.py')!=bundle['sample_harness_sha256']:
+            raise ValueError('Planned sequential harness changed')
+        spec_path=Path(bundle['sample_spec_path'])
+        if sha(spec_path)!=bundle['sample_spec_sha256']:
+            raise ValueError('Planned sequential specification changed')
+        spec=json.loads(spec_path.read_text())
+        if spec['image_digest']!=bundle['images']['ir'] or spec['harness_sha256']!=bundle['sample_harness_sha256']:
+            raise ValueError('Sequential sample image/harness differs from specification')
+        # The harness validates the exact development-only schedule again before
+        # creating a CUDA context. These guards also bind it before provisioning.
+        if spec['backend']!='cuda' or spec['confirmatory'] is not False or spec['comparison_schedule_changed'] is not False:
+            raise ValueError('Sequential sample must remain a nonconfirmatory development pilot')
+        import importlib.util
+        sys.path.insert(0,str(ROOT/'src'))
+        module_spec=importlib.util.spec_from_file_location('sequential_sample_guard',ROOT/'scripts/run-sequential-sample.py')
+        harness=importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(harness)
+        if spec!=harness.make_spec('cuda'):
+            raise ValueError('Sequential sample schedule, limits or provenance changed')
+        return bundle
     if bundle.get('transport')=='AZURE_BLOB_IMDS':
         sys.path.insert(0,str(ROOT/'src'))
         from cc_contract.cloud_model import validate_spec
@@ -147,7 +217,11 @@ def collect_and_release(directory):
             for line in lines:
                 expected, name = line.split(maxsplit=1)
                 candidate = base + "/" + name.removeprefix("./")
-                assert hashlib.sha256(archive.extractfile(candidate).read()).hexdigest() == expected
+                digest=hashlib.sha256()
+                with archive.extractfile(candidate) as original:
+                    for chunk in iter(lambda:original.read(8*1024*1024),b''):
+                        digest.update(chunk)
+                assert digest.hexdigest() == expected
         receipt = {"timestamp_utc": datetime.now(timezone.utc).isoformat(), "archive_sha256": sha(path), "archive_file": path.name, "files_verified": len(lines), "scope": "E0_REAL_HOST_EVIDENCE_REQUIRES_REVIEW"}
         (directory / "collection.json").write_text(json.dumps(receipt, indent=2) + "\n")
     finally:
@@ -168,6 +242,8 @@ def main():
     p.add_argument("--ssh-source-cidr")
     p.add_argument("--approved-plan-sha256")
     p.add_argument('--workload-bundle',type=Path)
+    p.add_argument('--max-window-minutes',type=int,choices=(60,90,120),default=120,
+                   help='Absolute expiry from planning; does not extend on apply')
     args = p.parse_args()
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{2,20}", args.window):
         p.error("use a unique lowercase window name")
@@ -178,14 +254,36 @@ def main():
         if args.approved_plan_sha256 != sha(directory / "plan.tfplan"):
             p.error("explicit user-approved matching plan hash required")
         child = [sys.executable, str(Path(__file__).resolve())]
+        started=time.monotonic()
+        run_start={'timestamp_utc':datetime.now(timezone.utc).isoformat(),
+                   'scope':'APPLY_QUALIFICATION_SAMPLE_EXPORT_RELEASE_AND_DESTROY',
+                   'plan_sha256':args.approved_plan_sha256}
+        with (directory/'run-start.json').open('x') as output:
+            json.dump(run_start,output,indent=2);output.write('\n')
+        failure=None
         try:
-            command(child + ["apply", "--window", args.window, "--approved-plan-sha256", args.approved_plan_sha256])
-            command(child + ["qualify", "--window", args.window])
+            run_phase(directory,'apply',child + ["apply", "--window", args.window, "--approved-plan-sha256", args.approved_plan_sha256])
+            run_phase(directory,'qualify_collect_release',child + ["qualify", "--window", args.window])
+        except BaseException as error:
+            failure=type(error).__name__
+            raise
         finally:
-            if (directory / "collection.json").exists():
-                command(child + ["destroy", "--window", args.window])
-            else:
-                print("Evidence export unverified: any allocated compute is released by recovery/expiry; persistent disk is preserved. Inspect private logs.", file=sys.stderr)
+            try:
+                if (directory / "collection.json").exists():
+                    run_phase(directory,'destroy',child + ["destroy", "--window", args.window])
+                else:
+                    print("Evidence export unverified: any allocated compute is released by recovery/expiry; persistent disk is preserved. Inspect private logs.", file=sys.stderr)
+            except BaseException as error:
+                failure=type(error).__name__
+                raise
+            finally:
+                result={'started_at_utc':run_start['timestamp_utc'],
+                        'finished_at_utc':datetime.now(timezone.utc).isoformat(),
+                        'elapsed_seconds':time.monotonic()-started,'error_type':failure,
+                        'scope':run_start['scope'],
+                        'analysis_and_user_decision_time_included':False}
+                with (directory/'run-exit.json').open('x') as output:
+                    json.dump(result,output,indent=2);output.write('\n')
     elif args.action == "plan":
         if not args.ssh_source_cidr:
             p.error("--ssh-source-cidr is required for planning")
@@ -198,7 +296,7 @@ def main():
         # Public key only enters Terraform. Private key stays off the Windows workspace.
         command(["ssh-keygen", "-q", "-t", "ed25519", "-N", "", "-f", str(directory / "id_ed25519")])
         account = az_json("account", "show")
-        inputs = {"subscription_id": account["id"], "window_id": args.window, "ssh_public_key": (directory / "id_ed25519.pub").read_text().strip(), "ssh_source_cidr": args.ssh_source_cidr, "expires_at_utc": (datetime.now(timezone.utc) + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M:%SZ")}
+        inputs = {"subscription_id": account["id"], "window_id": args.window, "ssh_public_key": (directory / "id_ed25519.pub").read_text().strip(), "ssh_source_cidr": args.ssh_source_cidr, "expires_at_utc": (datetime.now(timezone.utc) + timedelta(minutes=args.max_window_minutes)).strftime("%Y-%m-%dT%H:%M:%SZ")}
         if args.workload_bundle:
             inputs['workload_sha256']=sha(directory/'workload-bundle.json')
             inputs['host_script_sha256']=sha(ROOT/'scripts/qualify-host.sh')
@@ -223,16 +321,10 @@ def main():
     elif args.action == "apply":
         if args.approved_plan_sha256 != sha(directory / "plan.tfplan"):
             p.error("explicit user-approved matching plan hash required")
-        if (directory/'approved-workload-plan.json').exists():
-            scope=json.loads((directory/'approved-workload-plan.json').read_text())
-            if scope['workload_bundle_sha256']!=sha(directory/'workload-bundle.json') or scope['host_script_sha256']!=sha(ROOT/'scripts/qualify-host.sh'):
-                p.error('Planned workload or host script changed; create a new reviewable plan')
-            verify_bundle(directory/'workload-bundle.json')
-            bound=json.loads((directory/'inputs.json').read_text())
-            if bound['workload_sha256']!=scope['workload_bundle_sha256'] or bound['host_script_sha256']!=scope['host_script_sha256']:
-                p.error('Workload scope is not bound to Terraform plan inputs')
+        bundle=verify_workload_plan(directory)
         expiry = datetime.fromisoformat(json.loads((directory / "inputs.json").read_text())["expires_at_utc"].replace("Z", "+00:00"))
-        if expiry - datetime.now(timezone.utc) < timedelta(minutes=45):
+        minimum_minutes=75 if bundle and bundle.get('transport')=='SEQUENTIAL_IR_SAMPLE' else 45
+        if expiry - datetime.now(timezone.utc) < timedelta(minutes=minimum_minutes):
             p.error("expiry too close; prepare a new plan and obtain approval")
         # If provisioning fails partway, independently-created cloud expiry still applies.
         with (directory / "apply.log").open("w") as log:
@@ -286,7 +378,18 @@ def main():
             remote = "set -e; mkdir -p ~/cc-contract-evidence; sudo install -d -m 700 /run/cc-contract-registry; trap 'sudo rm -rf /run/cc-contract-registry' EXIT; sudo docker --config /run/cc-contract-registry login ghcr.io -u ihsenalaya --password-stdin > ~/cc-contract-evidence/registry-login.log 2>&1; "+pulls
             command(ssh_args(directory, outputs) + [remote], input=match.group(1) + "\n", timeout=600)
             arguments=[image]
-            if bundle:
+            if bundle and bundle.get('transport')=='SEQUENTIAL_IR_SAMPLE':
+                # Small, hash-bound scripts only. No Qwen download or Torch pull.
+                sample_root='/home/cccontract/cc-contract-evidence/sample-inputs'
+                command(ssh_args(directory,outputs)+['mkdir -p '+sample_root],timeout=30)
+                for name,source,expected in (
+                    ('spec.json',Path(bundle['sample_spec_path']),bundle['sample_spec_sha256']),
+                    ('run-sequential-sample.py',ROOT/'scripts/run-sequential-sample.py',bundle['sample_harness_sha256'])):
+                    target=sample_root+'/'+name
+                    remote='set -e; cat > '+shlex.quote(target)+'; printf "%s\\n" '+shlex.quote(expected+'  '+target)+' | sha256sum -c -; chmod 444 '+shlex.quote(target)
+                    command(ssh_args(directory,outputs)+[remote],input=source.read_bytes().decode('utf-8'),timeout=60)
+                arguments += [bundle['images']['ir'],'','','',sample_root+'/spec.json',sample_root+'/run-sequential-sample.py',bundle['sample_spec_sha256'],bundle['sample_harness_sha256']]
+            elif bundle:
                 # Model bytes are already prepared and verified. Download directly
                 # from the private Azure backup, or transfer the prepared archive.
                 target='/home/cccontract/cc-contract-model'

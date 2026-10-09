@@ -160,5 +160,17 @@
     "evidence": "results/manifests/cloud-pilot-gpu-qualification.json",
     "gpu_resources_destroyed": 14,
     "gpu_resources_remaining": 0
+  },
+  "sequential_sample": {
+    "state": "APPROVED_PENDING_EXECUTION",
+    "pilot_requested": true,
+    "budget_approved": true,
+    "parallel_gpu_jobs": false,
+    "planned_jobs": 14,
+    "actual_gpu_jobs_run": 0,
+    "proposal": "docs/environment/sequential-sample-window.md",
+    "local_qualification": "results/manifests/sequential-sample-local-qualification.json",
+    "plan": "results/manifests/sequential-sample-proposal.json",
+    "reserved_comparison_schedule_changed": false
   }
 }
