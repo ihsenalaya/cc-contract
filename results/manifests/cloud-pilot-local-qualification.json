@@ -81,5 +81,12 @@
       "bytes": 11828,
       "remote_bytes_verified": true
     }
-  ]
+  ],
+  "isolated_attestation_gate_source_check": {
+    "tests_passed": 62,
+    "sha256": "304e8ce0a22115edbc069df893fa012f12d3527764932ec60619399de6ed0bc2",
+    "fixture_driver_and_kernel_match_qualified_versions": true,
+    "attestation_error_blocks_GPU": true,
+    "scope": "CPU_CONTROL_FLOW_FIXTURE_NOT_HARDWARE_ATTESTATION"
+  }
 }

@@ -187,6 +187,7 @@ class InfrastructureTests(unittest.TestCase):
 case "$(basename "$0")" in
  nvidia-smi)
   case "$*" in
+   *'--query-gpu=driver_version'*) echo '595.91.07';;
    *'-f'*) echo 'MOCK FIXTURE ONLY: CC status: ON';;
    *'-e'*) echo 'MOCK FIXTURE ONLY: PRODUCTION';;
    *) echo 'MOCK FIXTURE ONLY';;
@@ -199,9 +200,14 @@ case "$(basename "$0")" in
    *docker*) echo 'MOCK FIXTURE ONLY: DOCKER_EXECUTED' >> "$CC_EVIDENCE_DIRECTORY/forbidden-execution";;
   esac;;
  python3) echo 'MOCK FIXTURE ONLY: torch unavailable'; exit 77;;
+ uname)
+  case "$*" in
+   '-r') echo '6.8.0-1066-azure-fde';;
+   *) echo 'MOCK FIXTURE ONLY';;
+  esac;;
 esac
 '''
-            for name in ["nvidia-smi", "mokutil", "sudo", "python3"]:
+            for name in ["nvidia-smi", "mokutil", "sudo", "python3", "uname"]:
                 path = executables / name
                 path.write_text(fixture)
                 path.chmod(0o755)
@@ -210,6 +216,8 @@ esac
             result = subprocess.run(["bash", str(ROOT / "scripts/qualify-host.sh"), "ghcr.io/ihsenalaya/cc-contract-cuda@sha256:" + "a" * 64], env=env, capture_output=True, text=True)
             self.assertEqual(result.returncode, 1, result.stderr)
             self.assertFalse((evidence / "forbidden-execution").exists())
+            self.assertEqual((evidence / 'driver-version.stdout').read_text().strip(), '595.91.07')
+            self.assertEqual((evidence / 'kernel-version.stdout').read_text().strip(), '6.8.0-1066-azure-fde')
             self.assertIn("NOT_RUN_ATTESTATION_OR_CC_GATE", (evidence / "commands.tsv").read_text())
 
             # The extended image bundle must retain the same fail-closed gate.
