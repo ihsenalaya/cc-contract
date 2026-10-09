@@ -1,5 +1,9 @@
 # First H100 window — proposal requiring approval
 
+Status: this proposal was approved and executed on 2026-10-09. See the
+[actual result and limitations](first-gpu-result.md). The text below records the
+reviewed first-window scope; it is not approval for later campaigns.
+
 No H100 is currently deployed. No Azure resource was created during preparation.
 Read-only inventory found regional total CPU quota 82, with 40 free NCC-family
 cores in East US 2 and no SKU restriction returned. Catalog/quota checks do not

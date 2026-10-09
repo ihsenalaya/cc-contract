@@ -1,5 +1,11 @@
 # Local checkpoint — 2026-10-09
 
+This records the initial local qualification before deployment. The subsequent
+[first real H100 result](first-gpu-result.md) supersedes its statements about
+pending approval and GPU execution. Post-run source checks now pass 24 tests,
+including cryptographic and independent-array rejection paths and qualification
+exit propagation after cleanup; these added tests remain CPU fixtures.
+
 Verified implementations: bounded sequence legality, exact integer/generation
 oracle, development corpus (24 legal / 24 semantic mutants / 12 invalid),
 provenance-preserving runner, private evidence collection, image gates, Kind

@@ -79,8 +79,36 @@ export, release and destruction. `scripts/cuda-image.sh build|kind|publish` buil
 and tests the native E0 probe locally and verifies absence of hardware is reported
 as UNSUPPORTED. The CUDA image is separate from the Python CPU model image.
 
-The real cloud lifecycle, confidential-image/verifier compatibility, expiration
-and H100 destroy/recreate qualification remain unvalidated. These require the
-approved first window; see the costed proposal in docs/environment. Reviewers without Azure H100 access can reproduce only local model checks.
+The subsequently approved first real window executed create/qualify/collect/
+deallocate/destroy and removed all 13 temporary resources; see
+[the result](../environment/first-gpu-result.md). Independent expiry deallocation,
+actual H100 recreation and PyTorch/inference qualification remain required.
+Reviewers without Azure H100 access can reproduce only local model checks.
 Sensitive attestation reports, cloud identifiers and nonredistributable model
 weights must remain protected; sanitize and hash shared evidence.
+
+## Independent review of the first GPU archive
+
+Install the pinned source-test/review dependencies in an isolated environment:
+
+```sh
+python3 -m venv .local/review-venv
+.local/review-venv/bin/pip install -r scripts/requirements-review.txt
+PYTHONPATH=src .local/review-venv/bin/python -m unittest discover -s tests/unit
+.local/review-venv/bin/python scripts/review-gpu-window.py \
+  --directory /home/ihsen/.local/state/cc-contract/e0-20261009b \
+  --vm-identity /home/ihsen/.local/state/cc-contract/e0-20261009b/terraform.tfstate.backup.vm-review-snapshot.json
+```
+
+The protected archive and VM identity snapshot are required; their original
+tokens and machine identifiers are not public Git artifacts. The reviewer checks
+archive/file hashes, all expected CUDA observations and arrays, and the CPU
+RS256 token using signing keys fetched over verified HTTPS from the fixed MAA
+issuer. It binds the CPU VM identity to the Terraform snapshot and checks token
+validity at capture time, Secure Boot, SNP compliance and disabled debugging.
+Cached keys and each timestamped review remain private; only sanitized summaries
+and hashes are published. Run without Python optimization.
+
+GPU receipts came from NVIDIA's local hardware verifier. Their reported checks
+are reviewed, but this reviewer does not independently authenticate their HMACs
+or reverify an exported hardware quote. It does not claim NRAS attestation.

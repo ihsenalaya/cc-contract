@@ -19,8 +19,12 @@
   "first_window_maximum_gpu_hours": 2,
   "maximum_list_compute_estimate_usd": 13.96,
   "proposed_total_budget_usd": 20,
-  "budget_approved": false,
+  "budget_approved": true,
   "not_a_guaranteed_invoice_ceiling": true,
   "price_observed_at_utc": "2026-10-09T09:14:57.717124+00:00",
-  "observation_timestamp_basis": "original_API_response_file_mtime"
+  "observation_timestamp_basis": "original_API_response_file_mtime",
+  "approval_record_sha256": "317720778cc256abe5cd3731ec6065fea6b458e7078847cbd468d6b26e9867ac",
+  "approved_at_utc": "2026-10-09T10:15:07.604851+00:00",
+  "completed_window": "e0-20261009b",
+  "resources_remaining": 0
 }

@@ -193,6 +193,7 @@ def main():
             with (directory / "qualification-session.log").open("w") as log:
                 result = subprocess.run(ssh_args(directory, outputs) + ["bash -s -- " + shlex.quote(image)], input=(ROOT / "scripts/qualify-host.sh").read_text(), text=True, stdout=log, stderr=subprocess.STDOUT, timeout=1800)
             (directory / "qualification-exit.json").write_text(json.dumps({"returncode": result.returncode, "timestamp_utc": datetime.now(timezone.utc).isoformat()}) + "\n")
+            return result.returncode
         finally:
             collect_and_release(directory)
     elif args.action == "collect-release":

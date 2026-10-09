@@ -53,6 +53,41 @@ class InfrastructureTests(unittest.TestCase):
                 release.assert_called_once_with(directory)
             self.assertEqual(archive.read_bytes(), before)
 
+    def test_qualification_nonzero_is_propagated_after_release(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / '.config/gh').mkdir(parents=True)
+            (root / '.config/gh/hosts.yml').write_text('  oauth_token: MOCK_FIXTURE_ONLY\n')
+            (root / '.local/cuda').mkdir(parents=True)
+            (root / '.local/cuda/remote-digest').write_text('ghcr.io/ihsenalaya/cc-contract-cuda@sha256:' + 'a' * 64)
+            (root / 'scripts').mkdir()
+            (root / 'scripts/qualify-host.sh').write_text('echo MOCK_FIXTURE_ONLY\n')
+            state = root / 'state'
+            state.mkdir()
+            completed = subprocess.CompletedProcess('MOCK_FIXTURE_ONLY', 1)
+            with patch.object(window, 'ROOT', root), patch.object(window, 'STATE', state), patch.object(window.Path, 'home', return_value=root), patch.object(window, 'ensure_window', return_value=({}, {})), patch.object(window, 'ssh_args', return_value=['MOCK_FIXTURE_SSH']), patch.object(window, 'command'), patch.object(window.subprocess, 'run', return_value=completed), patch.object(window, 'collect_and_release') as cleanup, patch('sys.argv', ['window', 'qualify', '--window', 'fixture']):
+                self.assertEqual(window.main(), 1)
+                cleanup.assert_called_once_with(state / 'fixture')
+            self.assertEqual(json.loads((state / 'fixture/qualification-exit.json').read_text())['returncode'], 1)
+
+    def test_run_still_destroys_verified_window_when_qualification_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state = Path(tmp)
+            directory = state / 'fixture'
+            directory.mkdir()
+            plan = directory / 'plan.tfplan'
+            plan.write_bytes(b'MOCK_PLAN_ONLY')
+            (directory / 'collection.json').write_text('{"scope":"MOCK_COLLECTION_ONLY"}')
+            calls = []
+            def child(args):
+                calls.append(args[2])
+                if args[2] == 'qualify':
+                    raise subprocess.CalledProcessError(1, 'MOCK_QUALIFICATION_ONLY')
+            with patch.object(window, 'STATE', state), patch.object(window, 'command', side_effect=child), patch('sys.argv', ['window', 'run', '--window', 'fixture', '--approved-plan-sha256', window.sha(plan)]):
+                with self.assertRaises(subprocess.CalledProcessError):
+                    window.main()
+            self.assertEqual(calls, ['apply', 'qualify', 'destroy'])
+
     def test_critical_attestation_error_blocks_cuda_even_with_success_text(self):
         with tempfile.TemporaryDirectory() as tmp:
             directory = Path(tmp)
