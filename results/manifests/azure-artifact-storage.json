@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T14:15:16.465725+00:00",
+  "scope": "AZURE_ARTIFACT_STORE_NOT_GPU_QUALIFICATION",
+  "terraform_resources_created": 5,
+  "gpu_resources_created": 0,
+  "private_containers": [
+    "models",
+    "evidence"
+  ],
+  "shared_keys_enabled": false,
+  "public_blobs_enabled": false,
+  "model_transfer_state": "AWAITING_NATIVE_AZURE_AUTHENTICATION",
+  "remote_model_bytes_verified": false,
+  "local_model_cache_released": false,
+  "docker_derived_project_copies_removed": true,
+  "docker_vhd_physical_compaction_completed": false,
+  "local_guard_tests_passed": 6,
+  "terraform_plan_mock_tests_passed": 1,
+  "incidents": [
+    "INC-0036",
+    "INC-0037",
+    "INC-0038",
+    "INC-0039"
+  ],
+  "implementation": "scripts/azure-artifacts.py",
+  "source_tests_passed": 56,
+  "source_check_log_sha256": "a1acea248ac6b97cdc688812ddee2d4e2d4526e0cb8026967c741ac8c704ddd4"
+}

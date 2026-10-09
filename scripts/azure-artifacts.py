@@ -1,5 +1,7 @@
 """Dedicated private project storage; verify remote bytes before releasing caches."""
 import argparse
+import base64
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime,timezone
 import hashlib
 import json
@@ -7,7 +9,12 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
+import tarfile
 import time
+import threading
+import urllib.error
+import urllib.parse
 import urllib.request
 from uuid import uuid4
 
@@ -16,6 +23,8 @@ STATE=Path.home()/'.local/state/cc-contract/artifact-store'
 MODULE=ROOT/'infrastructure/azure/artifact-store'
 os.umask(0o077)
 STATE.mkdir(parents=True,exist_ok=True,mode=0o700)
+TOKEN_LOCK=threading.Lock()
+BLOCK_SIZE=32*2**20
 
 
 def azure(*args,timeout=180):
@@ -60,16 +69,65 @@ def deploy():
 def windows_path(path):
     executable=shutil.which('az') or ''
     if executable.startswith('/mnt/c/'):
-        return '\\\\wsl.localhost\\'+os.environ.get('WSL_DISTRO_NAME','Ubuntu-22.04')+str(Path(path).resolve()).replace('/','\\')
+        separator=chr(92)
+        return separator*2+'wsl.localhost'+separator+os.environ.get('WSL_DISTRO_NAME','Ubuntu-22.04')+str(Path(path).resolve()).replace('/',separator)
     return str(Path(path).resolve())
 
 
+def storage_token():
+    with TOKEN_LOCK:
+        path=STATE/'storage-token.json'
+        data=json.loads(path.read_text()) if path.exists() else {}
+        token=data.get('accessToken','')
+        expiry=json.loads(base64.urlsafe_b64decode(token.split('.')[1]+'==')).get('exp',0) if token else 0
+        if expiry<time.time()+300:
+            subprocess.run([sys.executable,str(ROOT/'scripts/azure-storage-login.py'),'--silent'],check=True,timeout=120,capture_output=True)
+            token=json.loads(path.read_text())['accessToken']
+        return token
+
+
+def request(account,container,blob,method='GET',data=None,query=None,headers=None):
+    url=f'https://{account}.blob.core.windows.net/{container}/'+urllib.parse.quote(blob,safe='/')
+    if query:url+='?'+urllib.parse.urlencode(query)
+    req=urllib.request.Request(url,data=data,method=method,
+          headers={'Authorization':'Bearer '+storage_token(),'x-ms-version':'2023-11-03',**(headers or {})})
+    for attempt in range(3):
+        try:return urllib.request.urlopen(req,timeout=180)
+        except urllib.error.HTTPError as error:
+            if error.code not in (408,429,500,502,503,504) or attempt==2:raise
+        except (urllib.error.URLError,TimeoutError):
+            if attempt==2:raise
+        time.sleep(2**attempt)
+
+
+def blob_exists(account,container,blob):
+    try:
+        with request(account,container,blob,method='HEAD'):return True
+    except urllib.error.HTTPError as error:
+        if error.code==404:return False
+        raise
+
+
+def upload_blocks(account,container,blob,file,digest):
+    block_size=BLOCK_SIZE;size=file.stat().st_size;count=max(1,(size+block_size-1)//block_size)
+    def block(index):
+        block_id=base64.b64encode(f'{index:08d}'.encode()).decode()
+        with file.open('rb') as source:source.seek(index*block_size);data=source.read(block_size)
+        checksum=base64.b64encode(hashlib.md5(data).digest()).decode()
+        with request(account,container,blob,method='PUT',data=data,query={'comp':'block','blockid':block_id},headers={'Content-MD5':checksum}):pass
+        return block_id
+    blocks=[]
+    with ThreadPoolExecutor(max_workers=4) as workers:
+        for index,block_id in enumerate(workers.map(block,range(count))):
+            blocks.append(block_id)
+            if (index+1)%16==0 or index+1==count:print('Transferred:',file.name,min((index+1)*block_size,size),'/',size,'bytes',flush=True)
+    body=('<BlockList>'+''.join('<Latest>'+value+'</Latest>' for value in blocks)+'</BlockList>').encode()
+    with request(account,container,blob,method='PUT',data=body,query={'comp':'blocklist'},headers={'Content-Type':'application/xml','x-ms-meta-sha256':digest,'If-None-Match':'*'}):pass
+
+
 def remote_hash(account,container,blob):
-    token=azure('account','get-access-token','--resource','https://storage.azure.com/','--query','accessToken')
-    request=urllib.request.Request(f'https://{account}.blob.core.windows.net/{container}/{blob}',
-             headers={'Authorization':'Bearer '+token,'x-ms-version':'2023-11-03'})
     value=hashlib.sha256();size=0
-    with urllib.request.urlopen(request,timeout=180) as response:
+    with request(account,container,blob) as response:
         for part in iter(lambda:response.read(8*2**20),b''):value.update(part);size+=len(part)
     return value.hexdigest(),size
 
@@ -79,22 +137,22 @@ def upload(files,container,receipt_name):
     path=STATE/receipt_name;receipt=json.loads(path.read_text()) if path.exists() else {'files':[],'container':container,'account':account}
     known={f['local_path']:f for f in receipt['files']}
     for file in files:
-        file=Path(file).resolve()
+        file=Path(file)
         if file.is_symlink() or not file.is_file():raise ValueError('Only regular project files may be uploaded')
+        file=file.resolve()
         digest=sha(file);blob=digest+'/'+file.name
-        if str(file) in known and known[str(file)]['sha256']==digest:
+        if str(file) in known and known[str(file)]['sha256']==digest and known[str(file)].get('remote_bytes_verified') is True:
             continue
-        exists=azure('storage','blob','exists','--account-name',account,'--container-name',container,'--name',blob,'--auth-mode','login')['exists']
+        exists=blob_exists(account,container,blob)
         if not exists:
-            azure('storage','blob','upload','--account-name',account,'--container-name',container,'--name',blob,
-                  '--file',windows_path(file),'--auth-mode','login','--overwrite','false','--validate-content','--no-progress',
-                  '--metadata','sha256='+digest,timeout=3600)
+            print('Uploading:',file.name,'bytes:',file.stat().st_size,flush=True)
+            upload_blocks(account,container,blob,file,digest)
         print('Uploaded; verifying complete remote bytes:',file.name,flush=True)
         remote,size=remote_hash(account,container,blob)
         if remote!=digest or size!=file.stat().st_size:raise RuntimeError('Remote byte verification failed; local source retained')
         record={'local_path':str(file),'blob':blob,'sha256':digest,'bytes':size,'remote_bytes_verified':True,
                 'timestamp_utc':datetime.now(timezone.utc).isoformat()}
-        receipt['files'].append(record);atomic(path,receipt)
+        receipt['files']=[r for r in receipt['files'] if r['local_path']!=str(file)]+[record];atomic(path,receipt)
         print('Verified remote SHA-256:',file.name,flush=True)
     return receipt
 
@@ -106,7 +164,9 @@ def main():
     if args.action=='deploy':deploy();return
     if args.action=='model':
         manifest=args.model_directory/'cc-model-manifest.json';data=json.loads(manifest.read_text())
-        files=[args.model_directory/name for name in sorted(data['file_sha256'])]
+        names=sorted(data['file_sha256'])
+        if any(Path(name).name!=name or name in ('.','..') for name in names):raise ValueError('Model manifest must contain basenames only')
+        files=[args.model_directory/name for name in names]
         for file in files:
             if Path(file.name).name!=file.name or sha(file)!=data['file_sha256'][file.name]:raise ValueError('Prepared model source changed')
         files.extend([manifest,ROOT/'experiments/inference-corpus.json'])
@@ -119,7 +179,27 @@ def main():
         for name in ('cpu-pipeline','cpu-pipeline-analysis'):
             files.extend(p for p in (Path.home()/'.local/state/cc-contract'/name).rglob('*') if p.is_file())
         files.extend((Path.home()/'.local/state/cc-contract/e0-20261009b').glob('guest-evidence-*.tar.gz'))
-        receipt=upload(files,'evidence','evidence-receipt.json')
+        archive=STATE/'qualified-evidence.tar';manifest=STATE/'evidence-files.json'
+        sources=[]
+        for file in sorted(set(files)):
+            if file.is_symlink():raise ValueError('Evidence symlinks must be reviewed separately')
+            prefix='repo-local/' if file.is_relative_to(ROOT/'.local') else 'private-evidence/'
+            base=ROOT/'.local' if file.is_relative_to(ROOT/'.local') else Path.home()/'.local/state/cc-contract'
+            sources.append({'source':str(file),'name':prefix+str(file.relative_to(base)),'sha256':sha(file),'bytes':file.stat().st_size})
+        atomic(manifest,{'files':sources})
+        temporary=STATE/'qualified-evidence.tar.tmp'
+        with tarfile.open(temporary,'w') as output:
+            for record in sources:
+                file=Path(record['source']);info=output.gettarinfo(str(file),arcname=record['name'])
+                info.uid=info.gid=0;info.uname=info.gname='';info.mtime=0;info.mode=0o400
+                with file.open('rb') as data:output.addfile(info,data)
+        with tarfile.open(temporary,'r') as check:
+            for record in sources:
+                data=check.extractfile(record['name']);digest=hashlib.sha256()
+                for part in iter(lambda:data.read(8*2**20),b''):digest.update(part)
+                if digest.hexdigest()!=record['sha256']:raise ValueError('Evidence snapshot changed')
+        temporary.replace(archive)
+        receipt=upload([archive,manifest],'evidence','evidence-receipt.json')
         print(json.dumps({'verified_evidence_files':len(receipt['files'])}))
     else:
         receipt=json.loads((STATE/'model-receipt.json').read_text());released=[]

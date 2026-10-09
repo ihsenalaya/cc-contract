@@ -1,0 +1,2 @@
+# Native device authentication. REST file transfer uses the Python standard library.
+msal==1.36.0

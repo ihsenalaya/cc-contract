@@ -82,3 +82,8 @@ Le flux sans copie supplémentaire permet de poursuivre la préparation locale.
 Les erreurs intermittentes d'interop Windows et les tentatives de publication
 échouées sont conservées dans le registre d'incidents ; la publication utilise
 des credentials temporaires en RAM pour éviter ce relais.
+
+Le cluster Kind et ses copies lourdes ont depuis été supprimés après publication.
+Le stockage Azure privé est créé ; le transfert des poids attend une connexion
+native après panne du relais Windows. Voir le [suivi du stockage](artifact-store.md).
+Les poids locaux sont conservés tant que la sauvegarde distante n’est pas vérifiée.
