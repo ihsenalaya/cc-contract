@@ -202,7 +202,12 @@
   },
   "source_checks": {
     "tests_passed": 66,
-    "log_sha256": "4612fa5e84f7cd8ef870f9cc61e51b87d01b3463812059ddca0c281d9372b271"
+    "log_sha256": "4612fa5e84f7cd8ef870f9cc61e51b87d01b3463812059ddca0c281d9372b271",
+    "CI": {
+      "commit": "64c5cf89bc9e1fac4094d4933f32e7311594df7b",
+      "conclusion": "success",
+      "url": "https://github.com/ihsenalaya/cc-contract/actions/runs/37960990414"
+    }
   },
   "confirmed_real_defects": [],
   "independent_campaigns_per_workload": 1,
@@ -224,5 +229,10 @@
     "current_original_archive_sha256": "3f2d2641bbf3c8d2dc1fb625379bbd27a703d52fff1563ad8663336d671fb698",
     "same_pinned_host_driver_kernel_and_CC": true,
     "scope": "ACTUAL_TWO_TEMPORARY_H100_WINDOWS_NOT_FULL_KUBEADM_REPRODUCIBILITY"
+  },
+  "offline_audit_sources_sha256": {
+    "review-gpu-window.py": "1ba5a118d3de9ac6a6a90c9562014134a4b1dc825cdf7e94e27e6209a568f68d",
+    "review-ir-qualification.py": "fe86b9d51583fecaf0b42cb066cf9baf45f623ea38de883aa9d04ee73474b43b",
+    "review-torch-pilot.py": "b4ee3e6f5e06bd636b8758c2027793f1a38b77beca526bcaed7ce84c1a2fffba"
   }
 }
