@@ -20,9 +20,9 @@ fi
 date +%s > .local/sync/last-attempt
 timeout 180 bash scripts/quick-check.sh
 command -v trivy >/dev/null
-timeout 180 trivy fs --scanners secret --exit-code 1 --no-progress --skip-dirs .git --skip-dirs .local --skip-dirs results/raw .
+timeout 180 trivy fs --scanners secret --exit-code 1 --no-progress --skip-dirs .git --skip-dirs .local --skip-dirs results/raw --skip-dirs .terraform .
 # Stage only the public allowlist after checks; never raw data or cloud state.
-git add -- README.md LICENSE CITATION.cff AGENTS.md .gitignore .dockerignore pyproject.toml Dockerfile src tests scripts docs infrastructure kubernetes experiments results/manifests .github
+git add -- README.md LICENSE CITATION.cff AGENTS.md .gitignore .dockerignore pyproject.toml Dockerfile Dockerfile.cuda src tests scripts docs infrastructure kubernetes experiments results/manifests .github
 python3 scripts/release-guard.py
 if ! git diff --cached --quiet; then
   git commit -m "Checkpoint verified project artifacts $(date -u +%FT%TZ)"

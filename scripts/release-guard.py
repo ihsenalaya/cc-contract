@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-ALLOWED = {"README.md", "LICENSE", "CITATION.cff", "AGENTS.md", ".gitignore", ".dockerignore", "pyproject.toml", "Dockerfile"}
+ALLOWED = {"README.md", "LICENSE", "CITATION.cff", "AGENTS.md", ".gitignore", ".dockerignore", "pyproject.toml", "Dockerfile", "Dockerfile.cuda"}
 DIRECTORIES = {"src", "tests", "scripts", "docs", "infrastructure", "kubernetes", "experiments", ".github"}
 PATTERNS = [re.compile(rb"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"), re.compile(rb"gh[pousr]_[A-Za-z0-9]{30,}"), re.compile(rb"github_pat_[A-Za-z0-9_]{30,}"), re.compile(rb"AKIA[A-Z0-9]{16}"), re.compile(rb"(?i)(?:AccountKey|SharedAccessSignature|client_secret|password)\s*[:=]\s*['\"]?[A-Za-z0-9/+_=.-]{12,}")]
 FORBIDDEN = {".pem", ".key", ".log", ".tfstate", ".tfvars", ".safetensors", ".pt", ".pth", ".bin", ".parquet", ".zip", ".tar", ".gz", ".kubeconfig"}
