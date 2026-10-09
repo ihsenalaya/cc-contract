@@ -1,5 +1,9 @@
 # Cloud model H100 pilot — concrete scope requiring approval
 
+Status: this proposal was approved and executed on 2026-10-09. See the
+[actual result](cloud-gpu-result.md). The reviewed proposal below does not
+authorize later comparative campaigns.
+
 The first approved E0 window is closed and its 13 resources were destroyed.
 This next window is a prerequisite for completing real E0/E1/E2/E7 qualification.
 No further GPU allocation or comparative campaign has been approved.

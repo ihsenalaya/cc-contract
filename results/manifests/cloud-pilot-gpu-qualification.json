@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T16:39:20.796335+00:00",
+  "scope": "REAL_H100_BOUNDED_PILOT_WITH_INDEPENDENT_OFFLINE_NUMERICAL_AND_TENSOR_REVIEW",
+  "window": "pilot-cloud-1009c",
+  "approval": {
+    "max_window_hours": 2,
+    "budget_plan_usd": 20,
+    "authorization_source": "explicit user reply",
+    "long_comparative_campaigns_approved": false
+  },
+  "plan_sha256": "59c85119e8cc605483b8716d86d975fc00200dabfc1690f98ed7332109449c0e",
+  "workload_bundle_sha256": "cbccb2f649134b0ed50246a160ef6d7ff2409e2961b50f204a65cae06f315978",
+  "host_script_sha256": "a28f3c07d042dca43429747111da7e44577656ce5a012c301ba170b85bbf018f",
+  "images": {
+    "cuda": "ghcr.io/ihsenalaya/cc-contract-cuda@sha256:98eda97f53d3b77c9dee5629ab11e9484f644e7d7c38d57ffaa3feb6a4c74302",
+    "ir": "ghcr.io/ihsenalaya/cc-contract-ir@sha256:e09597869dab698d082cc56ceb5cbb7c6eb348760e08f617387491837ad1fc8a",
+    "torch": "ghcr.io/ihsenalaya/cc-contract-torch@sha256:d529bf986f595c1d0159786e6cdcd1fec3d65d2281689b45b6040244df7b8ccf",
+    "cloud_transport": "ghcr.io/ihsenalaya/cc-contract-cpu@sha256:c188252eac20252000f49611de2c4b913d924699f2d0805e9b6927f80228e6fc"
+  },
+  "host": {
+    "gpu": "NVIDIA H100 NVL",
+    "memory_total_MiB": 95830,
+    "driver": "595.91.07",
+    "kernel": "6.8.0-1066-azure-fde",
+    "CC": "ON",
+    "CC_environment": "PRODUCTION",
+    "secure_boot": true
+  },
+  "cpu_attestation": {
+    "scope": "MAA_SIGNATURE_AND_SELECTED_CLAIMS",
+    "signature_verified": true,
+    "vm_identity_matches": true,
+    "secureboot": true,
+    "tee_type": "sevsnpvm",
+    "azure_compliance": true,
+    "provider_TEE_signing_key_binding_independently_checked": false
+  },
+  "gpu_attestation": {
+    "scope": "LOCAL_HARDWARE_VERIFIER_RECEIPTS",
+    "reported_checks_all_true": true,
+    "checks": {
+      "x-nvidia-gpu-arch-check": true,
+      "x-nvidia-gpu-attestation-report-cert-chain-validated": true,
+      "x-nvidia-gpu-attestation-report-parsed": true,
+      "x-nvidia-gpu-attestation-report-nonce-match": true,
+      "x-nvidia-gpu-attestation-report-signature-verified": true,
+      "x-nvidia-gpu-driver-rim-fetched": true,
+      "x-nvidia-gpu-driver-rim-schema-validated": true,
+      "x-nvidia-gpu-driver-rim-cert-validated": true,
+      "x-nvidia-gpu-driver-rim-signature-verified": true,
+      "x-nvidia-gpu-driver-rim-measurements-available": true,
+      "x-nvidia-gpu-vbios-rim-fetched": true,
+      "x-nvidia-gpu-vbios-rim-schema-validated": true,
+      "x-nvidia-gpu-vbios-rim-cert-validated": true,
+      "x-nvidia-gpu-vbios-rim-signature-verified": true,
+      "x-nvidia-gpu-vbios-rim-measurements-available": true,
+      "x-nvidia-gpu-vbios-index-no-conflict": true
+    },
+    "hmac_receipts_independently_authenticated": false,
+    "exported_hardware_quote_independently_reverified": false,
+    "NRAS_token": "NOT_RUN"
+  },
+  "cuda_reference": {
+    "scope": "BOUNDED_REAL_CUDA_INTEGER_QUALIFICATION",
+    "observations": 54,
+    "independent_array_comparison": "PASS",
+    "families": {
+      "T01": 3,
+      "T02": 9,
+      "T03": 3,
+      "T05": 9,
+      "T06": 27,
+      "E0_KERNEL_REFERENCE": 3
+    },
+    "repeats": 3,
+    "independent_campaigns": 1,
+    "git_commit": "e8f34fddc62479a6995dcf260a4242e1494cc26b",
+    "image_digest": "ghcr.io/ihsenalaya/cc-contract-cuda@sha256:98eda97f53d3b77c9dee5629ab11e9484f644e7d7c38d57ffaa3feb6a4c74302",
+    "scientific_superiority_claim": false
+  },
+  "IR": {
+    "scope": "REAL_CUDA_IR",
+    "gpu_executed": true,
+    "run_id": "gpu-20261009T162016Z-928935de-e0cd-4b4f-aca4-092c9b31ff62-ir",
+    "verdict": "PASS",
+    "cases": 96,
+    "observations": 252,
+    "counts": {
+      "PASS": 96
+    },
+    "independently_recomputed": true,
+    "original_sha256": "c7ad8b4e3a75841ab046c62f9fbe675c40dbf0115a850f5a72d51858ae72e5ad",
+    "attestation_review": "SEPARATE_REQUIRED",
+    "confirmed_defects": []
+  },
+  "torch": {
+    "scope": "OFFLINE_ORIGINAL_GPU_COMPONENT_REFERENCE_AND_PAIRED_TENSOR_AUDIT",
+    "archive_sha256": "3f2d2641bbf3c8d2dc1fb625379bbd27a703d52fff1563ad8663336d671fb698",
+    "components": {
+      "verdict": "PASS",
+      "records": 18,
+      "independent_reference_recomputation": true,
+      "linear_maximum_absolute_error": 0.0,
+      "attention_maximum_absolute_error": 2.2126183468751393e-08,
+      "attention_predeclared_bound": 1.406133025706193e-06,
+      "torch_version": "2.8.0+cu128",
+      "compiled_cuda": "12.8",
+      "independent_campaigns": 1
+    },
+    "inference": {
+      "verdict": "PASS",
+      "prompts": 24,
+      "paths": 48,
+      "paired_steps": 144,
+      "logit_and_hidden_values_compared": 22413312,
+      "physical_tokens_and_generations_exact": true,
+      "paired_outputs_exact_equal": true,
+      "independent_campaigns": 1,
+      "independent_absolute_model_correctness": false
+    },
+    "independent_GPU_attestation": "SEPARATE_REQUIRED",
+    "scientific_superiority_claim": false
+  },
+  "model_cloud_transfer": {
+    "transport": "AZURE_BLOB_IMDS",
+    "verified_files": 14,
+    "bytes": 15242896869,
+    "manifest_sha256": "9a462fd6021d1e2f908ba8d35e75bd4f256db59c29f90fe19526ee2bb65c46ed",
+    "corpus_sha256": "308e8a4f0b0bde74e0854ba150dd8b74fbb73ba68fc1a1e70b52ccd6c7f82300",
+    "download_receipt_sha256": "8a39fbdaa05e5bcdabacca2f92514591d81082ece5329689a8a2cc9a36d7d109",
+    "guest_managed_identity_verified": true,
+    "local_weight_shards_restored": false
+  },
+  "evidence": {
+    "timestamp_utc": "2026-10-09T16:22:38.544649+00:00",
+    "archive_sha256": "3f2d2641bbf3c8d2dc1fb625379bbd27a703d52fff1563ad8663336d671fb698",
+    "archive_file": "guest-evidence-f54c422cd51a4955b88c8cb79fbe98ab.tar.gz",
+    "files_verified": 84,
+    "scope": "E0_REAL_HOST_EVIDENCE_REQUIRES_REVIEW",
+    "remote_backups": [
+      {
+        "blob": "3f2d2641bbf3c8d2dc1fb625379bbd27a703d52fff1563ad8663336d671fb698/guest-evidence-f54c422cd51a4955b88c8cb79fbe98ab.tar.gz",
+        "sha256": "3f2d2641bbf3c8d2dc1fb625379bbd27a703d52fff1563ad8663336d671fb698",
+        "bytes": 94842752,
+        "remote_bytes_verified": true
+      },
+      {
+        "blob": "b0e35ea551378cc7e074cc9742bfeacf553edc5ef63bfb234cf8777e94cdb120/collection.json",
+        "sha256": "b0e35ea551378cc7e074cc9742bfeacf553edc5ef63bfb234cf8777e94cdb120",
+        "bytes": 298,
+        "remote_bytes_verified": true
+      },
+      {
+        "blob": "f4799392e1429992590f7040a8a230f59fe5de6a6935d3e26d57c4a8a2cb328a/review-host.stdout",
+        "sha256": "f4799392e1429992590f7040a8a230f59fe5de6a6935d3e26d57c4a8a2cb328a",
+        "bytes": 2515,
+        "remote_bytes_verified": true
+      },
+      {
+        "blob": "417761e94f696dc5a14d4970dad1f6e102ce1c1d46c7d230d77c335bf7de0d93/review-ir.json",
+        "sha256": "417761e94f696dc5a14d4970dad1f6e102ce1c1d46c7d230d77c335bf7de0d93",
+        "bytes": 420,
+        "remote_bytes_verified": true
+      },
+      {
+        "blob": "cbeba95fe0cd0205d700ba61be029579b0ee0fa1e4e66dd7a13ae2889a7b8269/review-torch.json",
+        "sha256": "cbeba95fe0cd0205d700ba61be029579b0ee0fa1e4e66dd7a13ae2889a7b8269",
+        "bytes": 970,
+        "remote_bytes_verified": true
+      },
+      {
+        "blob": "3ddde89787cc028ae2806d4027b8db5e74393cc623459498ffa463b5e3c60b7e/cleanup-verified.json",
+        "sha256": "3ddde89787cc028ae2806d4027b8db5e74393cc623459498ffa463b5e3c60b7e",
+        "bytes": 351,
+        "remote_bytes_verified": true
+      },
+      {
+        "blob": "62df42d76eb4f4a9a5fc1dbc0bf9eda3e6987dbd139b3815afc9b5c87505327f/release.json",
+        "sha256": "62df42d76eb4f4a9a5fc1dbc0bf9eda3e6987dbd139b3815afc9b5c87505327f",
+        "bytes": 129,
+        "remote_bytes_verified": true
+      }
+    ]
+  },
+  "cleanup": {
+    "project_vms": 0,
+    "temporary_group_exists": false,
+    "terraform_resources_remaining": 0,
+    "resources_created": 14,
+    "resources_destroyed": 14,
+    "source_CI_before_run": {
+      "commit": "934830d8dbfa1bd0c78699664a5e15d21768beb2",
+      "conclusion": "success",
+      "url": "https://github.com/ihsenalaya/cc-contract/actions/runs/37953161181"
+    }
+  },
+  "release": {
+    "timestamp_utc": "2026-10-09T16:24:17.141015+00:00",
+    "power_state": "PowerState/deallocated",
+    "retained_os_disk": true
+  },
+  "source_checks": {
+    "tests_passed": 66,
+    "log_sha256": "4612fa5e84f7cd8ef870f9cc61e51b87d01b3463812059ddca0c281d9372b271"
+  },
+  "confirmed_real_defects": [],
+  "independent_campaigns_per_workload": 1,
+  "full_E0_complete": false,
+  "protocol_frozen": false,
+  "scientific_superiority_claim": false,
+  "remaining": [
+    "Independent GPU quote/NRAS verification",
+    "Actual independent expiry deallocation against an allocated H100",
+    "Oracle calibration/variability and protocol freeze",
+    "Approved full E4/E5 comparative schedule: 140 jobs, 23h20 GPU minimum",
+    "Original H08/H09 evidence/configurations and actual E3 reproduction",
+    "Azure kubeadm integration remains unimplemented/unqualified",
+    "E6/E8 remain conditional on a technically characterized real anomaly"
+  ],
+  "actual_H100_recreation": {
+    "different_MAA_attested_VM_identities": true,
+    "previous_original_archive_sha256": "dd09040ac00ae829bfdb3e53c489335a2b99ffde69445638cbb2cfa92b1bd106",
+    "current_original_archive_sha256": "3f2d2641bbf3c8d2dc1fb625379bbd27a703d52fff1563ad8663336d671fb698",
+    "same_pinned_host_driver_kernel_and_CC": true,
+    "scope": "ACTUAL_TWO_TEMPORARY_H100_WINDOWS_NOT_FULL_KUBEADM_REPRODUCIBILITY"
+  }
+}

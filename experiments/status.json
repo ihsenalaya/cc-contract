@@ -6,48 +6,53 @@
     {
       "id": "E0",
       "state": "IMPLEMENTED",
-      "scope": "initial_local_subset",
+      "scope": "real_H100_native_IR_float_and_Qwen_pilot_independent_CPU_MAA_signature_review",
       "evidence": [
         "results/manifests/initial-local-qualification.json",
         "results/manifests/first-real-gpu-qualification.json",
         "results/manifests/pilot-local-qualification.json",
-        "results/manifests/cloud-pilot-local-qualification.json"
+        "results/manifests/cloud-pilot-local-qualification.json",
+        "results/manifests/cloud-pilot-gpu-qualification.json"
       ],
       "remaining": [
-        "PyTorch GPU and floating-point/inference qualification",
-        "Independent GPU quote verification/remote-token review",
-        "Actual H100 recreation and expiry deallocation branch"
+        "Independent GPU quote/remote-token verification",
+        "Actual independent expiry deallocation against allocated H100",
+        "Full Azure kubeadm integration and recreation qualification"
       ],
       "real_gpu_state": "PARTIALLY_VALIDATED"
     },
     {
       "id": "E1",
       "state": "IMPLEMENTED",
-      "scope": "initial_local_subset",
+      "scope": "real_GPU_bounded_float32_independent_references_and_exact_generation_tags",
       "evidence": [
         "results/manifests/initial-local-qualification.json",
         "results/manifests/first-real-gpu-qualification.json",
-        "results/manifests/pilot-local-qualification.json"
+        "results/manifests/pilot-local-qualification.json",
+        "results/manifests/cloud-pilot-gpu-qualification.json"
       ],
       "remaining": [
-        "Float oracle calibration and independent reference checks",
-        "Real GPU oracle validation and repeat variability",
-        "Oracle freeze"
+        "Broader oracle calibration and independent campaign variability",
+        "Oracle freeze before comparative evaluation"
       ]
     },
     {
       "id": "E2",
-      "state": "LOCAL_VALIDATED",
-      "scope": "bounded_T01_T08_native_CPU_reference_and_two_worker_Kind_at_1f62b18",
+      "state": "GPU_VALIDATED",
+      "scope": "bounded_T01_T08_real_CUDA_96_cases_252_observations_independently_recomputed",
       "evidence": [
         "results/manifests/initial-local-qualification.json",
         "results/manifests/extended-local-qualification.json",
-        "results/manifests/pilot-local-qualification.json"
+        "results/manifests/pilot-local-qualification.json",
+        "results/manifests/cloud-pilot-gpu-qualification.json"
       ],
       "remaining": [
-        "Real IR CUDA execution and T07/T08 support qualification",
         "Independent reserved GPU campaign"
-      ]
+      ],
+      "capabilities": {
+        "mapped_memory": true,
+        "graphs": true
+      }
     },
     {
       "id": "E3",
@@ -105,16 +110,17 @@
     },
     {
       "id": "E7",
-      "state": "LOCAL_VALIDATED",
-      "scope": "qualified_CPU_Torch_image_verified_model_data_and_frozen_tokenizer_corpus",
+      "state": "GPU_VALIDATED",
+      "scope": "18_real_float_components_and_24_paired_Qwen_prompts_144_paired_steps_raw_tensor_audit",
       "evidence": [
         "results/manifests/software-preparation.json",
         "results/manifests/pilot-local-qualification.json",
-        "results/manifests/cloud-pilot-local-qualification.json"
+        "results/manifests/cloud-pilot-local-qualification.json",
+        "results/manifests/cloud-pilot-gpu-qualification.json"
       ],
       "remaining": [
-        "GPU components and paired Qwen inference",
-        "Numerical diagnostics and exact metadata review; paired agreement alone is not independent model correctness"
+        "Independent campaign variability and frozen evaluation",
+        "Paired agreement does not establish independent absolute model correctness"
       ]
     },
     {
@@ -146,11 +152,13 @@
     "full_E0_complete": false
   },
   "next_gpu_window": {
-    "state": "READY_AWAITING_BUDGET_APPROVAL",
+    "state": "COMPLETED_GPU_PILOT",
     "proposal": "docs/environment/cloud-gpu-pilot.md",
-    "approval_granted": false,
-    "gpu_resources_created": 0,
+    "approval_granted": true,
+    "gpu_resources_created": 14,
     "comparative_campaigns_included": false,
-    "evidence": "results/manifests/cloud-pilot-proposal.json"
+    "evidence": "results/manifests/cloud-pilot-gpu-qualification.json",
+    "gpu_resources_destroyed": 14,
+    "gpu_resources_remaining": 0
   }
 }

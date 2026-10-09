@@ -23,6 +23,22 @@ registry_auth=importlib.util.module_from_spec(spec);spec.loader.exec_module(regi
 
 
 class InfrastructureTests(unittest.TestCase):
+    def test_applied_identity_is_preserved_for_post_cleanup_review_without_overwrite(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory=Path(tmp)
+            resource={'type':'azurerm_linux_virtual_machine','name':'gpu','instances':[
+                {'attributes':{'virtual_machine_id':'12345678-1234-1234-1234-123456789abc'}}]}
+            original=json.dumps({'resources':[resource]}).encode()
+            (directory/'terraform.tfstate').write_bytes(original)
+            window.preserve_applied_identity(directory)
+            (directory/'terraform.tfstate').write_text('{"resources":[]}')
+            self.assertEqual((directory/'tfstate-after-apply.json').read_bytes(),original)
+            self.assertEqual(json.loads((directory/'vm-identity.json').read_text()),[resource])
+            with self.assertRaisesRegex(ValueError,'identity missing'):
+                window.preserve_applied_identity(directory)
+            (directory/'terraform.tfstate').write_bytes(original)
+            with self.assertRaises(FileExistsError):window.preserve_applied_identity(directory)
+
     def test_cloud_bundle_rejects_mutable_transport_changed_reader_and_missing_shard(self):
         # CPU-only approval guard fixtures, without network, model bytes or GPU.
         import copy

@@ -48,6 +48,18 @@ def sha(path):
     return digest.hexdigest()
 
 
+def preserve_applied_identity(directory):
+    # Cleanup empties Terraform state. Save the actual VM UUID before workloads
+    # so CPU attestation remains verifiable after the temporary VM is destroyed.
+    data=(directory/'terraform.tfstate').read_bytes()
+    state=json.loads(data)
+    rows=[r for r in state.get('resources',[]) if r['type']=='azurerm_linux_virtual_machine' and r['name']=='gpu']
+    if len(rows)!=1 or len(rows[0]['instances'])!=1 or not re.fullmatch(r'[a-f0-9-]{36}',rows[0]['instances'][0]['attributes']['virtual_machine_id']):
+        raise ValueError('Applied GPU identity missing; preserve state and stop compute')
+    with (directory/'tfstate-after-apply.json').open('xb') as output:output.write(data)
+    with (directory/'vm-identity.json').open('x') as output:json.dump(rows,output,indent=2)
+
+
 def verify_bundle(path, check_archive=True):
     bundle=json.loads(path.read_text())
     for kind in ('cuda','ir','torch'):
@@ -240,7 +252,12 @@ def main():
                 raise
         output = subprocess.check_output(["terraform", f"-chdir={MODULE}", "output", "-json"], text=True)
         (directory / "outputs.json").write_text(output)
-        ensure_window(directory)
+        try:
+            ensure_window(directory)
+            preserve_applied_identity(directory)
+        except BaseException:
+            release(directory)
+            raise
         print("Approved temporary window provisioned; independent expiry configured. Begin immediate qualification.")
     elif args.action == "qualify":
         _, outputs = ensure_window(directory)
