@@ -132,7 +132,7 @@ def remote_hash(account,container,blob):
     return value.hexdigest(),size
 
 
-def upload(files,container,receipt_name):
+def upload(files,container,receipt_name,expected_hashes=None):
     account=json.loads((STATE/'outputs.json').read_text())['account_name']['value']
     path=STATE/receipt_name;receipt=json.loads(path.read_text()) if path.exists() else {'files':[],'container':container,'account':account}
     known={f['local_path']:f for f in receipt['files']}
@@ -141,6 +141,7 @@ def upload(files,container,receipt_name):
         if file.is_symlink() or not file.is_file():raise ValueError('Only regular project files may be uploaded')
         file=file.resolve()
         digest=sha(file);blob=digest+'/'+file.name
+        if expected_hashes is not None and digest!=expected_hashes.get(file.name):raise ValueError('Prepared model source changed')
         if str(file) in known and known[str(file)]['sha256']==digest and known[str(file)].get('remote_bytes_verified') is True:
             continue
         exists=blob_exists(account,container,blob)
@@ -168,9 +169,10 @@ def main():
         if any(Path(name).name!=name or name in ('.','..') for name in names):raise ValueError('Model manifest must contain basenames only')
         files=[args.model_directory/name for name in names]
         for file in files:
-            if Path(file.name).name!=file.name or sha(file)!=data['file_sha256'][file.name]:raise ValueError('Prepared model source changed')
+            if file.is_symlink() or not file.is_file():raise ValueError('Prepared model source is missing or not a regular file')
         files.extend([manifest,ROOT/'experiments/inference-corpus.json'])
-        receipt=upload(files,'models','model-receipt.json')
+        expected={**data['file_sha256'],manifest.name:sha(manifest),'inference-corpus.json':sha(ROOT/'experiments/inference-corpus.json')}
+        receipt=upload(files,'models','model-receipt.json',expected_hashes=expected)
         print(json.dumps({'verified_files':len(receipt['files']),'bytes':sum(f['bytes'] for f in receipt['files'])}))
     elif args.action=='evidence':
         files=[]

@@ -10,7 +10,7 @@
   ],
   "shared_keys_enabled": false,
   "public_blobs_enabled": false,
-  "model_transfer_state": "AWAITING_NATIVE_AZURE_AUTHENTICATION",
+  "model_transfer_state": "IN_PROGRESS",
   "remote_model_bytes_verified": false,
   "local_model_cache_released": false,
   "docker_derived_project_copies_removed": true,
@@ -25,5 +25,21 @@
   ],
   "implementation": "scripts/azure-artifacts.py",
   "source_tests_passed": 56,
-  "source_check_log_sha256": "a1acea248ac6b97cdc688812ddee2d4e2d4526e0cb8026967c741ac8c704ddd4"
+  "source_check_log_sha256": "a1acea248ac6b97cdc688812ddee2d4e2d4526e0cb8026967c741ac8c704ddd4",
+  "native_Azure_authentication_verified": true,
+  "model_objects_verified_so_far": 5,
+  "evidence_remote_bytes_verified": true,
+  "evidence_backup": [
+    {
+      "name": "qualified-evidence.tar",
+      "bytes": 82247680,
+      "sha256": "2f69d675b66d53ad3dd16a97d59109e95b6d3cc0640f13e34d4e127a4944886f"
+    },
+    {
+      "name": "evidence-files.json",
+      "bytes": 36689,
+      "sha256": "86f5257411c99c89131ac347892c1d0d0cc91d4e22ad35b6f51b03963a0fb4b8"
+    }
+  ],
+  "compaction_script_Windows_syntax_and_plain_text_validated": true
 }
