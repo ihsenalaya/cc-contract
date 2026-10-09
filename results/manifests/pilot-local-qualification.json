@@ -32,7 +32,8 @@
       "local_functional_report_sha256": "3439835fa4f2b6ddb77f76691c8ddf8cbb5c49de1b709227dfeafd5554eeef3a",
       "no_device_report_sha256": "5c8a4fc3ed812cb9d325198a35d5da7fb5bc73c91f658e47e29d5e17ffb09049",
       "registry_state": "PUBLISHED",
-      "immutable_image": "ghcr.io/ihsenalaya/cc-contract-ir@sha256:e09597869dab698d082cc56ceb5cbb7c6eb348760e08f617387491837ad1fc8a"
+      "immutable_image": "ghcr.io/ihsenalaya/cc-contract-ir@sha256:e09597869dab698d082cc56ceb5cbb7c6eb348760e08f617387491837ad1fc8a",
+      "registry_manifest_sha256": "2720102a00d9789506118d0c9fe70103d7f41ea5428c82bb203fa831afcc64af"
     },
     "torch": {
       "qualification": {
@@ -65,7 +66,9 @@
       "kind_gate_sha256": "08e7780452a03934d7773590776bcb7a72becbcad7e1a65bebe1c98811f58611",
       "local_functional_report_sha256": "cc63b951416d10100b979e09052ffeee6fdbfbad4c05c4b013cc0e938fb5e907",
       "no_device_report_sha256": "1e2c03105a6dd49db883dbf366501d4c69f15f5d73c8e244f3daf312d7cc9311",
-      "registry_state": "PUBLICATION_IN_PROGRESS"
+      "registry_state": "PUBLISHED",
+      "immutable_image": "ghcr.io/ihsenalaya/cc-contract-torch@sha256:d529bf986f595c1d0159786e6cdcd1fec3d65d2281689b45b6040244df7b8ccf",
+      "registry_manifest_sha256": "2a4a02b88e40daad8e1feb9738353b02199e771f2ffe37dd12ea79e28b485749"
     }
   },
   "native_independent_review": {
@@ -105,5 +108,10 @@
     "Protocol/oracle freeze then complete-budget GPU comparisons",
     "H08/H09 original evidence and reproductions",
     "Azure kubeadm integration not implemented/qualified; current pilot uses standalone Docker"
-  ]
+  ],
+  "source_CI": {
+    "commit": "3a79d46e0e1aa78352168b61269056bdce77d221",
+    "conclusion": "success",
+    "url": "https://github.com/ihsenalaya/cc-contract/actions/runs/37938057587"
+  }
 }
