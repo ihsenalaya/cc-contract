@@ -9,7 +9,8 @@
 #include <cstdint>
 
 static bool cpu = false;
-static void ck(cudaError_t e) { if (e != cudaSuccess) throw std::runtime_error(cudaGetErrorString(e)); }
+struct CudaFailure : std::runtime_error { cudaError_t status; explicit CudaFailure(cudaError_t e) : std::runtime_error(cudaGetErrorString(e)), status(e) {} };
+static void ck(cudaError_t e) { if (e != cudaSuccess) throw CudaFailure(e); }
 struct Buffer { int *data = nullptr; long long *generation = nullptr; int size; bool host, mapped; };
 struct Node { std::string source, target, stream; };
 struct Graph { std::vector<Node> nodes; cudaGraph_t graph = nullptr; cudaGraphExec_t executable = nullptr; std::string stream; };
@@ -103,7 +104,13 @@ int main(int argc,char** argv) {
   if(!cpu) { int count=0; auto status=cudaGetDeviceCount(&count); if(status!=cudaSuccess || count!=1) { std::cout<<"{\"record_type\":\"environment\",\"verdict\":\"UNSUPPORTED\",\"gpu_executed\":false,\"reason\":\"exactly_one_usable_device_required\"}"<<std::endl; return 77; } }
   if(argc==3 && std::string(argv[1])=="--probe") {
     try { probe(argv[2]); std::cout<<"{\"scope\":\"REAL_CUDA_CAPABILITY_PROBE\",\"feature\":\""<<argv[2]<<"\",\"gpu_executed\":true,\"verdict\":\"PASS\"}"<<std::endl; return 0; }
-    catch(const std::exception& e) { std::cerr<<e.what()<<std::endl; std::cout<<"{\"scope\":\"REAL_CUDA_CAPABILITY_PROBE\",\"gpu_executed\":true,\"verdict\":\"UNSUPPORTED_OR_INFRA_FAILURE\",\"reason\":\"see_preserved_stderr\"}"<<std::endl; return 2; }
+    catch(const CudaFailure& e) {
+      std::cerr<<e.what()<<std::endl;
+      bool unsupported = e.status == cudaErrorNotSupported;
+      std::cout<<"{\"scope\":\"REAL_CUDA_CAPABILITY_PROBE\",\"gpu_executed\":true,\"verdict\":\""<<(unsupported?"UNSUPPORTED":"INFRA_FAILURE")<<"\",\"reason\":\"see_preserved_stderr\"}"<<std::endl;
+      return unsupported ? 77 : 2;
+    }
+    catch(const std::exception& e) { std::cerr<<e.what()<<std::endl; std::cout<<"{\"scope\":\"REAL_CUDA_CAPABILITY_PROBE\",\"gpu_executed\":true,\"verdict\":\"INFRA_FAILURE\",\"reason\":\"see_preserved_stderr\"}"<<std::endl; return 2; }
   }
   std::cout<<"{\"record_type\":\"environment\",\"scope\":\""<<(cpu?"CPU_NATIVE_REFERENCE_ONLY":"REAL_CUDA_IR")<<"\",\"gpu_executed\":"<<(cpu?"false":"true")<<",\"hardware_attestation\":\"NOT_RUN_IN_WORKER\"}"<<std::endl;
   try {

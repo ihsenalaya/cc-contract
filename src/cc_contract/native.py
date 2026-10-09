@@ -67,6 +67,20 @@ class NativeExecutor:
         if self.environment.get("gpu_executed") is reference:
             self.close()
             raise InfrastructureFailure("Native execution scope contradicts selected mode")
+        if not reference and capabilities is None:
+            try:
+                for feature in ('mapped','graphs'):
+                    probe = subprocess.run([args[0],'--probe',feature],capture_output=True,text=True,timeout=timeout)
+                    record = json.loads(probe.stdout)
+                    if probe.returncode==0 and record.get('verdict')=='PASS' and record.get('gpu_executed') is True:
+                        self.capabilities[feature]=True
+                    elif probe.returncode==77 and record.get('verdict')=='UNSUPPORTED':
+                        self.capabilities[feature]=False
+                    else:
+                        raise InfrastructureFailure('Capability probe failed: '+probe.stderr[-4096:])
+            except BaseException:
+                self.close()
+                raise
 
     def next_record(self):
         try:

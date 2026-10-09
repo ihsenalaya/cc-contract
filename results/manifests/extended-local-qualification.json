@@ -1,0 +1,28 @@
+{
+  "scope": "CPU_NATIVE_REFERENCE_AND_NO_GPU_REJECTION",
+  "verified": true,
+  "git_commit": "a0171f97dadaa8de25ed2e5d2e3582398ebc2c91",
+  "image_id": "sha256:ea7b8fe2ea67efe3662ad6506f99f6c2d3362b60fa55786f24797b7e17043ff6",
+  "workers": [
+    "cc-contract-worker2",
+    "cc-contract-worker"
+  ],
+  "cases_per_worker": 96,
+  "hashes": {
+    "apply.log": "58bad35914acaff20b0ecdaef0c87d739f2c753d19199641dd4c6e4a9ad3d2dd",
+    "base.json": "2d9088f4337f0c033077e9ecd09c3b9b318e584ae883f1e87207b173bfbeeaa0",
+    "dry-run.log": "8034f88b87528b08ce1eb9703c18045552fca642a5308b1499c661316adc4da0",
+    "ir-20261009t115510z-8fd8c8e3-0-9vd6n.jsonl": "7aded4f37fbb4e2a38929b096e9d23cc9662fea272276e6d244281fa2de0f638",
+    "ir-20261009t115510z-8fd8c8e3-1-rfl85.jsonl": "7aded4f37fbb4e2a38929b096e9d23cc9662fea272276e6d244281fa2de0f638",
+    "manifests.json": "75944f948267d6956425a0fd347d5ab147ea91580de1bc7d7acd387a686d4730",
+    "pods.json": "f5cb99d6b662f769ae18f84f90ef5957e8ab979e9ae6caa5126baa1532db027b"
+  },
+  "image_digest": "ghcr.io/ihsenalaya/cc-contract-ir@sha256:ea7b8fe2ea67efe3662ad6506f99f6c2d3362b60fa55786f24797b7e17043ff6",
+  "source_tests_passed": 34,
+  "gpu_executed": false,
+  "hardware_attestation": "NOT_RUN",
+  "observations_per_worker": 252,
+  "public_summary_of_protected_originals": true,
+  "native_cuda_ir_hardware_state": "NOT_RUN",
+  "published_image_source_commit": "a0171f97dadaa8de25ed2e5d2e3582398ebc2c91"
+}
