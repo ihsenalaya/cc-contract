@@ -19,6 +19,7 @@ def sha(path):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--model-directory',required=True,type=Path)
     parser.add_argument('--corpus',required=True,type=Path);parser.add_argument('--output',required=True,type=Path)
+    parser.add_argument('--stream-model',action='store_true',help='Precompute deterministic tar hash locally and transfer without duplicate storage')
     args=parser.parse_args();model=json.loads((args.model_directory/'cc-model-manifest.json').read_text())
     if not model['weights_downloaded']:parser.error('All model shards must be prepared locally')
     corpus=json.loads(args.corpus.read_text())
@@ -39,16 +40,25 @@ def main():
     spec=spec_from_file_location('model_preparation',ROOT/'scripts/prepare-model.py')
     preparation=module_from_spec(spec);spec.loader.exec_module(preparation)
     needed=sum((args.model_directory/name).stat().st_size for name in model['file_sha256'])
-    if preparation.available_bytes(args.output)<needed+4*2**30:
-        raise RuntimeError('Model bundle requires sufficient physical space plus 4 GiB reserve')
+    reserve=(1 if args.stream_model else 4)*2**30
+    if preparation.available_bytes(args.output)<(0 if args.stream_model else needed)+reserve:
+        raise RuntimeError('Insufficient physical storage for the selected model transport and evidence reserve')
     # Fast gzip is prepared entirely locally. Only pinned model data + corpus
     # enter the archive, never arbitrary caches or account information.
-    with tarfile.open(archive,'w:gz',compresslevel=1) as tar:
-        for name in sorted(model['file_sha256']):tar.add(args.model_directory/name,arcname=name,recursive=False)
-        tar.add(args.model_directory/'cc-model-manifest.json',arcname='cc-model-manifest.json',recursive=False)
-        tar.add(args.corpus,arcname='inference-corpus.json',recursive=False)
+    if args.stream_model:
+        from model_bundle import stream
+        packed=stream(args.model_directory,args.corpus)
+        transport='DETERMINISTIC_TAR_STREAM'
+    else:
+        with tarfile.open(archive,'w:gz',compresslevel=1) as tar:
+            for name in sorted(model['file_sha256']):tar.add(args.model_directory/name,arcname=name,recursive=False)
+            tar.add(args.model_directory/'cc-model-manifest.json',arcname='cc-model-manifest.json',recursive=False)
+            tar.add(args.corpus,arcname='inference-corpus.json',recursive=False)
+        packed={'sha256':sha(archive),'bytes':archive.stat().st_size}
+        transport='PREPARED_GZIP_ARCHIVE'
     bundle={'schema_version':1,'scope':'PREPARED_GPU_PILOT_NOT_EXECUTED','images':images,'local_image_gates':gates,
-            'model_archive':str(archive.resolve()),'model_archive_sha256':sha(archive),'model_archive_bytes':archive.stat().st_size,
+            'transport':transport,'model_directory':str(args.model_directory.resolve()),'corpus_path':str(args.corpus.resolve()),
+            'model_archive':None if args.stream_model else str(archive.resolve()),'model_archive_sha256':packed['sha256'],'model_archive_bytes':packed['bytes'],
             'model_revision':model['revision'],'model_manifest_sha256':sha(args.model_directory/'cc-model-manifest.json'),
             'corpus_filename':'inference-corpus.json','corpus_sha256':sha(args.corpus),'approval_granted':False,
             'workloads':['E0_native_reference','E2_96_IR_cases_optional_capabilities','E1_E7_18_float_component_records','E7_24_paired_Qwen_prompts'],

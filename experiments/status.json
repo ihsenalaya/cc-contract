@@ -9,7 +9,8 @@
       "scope": "initial_local_subset",
       "evidence": [
         "results/manifests/initial-local-qualification.json",
-        "results/manifests/first-real-gpu-qualification.json"
+        "results/manifests/first-real-gpu-qualification.json",
+        "results/manifests/pilot-local-qualification.json"
       ],
       "remaining": [
         "PyTorch GPU and floating-point/inference qualification",
@@ -24,7 +25,8 @@
       "scope": "initial_local_subset",
       "evidence": [
         "results/manifests/initial-local-qualification.json",
-        "results/manifests/first-real-gpu-qualification.json"
+        "results/manifests/first-real-gpu-qualification.json",
+        "results/manifests/pilot-local-qualification.json"
       ],
       "remaining": [
         "Float oracle calibration and independent reference checks",
@@ -35,13 +37,13 @@
     {
       "id": "E2",
       "state": "LOCAL_VALIDATED",
-      "scope": "bounded_T01_T08_native_CPU_reference_at_a0171f9",
+      "scope": "bounded_T01_T08_native_CPU_reference_and_two_worker_Kind_at_1f62b18",
       "evidence": [
         "results/manifests/initial-local-qualification.json",
-        "results/manifests/extended-local-qualification.json"
+        "results/manifests/extended-local-qualification.json",
+        "results/manifests/pilot-local-qualification.json"
       ],
       "remaining": [
-        "Rebuild/requalify current capability-probe changes",
         "Real IR CUDA execution and T07/T08 support qualification",
         "Independent reserved GPU campaign"
       ]
@@ -102,15 +104,15 @@
     },
     {
       "id": "E7",
-      "state": "IMPLEMENTED",
-      "scope": "PyTorch_source_and_verified_model_data_only",
+      "state": "LOCAL_VALIDATED",
+      "scope": "qualified_CPU_Torch_image_verified_model_data_and_frozen_tokenizer_corpus",
       "evidence": [
-        "results/manifests/software-preparation.json"
+        "results/manifests/software-preparation.json",
+        "results/manifests/pilot-local-qualification.json"
       ],
       "remaining": [
-        "PyTorch image functional and Kind qualification",
-        "Frozen 24-prompt tokenizer corpus",
-        "GPU components and paired Qwen inference"
+        "GPU components and paired Qwen inference",
+        "Numerical diagnostics and exact metadata review; paired agreement alone is not independent model correctness"
       ]
     },
     {

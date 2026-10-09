@@ -53,9 +53,17 @@ def verify_bundle(path, check_archive=True):
     for kind in ('cuda','ir','torch'):
         if not re.fullmatch(r'ghcr.io/ihsenalaya/cc-contract-'+kind+r'@sha256:[a-f0-9]{64}',bundle['images'][kind]):
             raise ValueError('Bundle image must be an immutable project digest')
-    archive=Path(bundle['model_archive'])
-    if check_archive and sha(archive)!=bundle['model_archive_sha256']:
-        raise ValueError('Prepared model archive hash mismatch')
+    if check_archive:
+        if bundle.get('transport')=='DETERMINISTIC_TAR_STREAM':
+            directory=Path(bundle['model_directory']);manifest=directory/'cc-model-manifest.json'
+            if sha(manifest)!=bundle['model_manifest_sha256'] or sha(Path(bundle['corpus_path']))!=bundle['corpus_sha256']:
+                raise ValueError('Prepared model manifest/corpus changed')
+            for name,expected in json.loads(manifest.read_text())['file_sha256'].items():
+                file=directory/name
+                if Path(name).name!=name or file.is_symlink() or sha(file)!=expected:
+                    raise ValueError('Prepared model data changed')
+        elif sha(Path(bundle['model_archive']))!=bundle['model_archive_sha256']:
+            raise ValueError('Prepared model archive hash mismatch')
     if bundle['corpus_filename']!='inference-corpus.json' or bundle['model_revision']!='a09a35458c702b33eeacc393d103063234e8bc28':
         raise ValueError('Unqualified model/corpus bundle')
     return bundle
@@ -243,9 +251,22 @@ def main():
                 # Transfer a fully prepared local archive; never download models
                 # or install Python packages while the GPU is allocated.
                 target='/home/cccontract/cc-contract-model'
-                transfer='set -e; cat > /home/cccontract/model-bundle.tar.gz; echo '+shlex.quote(bundle['model_archive_sha256']+'  /home/cccontract/model-bundle.tar.gz')+' | sha256sum -c -; mkdir -p '+target+'; tar --no-same-owner -xzf /home/cccontract/model-bundle.tar.gz -C '+target+'; sudo chown -R 10001:10001 '+target
-                with Path(bundle['model_archive']).open('rb') as stream:
-                    subprocess.run(ssh_args(directory,outputs)+[transfer],stdin=stream,check=True,timeout=1800)
+                streaming=bundle.get('transport')=='DETERMINISTIC_TAR_STREAM'
+                remote_archive='/home/cccontract/model-bundle.tar'+('' if streaming else '.gz')
+                transfer='set -e; cat > '+remote_archive+'; echo '+shlex.quote(bundle['model_archive_sha256']+'  '+remote_archive)+' | sha256sum -c -; mkdir -p '+target+'; tar --no-same-owner '+('-xf ' if streaming else '-xzf ')+remote_archive+' -C '+target+'; sudo chown -R 10001:10001 '+target
+                if streaming:
+                    with (directory/'model-stream.stderr').open('wb') as errors:
+                        producer=subprocess.Popen([sys.executable,str(ROOT/'scripts/stream-model-bundle.py'),'--bundle',str(directory/'workload-bundle.json')],stdout=subprocess.PIPE,stderr=errors)
+                        try:
+                            subprocess.run(ssh_args(directory,outputs)+[transfer],stdin=producer.stdout,check=True,timeout=1800)
+                            producer.stdout.close()
+                            if producer.wait(timeout=30)!=0:raise RuntimeError('Local model stream did not match prepared hash')
+                        finally:
+                            if producer.poll() is None:producer.kill();producer.wait()
+                            producer.stdout.close()
+                else:
+                    with Path(bundle['model_archive']).open('rb') as stream:
+                        subprocess.run(ssh_args(directory,outputs)+[transfer],stdin=stream,check=True,timeout=1800)
                 arguments += [bundle['images']['ir'],bundle['images']['torch'],target,bundle['corpus_filename']]
             with (directory / "qualification-session.log").open("w") as log:
                 result = subprocess.run(ssh_args(directory, outputs) + ["bash -s -- " + ' '.join(shlex.quote(value) for value in arguments)], input=(ROOT / "scripts/qualify-host.sh").read_text(), text=True, stdout=log, stderr=subprocess.STDOUT, timeout=1800)

@@ -1,11 +1,14 @@
 """Control-flow tests with explicit CPU fixtures; no hardware evidence."""
 import importlib.util
 import io
+import hashlib
 import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
+import tarfile
 import unittest
 from unittest.mock import patch
 
@@ -13,9 +16,56 @@ ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location("window", ROOT / "scripts/azure-window.py")
 window = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(window)
+spec=importlib.util.spec_from_file_location('model_transport',ROOT/'scripts/model_bundle.py')
+model_transport=importlib.util.module_from_spec(spec);spec.loader.exec_module(model_transport)
+spec=importlib.util.spec_from_file_location('registry_auth',ROOT/'scripts/with-ghcr-auth.py')
+registry_auth=importlib.util.module_from_spec(spec);spec.loader.exec_module(registry_auth)
 
 
 class InfrastructureTests(unittest.TestCase):
+    def test_temporary_registry_credential_is_removed_when_child_fails(self):
+        observed=[]
+        def command(args,**kwargs):
+            directory=Path(kwargs['env']['DOCKER_CONFIG']);observed.append(directory)
+            self.assertEqual(directory.stat().st_mode & 0o777,0o700)
+            if args[0]=='docker':
+                (directory/'config.json').write_text('CPU_CREDENTIAL_FIXTURE')
+                return subprocess.CompletedProcess(args,0)
+            raise RuntimeError('controlled child failure')
+        with patch.dict(os.environ,{'GH_TOKEN':'CPU_CREDENTIAL_FIXTURE'}), \
+             patch.object(sys,'argv',['with-ghcr-auth.py','CPU_COMMAND_FIXTURE']), \
+             patch.object(registry_auth.subprocess,'run',side_effect=command):
+            with self.assertRaisesRegex(RuntimeError,'controlled child'):
+                registry_auth.main()
+        self.assertTrue(observed)
+        self.assertTrue(all(not p.exists() for p in observed))
+
+    def test_deterministic_stream_preserves_bytes_and_rejects_changed_sources(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory=Path(tmp);data=directory/'fixture.safetensors';data.write_bytes(b'CPU_DATA_FIXTURE'*1000)
+            manifest=directory/'cc-model-manifest.json'
+            manifest.write_text(json.dumps({'file_sha256':{data.name:hashlib.sha256(data.read_bytes()).hexdigest()}}))
+            corpus=directory/'corpus.json';corpus.write_text('[]')
+            first=io.BytesIO();expected=model_transport.stream(directory,corpus,first)
+            os.utime(data,(123,123))
+            second=io.BytesIO();repeated=model_transport.stream(directory,corpus,second)
+            self.assertEqual(expected,repeated);self.assertEqual(first.getvalue(),second.getvalue())
+            with tarfile.open(fileobj=io.BytesIO(first.getvalue())) as archive:
+                self.assertEqual(set(archive.getnames()),{data.name,manifest.name,'inference-corpus.json'})
+                self.assertEqual(archive.extractfile(data.name).read(),data.read_bytes())
+            bundle={'transport':'DETERMINISTIC_TAR_STREAM','model_directory':str(directory),'corpus_path':str(corpus),
+                    'model_manifest_sha256':hashlib.sha256(manifest.read_bytes()).hexdigest(),
+                    'corpus_sha256':hashlib.sha256(corpus.read_bytes()).hexdigest(),
+                    'images':{k:'ghcr.io/ihsenalaya/cc-contract-'+k+'@sha256:'+'a'*64 for k in ('cuda','ir','torch')},
+                    'corpus_filename':'inference-corpus.json','model_revision':'a09a35458c702b33eeacc393d103063234e8bc28',
+                    'model_archive_sha256':expected['sha256'],'model_archive_bytes':expected['bytes']}
+            path=directory/'bundle.json';path.write_text(json.dumps(bundle))
+            window.verify_bundle(path)
+            result=subprocess.run(['python3',str(ROOT/'scripts/stream-model-bundle.py'),'--bundle',str(path)],capture_output=True,check=True)
+            self.assertEqual(result.stdout,first.getvalue())
+            data.write_bytes(b'CHANGED_CPU_DATA_FIXTURE')
+            with self.assertRaisesRegex(ValueError,'model data changed'):window.verify_bundle(path)
+
     def test_prepared_bundle_rejects_changed_archive_and_mutable_images(self):
         import hashlib
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T13:33:48.113185+00:00",
+  "scope": "LOCAL_CPU_QUALIFICATION_ONLY",
+  "gpu_executed": false,
+  "source_tests_passed": 50,
+  "source_test_log_sha256": "92a283ef958351a0b180fab6151ac3fb0666afb7e5a5c9399bd29831f3ce7eb8",
+  "source_tree_sha256": "c2ac0c3d54e25a6265147273b3166c5d3e504f967c95a6c9b27d686e32a7237a",
+  "images": {
+    "ir": {
+      "qualification": {
+        "scope": "CPU_NATIVE_REFERENCE_AND_NO_GPU_REJECTION",
+        "verified": true,
+        "git_commit": "1f62b1838196e495d715c1cf063b03ea777aaa94",
+        "image_id": "sha256:e09597869dab698d082cc56ceb5cbb7c6eb348760e08f617387491837ad1fc8a",
+        "workers": [
+          "cc-contract-worker",
+          "cc-contract-worker2"
+        ],
+        "cases_per_worker": 96,
+        "hashes": {
+          "apply.log": "6e954e04502c301694a815a613b71996f6bc55dbf27c17305cc85cd495cdf1ea",
+          "base.json": "979644b79c541114c1da4b05d40fc5e5370e5a8f95f467ec71d62870def9eee6",
+          "dry-run.log": "e1631da9b3e2aa0d71c578947734a03a3d0ddb43fedb7c3ef1f2454714467630",
+          "ir-20261009t132353z-536f88d2-0-6jfnd.jsonl": "73676fdbdda1eae01e07947002f78fe236984d5301962ebc4632498c81069c29",
+          "ir-20261009t132353z-536f88d2-1-b8n5f.jsonl": "71083194e1a0633764c0bbc503d84a6a73ed31e5fa1e4d42c2b743e6365dec35",
+          "manifests.json": "ed3b779671fef1511c61827a1c873f10c0ab0c43bbe501b05c00d790f1bea768",
+          "pods.json": "dc7c09a2b7adffea7cd4df6d729d3842de8283b209d66a688e1e40916776ade0"
+        }
+      },
+      "kind_gate_sha256": "dc82cd1a8be4af1b755876eff0b82fb0511dfa3b6b27b50a0ab6581e89e07033",
+      "local_functional_report_sha256": "3439835fa4f2b6ddb77f76691c8ddf8cbb5c49de1b709227dfeafd5554eeef3a",
+      "no_device_report_sha256": "5c8a4fc3ed812cb9d325198a35d5da7fb5bc73c91f658e47e29d5e17ffb09049",
+      "registry_state": "PUBLISHED",
+      "immutable_image": "ghcr.io/ihsenalaya/cc-contract-ir@sha256:e09597869dab698d082cc56ceb5cbb7c6eb348760e08f617387491837ad1fc8a"
+    },
+    "torch": {
+      "qualification": {
+        "scope": "REAL_TORCH_CPU_COMPONENTS_AND_RANDOM_TINY_TRANSFORMER_FIXTURE",
+        "verified": true,
+        "gpu_executed": false,
+        "real_Qwen2_5_7B_executed": false,
+        "git_commit": "1f62b1838196e495d715c1cf063b03ea777aaa94",
+        "image_id": "sha256:d529bf986f595c1d0159786e6cdcd1fec3d65d2281689b45b6040244df7b8ccf",
+        "workers": [
+          "cc-contract-worker",
+          "cc-contract-worker2"
+        ],
+        "component_records_per_worker": 18,
+        "hashes": {
+          "apply-0.log": "3d4cb19caeafcf79c5d6988e4429b7d9a60972cc29e7a19a56a1e3f0b2f1711f",
+          "apply-1.log": "a06d324f3a89ecd39a6487f57f661f5aea3f088fcf5addec4611e9c8c93fdb0b",
+          "base-0.json": "2843a770407183ed76122960eae20ec61c8d6e75c99a269dc8c0a69f9ccf63d8",
+          "base-1.json": "eb34c681acaf39643ba378bf93637e4103300eb91ae541c251c4e5dc8553c74a",
+          "dry-run-0.log": "81c3f11c759e88659d1b3a461940ed9f2dc56fffd2493fe3f1d3cf880dd9916c",
+          "dry-run-1.log": "e8c5ff3497659e9cca52d8c1b7c74a753150b11035741349c1c7cf4f560cfd4d",
+          "manifests-0.json": "07adb7576cacc6c1d7251c7eb1ddafc2df7c62b704f9594763463c44bee4ee91",
+          "manifests-1.json": "f074a1ac661ba799c8b95a3c691169e8d501f7519cbbf35ceb9bf25c8c9263ed",
+          "output-0.jsonl": "989397310c9c2037ed6c36db76a0d43ea5794ddab8b7c0215ccf65d903101d9d",
+          "output-1.jsonl": "e19ebf6f0a351a65ce190711b476e29c86d256db8f94ec509418bb8352952710",
+          "pods-0.json": "ccda3b1b8dc03f6576c2a8b32a43227a0366645090cd4492d443d89ae29f5696",
+          "pods-1.json": "b5c298fda76475a56fefe5f0781d4626147e7c52e9cff78bc0c971e50a03e680"
+        }
+      },
+      "kind_gate_sha256": "08e7780452a03934d7773590776bcb7a72becbcad7e1a65bebe1c98811f58611",
+      "local_functional_report_sha256": "cc63b951416d10100b979e09052ffeee6fdbfbad4c05c4b013cc0e938fb5e907",
+      "no_device_report_sha256": "1e2c03105a6dd49db883dbf366501d4c69f15f5d73c8e244f3daf312d7cc9311",
+      "registry_state": "PUBLICATION_IN_PROGRESS"
+    }
+  },
+  "native_independent_review": {
+    "scope": "CPU_NATIVE_REFERENCE_ONLY",
+    "gpu_executed": false,
+    "run_id": "qualification-1625542b70e94c628e27b93e014f9a11",
+    "verdict": "PASS",
+    "cases": 96,
+    "observations": 252,
+    "counts": {
+      "PASS": 96
+    },
+    "independently_recomputed": true,
+    "original_sha256": "3866adda86ddda168541e90e647a83e150845687f78a00cf8470f0e0540e9151",
+    "attestation_review": "SEPARATE_REQUIRED",
+    "confirmed_defects": []
+  },
+  "frozen_corpus": {
+    "cases": 24,
+    "token_lengths": [
+      32,
+      128,
+      512
+    ],
+    "sha256": "308e8a4f0b0bde74e0854ba150dd8b74fbb73ba68fc1a1e70b52ccd6c7f82300"
+  },
+  "prepared_model_stream": {
+    "sha256": "84266aeb8e14a4e27ecc378300e393684fb9ec96d3876f812646668ccddcd1dc",
+    "bytes": 15242915840
+  },
+  "full_7B_inference_executed": false,
+  "controlled_fixtures_are_real_discoveries": false,
+  "remaining": [
+    "Actual CUDA optional capabilities and IR execution",
+    "GPU float references and 24 paired Qwen prompts",
+    "Independent attestation review and real expiry branch",
+    "Protocol/oracle freeze then complete-budget GPU comparisons",
+    "H08/H09 original evidence and reproductions",
+    "Azure kubeadm integration not implemented/qualified; current pilot uses standalone Docker"
+  ]
+}

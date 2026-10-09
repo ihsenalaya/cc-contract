@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T13:18:47.124448+00:00",
+  "approval_state": "NOT_GRANTED_FOR_NEW_WINDOW",
+  "scope": "NEXT_E0_E1_E2_E7_DEVELOPMENT_PILOT_ONLY",
+  "region": "eastus2",
+  "sku": "Standard_NCC40ads_H100_v5",
+  "maximum_vm_count": 1,
+  "maximum_window_hours": 2,
+  "currency": "USD",
+  "queried_linux_payg_hourly_rate": 6.98,
+  "compute_estimate_at_maximum_hours": 13.96,
+  "proposed_total_authorization": 20,
+  "includes_margin_for": [
+    "OS disk",
+    "public IP",
+    "workflow actions",
+    "transfer"
+  ],
+  "invoice_guarantee": false,
+  "price_source": "https://prices.azure.com/api/retail/prices?$filter=armSkuName%20eq%20%27Standard_NCC40ads_H100_v5%27%20and%20armRegionName%20eq%20%27eastus2%27%20and%20priceType%20eq%20%27Consumption%27",
+  "release": "collect and verify then immediately deallocate; independent cloud expiry; destroy verified temporary resources",
+  "comparative_E4_E5_included": false,
+  "planned_E4_E5_compute_hours": 23.333333333333332,
+  "E4_E5_compute_only_floor": 162.87,
+  "full_comparison_budget_approved": false,
+  "invoice": "NOT_AVAILABLE"
+}

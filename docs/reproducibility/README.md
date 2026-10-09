@@ -123,10 +123,10 @@ reducers and analysis rules. It is not frozen for GPU comparison.
 PYTHONPATH=src python3 -m cc_contract.runner qualify --backend model
 bash scripts/ir-image.sh build
 bash scripts/ir-image.sh kind
-bash scripts/ir-image.sh publish
+python3 scripts/with-ghcr-auth.py bash scripts/ir-image.sh publish
 bash scripts/torch-image.sh build
 bash scripts/torch-image.sh kind
-bash scripts/torch-image.sh publish
+python3 scripts/with-ghcr-auth.py bash scripts/torch-image.sh publish
 ```
 
 The native reference executes the same compiled C++ worker in CPU mode; its
@@ -141,6 +141,9 @@ float references. Its tiny random transformer is an API fixture, not Qwen 7B.
 Both CPU workers must execute the actual image before GHCR publication. Docker
 must be running with sufficient disk space; CPU-only tools remain usable when
 Docker is unavailable.
+The publication wrapper uses the existing GitHub credential in a temporary,
+owner-only RAM directory, then removes it, including on failure. It avoids
+the unreliable Windows credential-helper relay; it does not change account access.
 
 Prepare model data while no GPU is allocated:
 
@@ -154,6 +157,33 @@ The corpus action requires the pinned Transformers/tokenizer environment.
 Model revisions, every downloaded file hash, exact token counts and forced
 continuation must match. Model files stay outside Git. Upload them before a GPU
 test window's measurements; preserve the qualified host driver and kernel.
+
+After all three images have matching Kind gates and registry digests, prepare
+the pilot before requesting its costed approval:
+
+```sh
+python3 scripts/prepare-pilot.py --model-directory /protected/models/qwen \
+  --corpus experiments/inference-corpus.json --output /protected/next-pilot --stream-model
+```
+
+This option verifies all model files and computes the complete deterministic tar
+hash locally, without storing a second copy of the 14 GiB model. The transfer
+uses the same normalized tar metadata and the guest checks its complete hash
+before extraction. The source files are reverified before provisioning; changed
+bytes during transfer fail both producer and guest checks. Streaming retains
+1 GiB of local space for evidence; the optional stored gzip transport requires
+the model size plus 4 GiB. The bundle and host script hashes are bound to the
+reviewed Terraform plan. Preparing a bundle does not authorize allocation.
+
+Detailed native qualification traces can be checked after releasing compute:
+
+```sh
+PYTHONPATH=src python3 scripts/review-ir-qualification.py /protected/ir-reference.stdout
+```
+
+The reviewer recomputes each payload and generation from the recorded operation
+sequence, verifies counts and trace hashes, and retains partial/unsupported
+results. This data review does not authenticate GPU attestation.
 
 The versioned 140-job schedule preserves the proposed 20 blocks × seven methods
 × 600 seconds. It is a plan, not a record of executed GPU campaigns:
