@@ -112,3 +112,80 @@ and hashes are published. Run without Python optimization.
 GPU receipts came from NVIDIA's local hardware verifier. Their reported checks
 are reviewed, but this reviewer does not independently authenticate their HMACs
 or reverify an exported hardware quote. It does not claim NRAS attestation.
+
+## Extended local software qualification
+
+The [v0.2 draft](../methodology/protocol-v0.2-draft.md) describes the bounded
+eight-family generator, physical native generation tags, baselines, ablations,
+reducers and analysis rules. It is not frozen for GPU comparison.
+
+```sh
+PYTHONPATH=src python3 -m cc_contract.runner qualify --backend model
+bash scripts/ir-image.sh build
+bash scripts/ir-image.sh kind
+bash scripts/ir-image.sh publish
+bash scripts/torch-image.sh build
+bash scripts/torch-image.sh kind
+bash scripts/torch-image.sh publish
+```
+
+The native reference executes the same compiled C++ worker in CPU mode; its
+96 cases / 252 observations are distinct from the 60-case initial E1 corpus.
+Kind must report CPU scope and reject missing GPUs. CUDA mapped/graph features
+require actual capability probes; errors other than explicit unsupported APIs
+stop execution. Local native agreement is not hardware qualification.
+
+The PyTorch image is built locally from a digest-pinned official PyTorch base,
+with hash-locked Transformers dependency wheels. Component tests use independent
+float references. Its tiny random transformer is an API fixture, not Qwen 7B.
+Both CPU workers must execute the actual image before GHCR publication. Docker
+must be running with sufficient disk space; CPU-only tools remain usable when
+Docker is unavailable.
+
+Prepare model data while no GPU is allocated:
+
+```sh
+python3 scripts/prepare-model.py download --weights --directory /protected/models/qwen
+# Run this inside the qualified PyTorch image, mounting the script and model:
+python scripts/prepare-model.py corpus --directory /protected/models/qwen --output /protected/corpus.json
+```
+
+The corpus action requires the pinned Transformers/tokenizer environment.
+Model revisions, every downloaded file hash, exact token counts and forced
+continuation must match. Model files stay outside Git. Upload them before a GPU
+test window's measurements; preserve the qualified host driver and kernel.
+
+The versioned 140-job schedule preserves the proposed 20 blocks × seven methods
+× 600 seconds. It is a plan, not a record of executed GPU campaigns:
+
+```sh
+PYTHONPATH=src python3 scripts/execute-schedule.py \
+  --schedule experiments/comparison-schedule.json --backend cuda \
+  --protocol-freeze /protected/approved-freeze.json \
+  --output /protected/campaigns --start-index 0 --jobs 1
+python3 scripts/analyze-campaigns.py /protected/campaigns/campaign-*/manifest.json \
+  --output /protected/new-analysis --figures
+PYTHONPATH=src python3 scripts/replay-scenario.py --scenario /protected/case.json \
+  --backend cuda --reduce contract --budget-seconds 60 --output /protected/new-reduction
+```
+
+These GPU commands additionally require CC_IMAGE_DIGEST, hardware qualification,
+a frozen matching schedule and a costed approved temporary window. They are
+not authorization to allocate a GPU. Use `--resume` on the schedule command to
+skip hash-verified complete runs. Interrupted runs remain immutable; they are
+reported separately and any replacement budget needs approval. The final
+pre-execution validator is retained in every baseline and ablation.
+
+Analysis creates a new directory and verifies raw hashes without changing
+originals. It refuses mixed scopes, duplicate block/method units and unequal
+budgets. Candidate FAILs are not confirmed defects. An optional separate
+`--reviews` JSON registry requires characterized grouping and two hashed fresh
+failing replays for each confirmed anchor. Empty reviews cannot establish that
+unreviewed failures are false positives. Tokens and within-run repeats are not
+independent campaigns. Coverage figures are explicitly software coverage.
+
+E6 and E8 require suitable real characterized anomalies. The E8 callable harness
+qualifies conservative/intervention correctness before timing and records paired
+blocks. Its unit-test callables are CPU fixtures; they are not measured GPU
+interventions. Historical H08/H09 records list missing reproduction prerequisites
+in experiments/historical-cases.json.

@@ -1,5 +1,8 @@
 # Protocol v0.1 — initial local qualification (not frozen for comparison)
 
+This original qualification protocol is preserved. The subsequent implementation
+and comparison draft are specified in [v0.2 draft](protocol-v0.2-draft.md).
+
 ## E0: environment qualification
 
 Local: record tools, Docker engine, host resources and Git/GHCR access; create a

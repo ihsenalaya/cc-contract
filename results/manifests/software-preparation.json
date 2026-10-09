@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T12:39:41.332311+00:00",
+  "scope": "CPU_PIPELINE_AND_MODEL_DATA_PREPARATION_ONLY",
+  "source_tests_passed": 41,
+  "source_commit_for_CPU_runs": "bfe2e1a",
+  "CPU_run_sources_dirty": true,
+  "gpu_executed": false,
+  "hardware_attestation": "NOT_RUN",
+  "CPU_pipeline": {
+    "campaigns": 14,
+    "independent_blocks": 2,
+    "methods": 7,
+    "requested_seconds_per_campaign": 1,
+    "recorded_proposals": 127,
+    "invalid_proposals_rejected": 25,
+    "candidate_failures": 0,
+    "resume_skipped_verified_complete_runs": 14,
+    "analysis_sha256": "aeffa1f7165436841262102ea8ef089f875d2855907293127f699a24b6f19650",
+    "campaign_manifest_sha256": {
+      "campaign-2026-10-09T123252.447186_0000-7a898c8f": "0de9fd3eb432a03aa7f02afb253b779725eecf490f73e40b2f3e4b197cf2b8fb",
+      "campaign-2026-10-09T123253.991483_0000-3a2a5953": "b1a9dc00040d47a5f4bb2efc9fa042bd087e724323b3d83a3d2da875bc106eaa",
+      "campaign-2026-10-09T123255.486414_0000-4a55dc5a": "ba51546006b286e8f5e4b0515be12f308d83e33b4cdf1e858a34a74994af7b02",
+      "campaign-2026-10-09T123257.522789_0000-44d21787": "b4963d05af0fee619e0dd1a2347a790be5a2668123b5e424135289305bb05a2a",
+      "campaign-2026-10-09T123259.054066_0000-e7ee0015": "66a668ebc5d54f458fbbab75189c5c1406af0eda2eef199e0b34231c68b7897b",
+      "campaign-2026-10-09T123300.526149_0000-b701e831": "e76ade2b0b511127f0c1bc1e6573b6728a40d91a9431f2fcf5bc18cbe654927e",
+      "campaign-2026-10-09T123302.312852_0000-2dcd67b9": "70bbf1b0659532f2c9efa7cb81b02e4b7a9b72965832491549212c45f99fda4a",
+      "campaign-2026-10-09T123303.797200_0000-dac5817d": "e3f9f99f968a7ab8145ae9ec6271a64611d539f54836943ce31df9012fbe4735",
+      "campaign-2026-10-09T123305.269193_0000-8b2f160a": "422fb8bff66628c48dbadb249717532ae4fa23147634a2984603bf745fb942e0",
+      "campaign-2026-10-09T123306.878434_0000-5d3c4128": "624877687dd4348a35eb48edec7638fe98bef85ebcc9239e3f9a2a5abcc8fd1c",
+      "campaign-2026-10-09T123308.473689_0000-1f13d8ea": "ae7eb95a5c4cbea9d31d3032f45911745ce70aa4af254710482d8aca016b4045",
+      "campaign-2026-10-09T123311.303665_0000-23ff189b": "7524c8623a581edf158c5c82f038a0e7293ae62b4e19a04ed2981d87fd23e24b",
+      "campaign-2026-10-09T123312.773826_0000-2b5e92fe": "2a9433aba6fe091af21cd4d6803020836c6ff1e3fa5029c06e50bd47fd582a78",
+      "campaign-2026-10-09T123314.215894_0000-da1210b0": "7c4a40b1228dc01fccee720e7b32bec1e0708b03b2eed6090d5149935bcb485e"
+    },
+    "comparative_GPU_result": false
+  },
+  "model_data": {
+    "repository": "Qwen/Qwen2.5-7B-Instruct",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "manifest_sha256": "9a462fd6021d1e2f908ba8d35e75bd4f256db59c29f90fe19526ee2bb65c46ed",
+    "verified_files": 12,
+    "weights_downloaded": true,
+    "model_inference": "NOT_RUN"
+  },
+  "current_limits": [
+    "PyTorch image build and Kind blocked while Docker Desktop stopped",
+    "Current CUDA capability probe changes require rebuilding and requalification",
+    "No GPU baseline/ablation/inference/reduction/intervention campaign executed"
+  ]
+}

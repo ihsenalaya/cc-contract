@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "protocol_version": "0.1",
+  "protocol_version": "0.2-draft",
   "protocol_frozen": false,
   "experiments": [
     {
@@ -34,87 +34,95 @@
     },
     {
       "id": "E2",
-      "state": "IMPLEMENTED",
-      "scope": "initial_local_subset",
+      "state": "LOCAL_VALIDATED",
+      "scope": "bounded_T01_T08_native_CPU_reference_at_a0171f9",
       "evidence": [
-        "results/manifests/initial-local-qualification.json"
+        "results/manifests/initial-local-qualification.json",
+        "results/manifests/extended-local-qualification.json"
       ],
       "remaining": [
-        "Full IR-to-CUDA execution adapter (native E0 probe is separate)",
-        "T04 generator and T06 scenario corpus matrices",
-        "T07/T08 capability qualification and C4 replay"
+        "Rebuild/requalify current capability-probe changes",
+        "Real IR CUDA execution and T07/T08 support qualification",
+        "Independent reserved GPU campaign"
       ]
     },
     {
       "id": "E3",
-      "state": "PLANNED",
-      "scope": "protocol_only",
+      "state": "BLOCKED",
+      "scope": "documented_historical_cases",
       "evidence": [
-        "docs/methodology/protocol.md"
+        "experiments/historical-cases.json"
       ],
       "remaining": [
-        "Implementation and prerequisite qualification",
-        "Actual experimental runs"
+        "Original H08/H09 evidence and exact workload configurations",
+        "Locally qualified isolated vLLM reproducer",
+        "Approved actual reproductions"
       ]
     },
     {
       "id": "E4",
-      "state": "PLANNED",
-      "scope": "protocol_only",
+      "state": "LOCAL_VALIDATED",
+      "scope": "CPU_algorithm_and_pipeline_checks_only",
       "evidence": [
-        "docs/methodology/protocol.md"
+        "results/manifests/software-preparation.json",
+        "docs/methodology/protocol-v0.2-draft.md"
       ],
       "remaining": [
-        "Implementation and prerequisite qualification",
-        "Actual experimental runs"
+        "Hardware qualification and oracle/protocol freeze",
+        "Costed GPU campaign approval",
+        "Actual GPU evaluation with complete declared budgets"
       ]
     },
     {
       "id": "E5",
-      "state": "PLANNED",
-      "scope": "protocol_only",
+      "state": "LOCAL_VALIDATED",
+      "scope": "CPU_algorithm_and_pipeline_checks_only",
       "evidence": [
-        "docs/methodology/protocol.md"
+        "results/manifests/software-preparation.json",
+        "docs/methodology/protocol-v0.2-draft.md"
       ],
       "remaining": [
-        "Implementation and prerequisite qualification",
-        "Actual experimental runs"
+        "Hardware qualification and oracle/protocol freeze",
+        "Costed GPU campaign approval",
+        "Actual GPU evaluation with complete declared budgets"
       ]
     },
     {
       "id": "E6",
-      "state": "PLANNED",
-      "scope": "protocol_only",
+      "state": "LOCAL_VALIDATED",
+      "scope": "CPU_algorithm_and_pipeline_checks_only",
       "evidence": [
-        "docs/methodology/protocol.md"
+        "results/manifests/software-preparation.json",
+        "docs/methodology/protocol-v0.2-draft.md"
       ],
       "remaining": [
-        "Implementation and prerequisite qualification",
-        "Actual experimental runs"
+        "Suitable reproduced real anomaly",
+        "Paired GPU reduction evaluation; otherwise conditional non-applicability"
       ]
     },
     {
       "id": "E7",
-      "state": "PLANNED",
-      "scope": "protocol_only",
+      "state": "IMPLEMENTED",
+      "scope": "PyTorch_source_and_verified_model_data_only",
       "evidence": [
-        "docs/methodology/protocol.md"
+        "results/manifests/software-preparation.json"
       ],
       "remaining": [
-        "Implementation and prerequisite qualification",
-        "Actual experimental runs"
+        "PyTorch image functional and Kind qualification",
+        "Frozen 24-prompt tokenizer corpus",
+        "GPU components and paired Qwen inference"
       ]
     },
     {
       "id": "E8",
-      "state": "PLANNED",
-      "scope": "protocol_only",
+      "state": "LOCAL_VALIDATED",
+      "scope": "CPU_callable_harness_correctness_gate_only",
       "evidence": [
-        "docs/methodology/protocol.md"
+        "results/manifests/software-preparation.json"
       ],
       "remaining": [
-        "Implementation and prerequisite qualification",
-        "Actual experimental runs"
+        "Technically characterized real anomaly and qualified intervention",
+        "Actual paired GPU timings; otherwise conditional non-applicability"
       ]
     }
   ],

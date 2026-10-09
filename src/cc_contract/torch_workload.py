@@ -8,8 +8,10 @@ import os
 from pathlib import Path
 import sys
 import time
+from datetime import datetime,timezone
+from uuid import uuid4
 from .oracles import dot_verdict, paired_logits, FLOAT32_U
-from .cli import canonical
+from .cli import canonical,provenance
 
 
 def prepare(torch, device):
@@ -118,7 +120,7 @@ def tiny_transformer(torch):
             'shape':list(first.shape),'parameters':sum(p.numel() for p in model.parameters())}
 
 
-def inference(torch, directory, corpus, output, device):
+def _inference(torch, directory, corpus, output, device, start):
     from transformers import AutoModelForCausalLM,AutoTokenizer
     environment=prepare(torch,device)
     if environment.get('verdict')=='UNSUPPORTED':
@@ -135,7 +137,7 @@ def inference(torch, directory, corpus, output, device):
     cases=json.loads(corpus.read_text())
     if len(cases)!=24 or sorted(c['length'] for c in cases)!=[32]*8+[128]*8+[512]*8:
         raise ValueError('Expected 24 frozen prompts at 32/128/512 tokens')
-    output.mkdir(parents=True,exist_ok=False); results=[]
+    results=[]
     with torch.inference_mode():
         for index,case in enumerate(cases):
             encoded=tokenizer(case['text'],add_special_tokens=False)['input_ids']
@@ -156,14 +158,16 @@ def inference(torch, directory, corpus, output, device):
                     steps.append({'logits':logits,'hidden':hidden})
                 if device=='cuda': torch.cuda.synchronize()
                 artifact=output/f'case-{index:02d}-{"async" if asynchronous else "sync"}.pt'
-                torch.save({'steps':steps,'token_ids':token_ids.cpu(),'generation':tag.cpu()},artifact)
+                temporary=artifact.with_suffix('.tmp')
+                torch.save({'steps':steps,'token_ids':token_ids.cpu(),'generation':tag.cpu()},temporary)
+                temporary.replace(artifact)
                 pairs.append({'steps':steps,'duration_seconds':time.perf_counter()-begin,'observed_generation':tag.cpu().item(),
                               'artifact':artifact.name,'sha256':hashlib.sha256(artifact.read_bytes()).hexdigest()})
             diagnostics=[]
             for a,b in zip(pairs[0]['steps'],pairs[1]['steps']):
                 diagnostics.append({'logits':paired_logits(a['logits'].tolist(),b['logits'].tolist()),
                                     'hidden':paired_logits(a['hidden'].tolist(),b['hidden'].tolist())})
-            result={'case':index,'length':case['length'],'input_sha256':hashlib.sha256(canonical(encoded)).hexdigest(),
+            result={'run_id':start['run_id'],'seed':17001,'case':index,'length':case['length'],'input_sha256':hashlib.sha256(canonical(encoded)).hexdigest(),
                     'pairs':[{k:v for k,v in p.items() if k!='steps'} for p in pairs],
                     'diagnostics':diagnostics,'metadata_exact':all(p['observed_generation']==index for p in pairs),
                     'scope':environment['scope'],'gpu_executed':environment['gpu_executed'],
@@ -171,13 +175,35 @@ def inference(torch, directory, corpus, output, device):
             results.append(result)
             with (output/'records.jsonl').open('ab') as file:
                 file.write(canonical(result)); file.flush(); os.fsync(file.fileno())
-    manifest={'environment':environment,'model':model_manifest,'cases':len(results),
+    manifest={**start,'environment':environment,'model':model_manifest,'cases':len(results),
               'paired_path_divergences':sum(any(s['logits']['verdict']!='PASS' or s['hidden']['verdict']!='PASS' for s in r['diagnostics']) for r in results),
               'state':'COMPLETE_PAIRED_DIAGNOSTIC','independent_campaigns':1,
               'raw_sha256':hashlib.sha256((output/'records.jsonl').read_bytes()).hexdigest()}
     (output/'manifest.json').write_bytes(canonical(manifest))
     for file in output.iterdir(): file.chmod(0o444)
     return manifest
+
+
+def inference(torch, directory, corpus, output, device):
+    commit,dirty=provenance(); image=os.environ.get('CC_IMAGE_DIGEST','NOT_APPLICABLE_LOCAL_PROCESS')
+    if device=='cuda' and ('@sha256:' not in image or dirty is True):
+        raise ValueError('GPU inference requires committed sources and an immutable image digest')
+    output.mkdir(parents=True,exist_ok=False,mode=0o700)
+    start={'run_id':'inference-'+uuid4().hex,'timestamp_utc':datetime.now(timezone.utc).isoformat(),
+           'git_commit':commit,'working_tree_dirty':dirty,'image_digest':image,'seed':17001,
+           'corpus_sha256':hashlib.sha256(corpus.read_bytes()).hexdigest(),'device':device,
+           'budget':{'prompts':24,'paths_per_prompt':2,'steps':'one plus frozen forced continuation'}}
+    (output/'start.json').write_bytes(canonical(start))
+    try:
+        return _inference(torch,directory,corpus,output,device,start)
+    except BaseException as error:
+        raw=output/'records.jsonl'
+        partial={**start,'state':'INFRA_FAILURE','error':type(error).__name__+': '+str(error),
+                 'raw_sha256':hashlib.sha256(raw.read_bytes()).hexdigest() if raw.exists() else None}
+        (output/'manifest.json').write_bytes(canonical(partial))
+        for file in output.iterdir():
+            if file.is_file():file.chmod(0o444)
+        raise
 
 
 def main():

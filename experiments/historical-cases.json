@@ -1,0 +1,27 @@
+{
+  "partition": "documented_historical",
+  "source": "user mission prompt",
+  "cases": [
+    {
+      "id": "H08",
+      "description": "vLLM logits diverge from the first token",
+      "state": "BLOCKED",
+      "cause": "UNCONFIRMED",
+      "new_discovery": false,
+      "missing_prerequisites": ["Original logs", "Exact vLLM build and model revision", "Exact inputs, dtype and reference path"],
+      "reproduction_policy": "Compare full first-token logits under shared inputs and model arithmetic; paired divergence requires characterization",
+      "driver_downgrade_allowed": false
+    },
+    {
+      "id": "H09",
+      "description": "CUDA sampler assertion around top_k=0",
+      "state": "BLOCKED",
+      "cause": "UNCONFIRMED",
+      "new_discovery": false,
+      "missing_prerequisites": ["Original assertion trace", "Exact vLLM build and sampling configuration", "Supported top_k=0 API semantics for that version"],
+      "reproduction_policy": "First validate configuration API legality; run an isolated process only after local qualification; preserve assertion logs and stop poisoned process",
+      "driver_downgrade_allowed": false,
+      "guest_GPU_reset_allowed": false
+    }
+  ]
+}

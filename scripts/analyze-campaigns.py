@@ -155,11 +155,13 @@ def analyze(paths, reviews=None):
                               'detection_probability_B4_95_ci':wilson(sum(a['detected'] for a,b in pairs),len(pairs)),
                               'detection_probability_baseline_95_ci':wilson(sum(b['detected'] for a,b in pairs),len(pairs)),
                               'mcnemar_two_sided_p':p,'superiority_established':False}
-    for method,p in holm(pvalues).items():
-        comparisons[method]['holm_adjusted_p']=p
+    # Keep the three planned comparisons even if a baseline is missing.
+    for method,p in holm({m:pvalues.get(m,1.) for m in ('B1','B2','B3')}).items():
+        if method in comparisons:comparisons[method]['holm_adjusted_p']=p
     return {'scope':next(iter(scopes)) if scopes else 'NO_DATA','campaign_rows':rows,
             'excluded_from_confirmatory_comparison':excluded,'comparisons':comparisons,
             'confirmed_defect_review':'EXTERNAL_REVIEW_WITH_TWO_HASHED_REPLAYS' if reviews else 'NOT_PERFORMED',
+            'analysis_state':'INCOMPLETE_DEFECT_REVIEW' if any(r['candidate_failures'] for r in rows) and not reviews else 'COLLECTED_DATA_SUMMARY',
             'claim':'NO_AUTOMATIC_SUPERIORITY_CLAIM',
             'statistical_unit':'independent_campaign_block','confidence':.95,
             'bootstrap':{'seed':59001,'draws':5000},'multiple_comparisons':'Holm across B4 versus B1/B2/B3',

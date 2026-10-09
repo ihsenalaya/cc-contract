@@ -1,0 +1,1122 @@
+[
+  {
+    "block": 0,
+    "position": 0,
+    "method": "A_NO_DIVERSITY",
+    "seed": 1431274979,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 0,
+    "position": 1,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 1431274979,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 0,
+    "position": 2,
+    "method": "B3",
+    "seed": 1431274979,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 0,
+    "position": 3,
+    "method": "A_NO_STATE",
+    "seed": 1431274979,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 0,
+    "position": 4,
+    "method": "B4",
+    "seed": 1431274979,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 0,
+    "position": 5,
+    "method": "B2",
+    "seed": 1431274979,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 0,
+    "position": 6,
+    "method": "B1",
+    "seed": 1431274979,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 1,
+    "position": 0,
+    "method": "B1",
+    "seed": 1095985481,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 1,
+    "position": 1,
+    "method": "B4",
+    "seed": 1095985481,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 1,
+    "position": 2,
+    "method": "A_NO_DIVERSITY",
+    "seed": 1095985481,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 1,
+    "position": 3,
+    "method": "B2",
+    "seed": 1095985481,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 1,
+    "position": 4,
+    "method": "A_NO_STATE",
+    "seed": 1095985481,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 1,
+    "position": 5,
+    "method": "B3",
+    "seed": 1095985481,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 1,
+    "position": 6,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 1095985481,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 2,
+    "position": 0,
+    "method": "B4",
+    "seed": 949659863,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 2,
+    "position": 1,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 949659863,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 2,
+    "position": 2,
+    "method": "A_NO_DIVERSITY",
+    "seed": 949659863,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 2,
+    "position": 3,
+    "method": "A_NO_STATE",
+    "seed": 949659863,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 2,
+    "position": 4,
+    "method": "B2",
+    "seed": 949659863,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 2,
+    "position": 5,
+    "method": "B3",
+    "seed": 949659863,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 2,
+    "position": 6,
+    "method": "B1",
+    "seed": 949659863,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 3,
+    "position": 0,
+    "method": "A_NO_STATE",
+    "seed": 885997478,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 3,
+    "position": 1,
+    "method": "B1",
+    "seed": 885997478,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 3,
+    "position": 2,
+    "method": "B3",
+    "seed": 885997478,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 3,
+    "position": 3,
+    "method": "B4",
+    "seed": 885997478,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 3,
+    "position": 4,
+    "method": "A_NO_DIVERSITY",
+    "seed": 885997478,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 3,
+    "position": 5,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 885997478,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 3,
+    "position": 6,
+    "method": "B2",
+    "seed": 885997478,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 4,
+    "position": 0,
+    "method": "A_NO_STATE",
+    "seed": 2038791940,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 4,
+    "position": 1,
+    "method": "B1",
+    "seed": 2038791940,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 4,
+    "position": 2,
+    "method": "A_NO_DIVERSITY",
+    "seed": 2038791940,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 4,
+    "position": 3,
+    "method": "B3",
+    "seed": 2038791940,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 4,
+    "position": 4,
+    "method": "B2",
+    "seed": 2038791940,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 4,
+    "position": 5,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 2038791940,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 4,
+    "position": 6,
+    "method": "B4",
+    "seed": 2038791940,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 5,
+    "position": 0,
+    "method": "B3",
+    "seed": 1576145255,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 5,
+    "position": 1,
+    "method": "B4",
+    "seed": 1576145255,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 5,
+    "position": 2,
+    "method": "A_NO_DIVERSITY",
+    "seed": 1576145255,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 5,
+    "position": 3,
+    "method": "B2",
+    "seed": 1576145255,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 5,
+    "position": 4,
+    "method": "B1",
+    "seed": 1576145255,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 5,
+    "position": 5,
+    "method": "A_NO_STATE",
+    "seed": 1576145255,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 5,
+    "position": 6,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 1576145255,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 6,
+    "position": 0,
+    "method": "B3",
+    "seed": 1492003955,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 6,
+    "position": 1,
+    "method": "A_NO_STATE",
+    "seed": 1492003955,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 6,
+    "position": 2,
+    "method": "A_NO_DIVERSITY",
+    "seed": 1492003955,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 6,
+    "position": 3,
+    "method": "B1",
+    "seed": 1492003955,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 6,
+    "position": 4,
+    "method": "B2",
+    "seed": 1492003955,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 6,
+    "position": 5,
+    "method": "B4",
+    "seed": 1492003955,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 6,
+    "position": 6,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 1492003955,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 7,
+    "position": 0,
+    "method": "B2",
+    "seed": 667949500,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 7,
+    "position": 1,
+    "method": "A_NO_DIVERSITY",
+    "seed": 667949500,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 7,
+    "position": 2,
+    "method": "A_NO_STATE",
+    "seed": 667949500,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 7,
+    "position": 3,
+    "method": "B1",
+    "seed": 667949500,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 7,
+    "position": 4,
+    "method": "B3",
+    "seed": 667949500,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 7,
+    "position": 5,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 667949500,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 7,
+    "position": 6,
+    "method": "B4",
+    "seed": 667949500,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 8,
+    "position": 0,
+    "method": "B3",
+    "seed": 328149151,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 8,
+    "position": 1,
+    "method": "B2",
+    "seed": 328149151,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 8,
+    "position": 2,
+    "method": "A_NO_STATE",
+    "seed": 328149151,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 8,
+    "position": 3,
+    "method": "A_NO_DIVERSITY",
+    "seed": 328149151,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 8,
+    "position": 4,
+    "method": "B1",
+    "seed": 328149151,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 8,
+    "position": 5,
+    "method": "B4",
+    "seed": 328149151,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 8,
+    "position": 6,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 328149151,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 9,
+    "position": 0,
+    "method": "A_NO_DIVERSITY",
+    "seed": 348740266,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 9,
+    "position": 1,
+    "method": "B4",
+    "seed": 348740266,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 9,
+    "position": 2,
+    "method": "A_NO_STATE",
+    "seed": 348740266,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 9,
+    "position": 3,
+    "method": "B2",
+    "seed": 348740266,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 9,
+    "position": 4,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 348740266,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 9,
+    "position": 5,
+    "method": "B3",
+    "seed": 348740266,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 9,
+    "position": 6,
+    "method": "B1",
+    "seed": 348740266,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 10,
+    "position": 0,
+    "method": "B1",
+    "seed": 747212468,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 10,
+    "position": 1,
+    "method": "B2",
+    "seed": 747212468,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 10,
+    "position": 2,
+    "method": "A_NO_STATE",
+    "seed": 747212468,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 10,
+    "position": 3,
+    "method": "A_NO_DIVERSITY",
+    "seed": 747212468,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 10,
+    "position": 4,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 747212468,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 10,
+    "position": 5,
+    "method": "B3",
+    "seed": 747212468,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 10,
+    "position": 6,
+    "method": "B4",
+    "seed": 747212468,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 11,
+    "position": 0,
+    "method": "B3",
+    "seed": 1678942432,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 11,
+    "position": 1,
+    "method": "B4",
+    "seed": 1678942432,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 11,
+    "position": 2,
+    "method": "A_NO_STATE",
+    "seed": 1678942432,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 11,
+    "position": 3,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 1678942432,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 11,
+    "position": 4,
+    "method": "B1",
+    "seed": 1678942432,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 11,
+    "position": 5,
+    "method": "B2",
+    "seed": 1678942432,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 11,
+    "position": 6,
+    "method": "A_NO_DIVERSITY",
+    "seed": 1678942432,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 12,
+    "position": 0,
+    "method": "B2",
+    "seed": 1986440928,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 12,
+    "position": 1,
+    "method": "B1",
+    "seed": 1986440928,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 12,
+    "position": 2,
+    "method": "B3",
+    "seed": 1986440928,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 12,
+    "position": 3,
+    "method": "A_NO_STATE",
+    "seed": 1986440928,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 12,
+    "position": 4,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 1986440928,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 12,
+    "position": 5,
+    "method": "A_NO_DIVERSITY",
+    "seed": 1986440928,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 12,
+    "position": 6,
+    "method": "B4",
+    "seed": 1986440928,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 13,
+    "position": 0,
+    "method": "A_NO_STATE",
+    "seed": 1941779840,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 13,
+    "position": 1,
+    "method": "B1",
+    "seed": 1941779840,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 13,
+    "position": 2,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 1941779840,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 13,
+    "position": 3,
+    "method": "B3",
+    "seed": 1941779840,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 13,
+    "position": 4,
+    "method": "A_NO_DIVERSITY",
+    "seed": 1941779840,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 13,
+    "position": 5,
+    "method": "B2",
+    "seed": 1941779840,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 13,
+    "position": 6,
+    "method": "B4",
+    "seed": 1941779840,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 14,
+    "position": 0,
+    "method": "A_NO_DIVERSITY",
+    "seed": 2084761395,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 14,
+    "position": 1,
+    "method": "B1",
+    "seed": 2084761395,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 14,
+    "position": 2,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 2084761395,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 14,
+    "position": 3,
+    "method": "B3",
+    "seed": 2084761395,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 14,
+    "position": 4,
+    "method": "B2",
+    "seed": 2084761395,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 14,
+    "position": 5,
+    "method": "A_NO_STATE",
+    "seed": 2084761395,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 14,
+    "position": 6,
+    "method": "B4",
+    "seed": 2084761395,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 15,
+    "position": 0,
+    "method": "B4",
+    "seed": 1801128642,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 15,
+    "position": 1,
+    "method": "B1",
+    "seed": 1801128642,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 15,
+    "position": 2,
+    "method": "A_NO_STATE",
+    "seed": 1801128642,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 15,
+    "position": 3,
+    "method": "B2",
+    "seed": 1801128642,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 15,
+    "position": 4,
+    "method": "B3",
+    "seed": 1801128642,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 15,
+    "position": 5,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 1801128642,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 15,
+    "position": 6,
+    "method": "A_NO_DIVERSITY",
+    "seed": 1801128642,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 16,
+    "position": 0,
+    "method": "B4",
+    "seed": 2031848032,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 16,
+    "position": 1,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 2031848032,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 16,
+    "position": 2,
+    "method": "A_NO_DIVERSITY",
+    "seed": 2031848032,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 16,
+    "position": 3,
+    "method": "A_NO_STATE",
+    "seed": 2031848032,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 16,
+    "position": 4,
+    "method": "B3",
+    "seed": 2031848032,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 16,
+    "position": 5,
+    "method": "B2",
+    "seed": 2031848032,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 16,
+    "position": 6,
+    "method": "B1",
+    "seed": 2031848032,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 17,
+    "position": 0,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 403451752,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 17,
+    "position": 1,
+    "method": "B3",
+    "seed": 403451752,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 17,
+    "position": 2,
+    "method": "B1",
+    "seed": 403451752,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 17,
+    "position": 3,
+    "method": "A_NO_DIVERSITY",
+    "seed": 403451752,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 17,
+    "position": 4,
+    "method": "A_NO_STATE",
+    "seed": 403451752,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 17,
+    "position": 5,
+    "method": "B4",
+    "seed": 403451752,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 17,
+    "position": 6,
+    "method": "B2",
+    "seed": 403451752,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 18,
+    "position": 0,
+    "method": "B1",
+    "seed": 538156373,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 18,
+    "position": 1,
+    "method": "A_NO_DIVERSITY",
+    "seed": 538156373,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 18,
+    "position": 2,
+    "method": "A_NO_STATE",
+    "seed": 538156373,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 18,
+    "position": 3,
+    "method": "B3",
+    "seed": 538156373,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 18,
+    "position": 4,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 538156373,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 18,
+    "position": 5,
+    "method": "B4",
+    "seed": 538156373,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 18,
+    "position": 6,
+    "method": "B2",
+    "seed": 538156373,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 19,
+    "position": 0,
+    "method": "B4",
+    "seed": 348228706,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 19,
+    "position": 1,
+    "method": "A_NO_VALIDITY_GUIDANCE",
+    "seed": 348228706,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 19,
+    "position": 2,
+    "method": "A_NO_DIVERSITY",
+    "seed": 348228706,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 19,
+    "position": 3,
+    "method": "B3",
+    "seed": 348228706,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 19,
+    "position": 4,
+    "method": "B2",
+    "seed": 348228706,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 19,
+    "position": 5,
+    "method": "A_NO_STATE",
+    "seed": 348228706,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  },
+  {
+    "block": 19,
+    "position": 6,
+    "method": "B1",
+    "seed": 348228706,
+    "budget_seconds": 600.0,
+    "partition": "reserved_evaluation"
+  }
+]
