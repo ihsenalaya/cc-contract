@@ -46,5 +46,16 @@ Docker Windows ne diminue pas automatiquement avec ces suppressions. Le script
 [compact-docker-disk.ps1](../../scripts/compact-docker-disk.ps1) sélectionne
 uniquement le VHD Docker existant, exige Docker Desktop arrêté et un accès
 exclusif au fichier, puis demande sa compaction sans supprimer ses volumes.
-Windows exige une console administrateur. Le script est préparé ; son exécution
-et la quantité d'espace récupérée ne sont pas encore vérifiées.
+Windows exige une console administrateur. L'exécution réelle et la récupération
+d'espace sont vérifiées ci-dessous.
+
+## Compaction Windows vérifiée
+
+Après arrêt de Docker Desktop, terminaison de la seule distribution
+`docker-desktop` et détachement du seul VHD Docker, la compaction DiskPart a
+réussi. Le fichier est passé de 80,74 à 43,93 GiB : 36,81 GiB récupérés.
+Windows affichait 38,91 GiB libres après l’opération. La taille du fichier et
+l’espace libre ont aussi été contrôlés depuis WSL. Ubuntu et le transfert Azure
+sont restés actifs ; aucun volume existant n’a été supprimé par la compaction.
+Le format UTF-16 du fichier de commandes initial avait provoqué un échec ;
+le script utilise maintenant le texte Windows sans BOM ni octets NUL.
