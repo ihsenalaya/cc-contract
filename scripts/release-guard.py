@@ -26,9 +26,12 @@ def check() -> None:
         if not allowed(name) or p.suffix in FORBIDDEN or p.name.startswith(".env"):
             errors.append(f"disallowed file: {name}")
             continue
+        if p.is_symlink():
+            errors.append(f"symlink: {name}")
+            continue
         if not p.exists():
             continue
-        if p.is_symlink() or p.stat().st_size > 1024 * 1024:
+        if p.stat().st_size > 1024 * 1024:
             errors.append(f"symlink or oversized file: {name}")
             continue
         data = p.read_bytes()

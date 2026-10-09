@@ -30,7 +30,9 @@ case "${1:-}" in
     docker tag "$task_image" "$task_remote"
     docker push "$task_remote" | tee .local/images/push.log
     docker image inspect "$task_remote" > .local/images/published-inspect.json
-    docker image inspect --format '{{index .RepoDigests 0}}' "$task_remote" | tee .local/images/remote-digest
+    docker buildx imagetools inspect "$task_remote" --format '{{json .Manifest}}' > .local/images/registry-manifest.json
+    task_digest="$(python3 -c 'import json; print(json.load(open(".local/images/registry-manifest.json"))["digest"])')"
+    printf '%s@%s\n' "${task_remote%:*}" "$task_digest" | tee .local/images/remote-digest
     ;;
   *) echo 'usage: local-image.sh build|publish' >&2; exit 2 ;;
 esac

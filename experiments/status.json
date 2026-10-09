@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "protocol_version": "0.1",
+  "protocol_frozen": false,
+  "experiments": [
+    {
+      "id": "E0",
+      "state": "IMPLEMENTED",
+      "scope": "initial_local_subset",
+      "evidence": [
+        "results/manifests/initial-local-qualification.json"
+      ],
+      "remaining": [
+        "Kind recreation and network evidence",
+        "Azure temporary infrastructure qualification",
+        "CPU/GPU attestation",
+        "Real CUDA and inference qualification"
+      ]
+    },
+    {
+      "id": "E1",
+      "state": "IMPLEMENTED",
+      "scope": "initial_local_subset",
+      "evidence": [
+        "results/manifests/initial-local-qualification.json"
+      ],
+      "remaining": [
+        "Float oracle calibration and independent reference checks",
+        "Real GPU validation and repeat variability",
+        "Oracle freeze"
+      ]
+    },
+    {
+      "id": "E2",
+      "state": "IMPLEMENTED",
+      "scope": "initial_local_subset",
+      "evidence": [
+        "results/manifests/initial-local-qualification.json"
+      ],
+      "remaining": [
+        "T04/T06 dedicated generators",
+        "T07/T08 capability qualification",
+        "Real CUDA adapter and C4 replay"
+      ]
+    },
+    {
+      "id": "E3",
+      "state": "PLANNED",
+      "scope": "protocol_only",
+      "evidence": [
+        "docs/methodology/protocol.md"
+      ],
+      "remaining": [
+        "Implementation and prerequisite qualification",
+        "Actual experimental runs"
+      ]
+    },
+    {
+      "id": "E4",
+      "state": "PLANNED",
+      "scope": "protocol_only",
+      "evidence": [
+        "docs/methodology/protocol.md"
+      ],
+      "remaining": [
+        "Implementation and prerequisite qualification",
+        "Actual experimental runs"
+      ]
+    },
+    {
+      "id": "E5",
+      "state": "PLANNED",
+      "scope": "protocol_only",
+      "evidence": [
+        "docs/methodology/protocol.md"
+      ],
+      "remaining": [
+        "Implementation and prerequisite qualification",
+        "Actual experimental runs"
+      ]
+    },
+    {
+      "id": "E6",
+      "state": "PLANNED",
+      "scope": "protocol_only",
+      "evidence": [
+        "docs/methodology/protocol.md"
+      ],
+      "remaining": [
+        "Implementation and prerequisite qualification",
+        "Actual experimental runs"
+      ]
+    },
+    {
+      "id": "E7",
+      "state": "PLANNED",
+      "scope": "protocol_only",
+      "evidence": [
+        "docs/methodology/protocol.md"
+      ],
+      "remaining": [
+        "Implementation and prerequisite qualification",
+        "Actual experimental runs"
+      ]
+    },
+    {
+      "id": "E8",
+      "state": "PLANNED",
+      "scope": "protocol_only",
+      "evidence": [
+        "docs/methodology/protocol.md"
+      ],
+      "remaining": [
+        "Implementation and prerequisite qualification",
+        "Actual experimental runs"
+      ]
+    }
+  ]
+}

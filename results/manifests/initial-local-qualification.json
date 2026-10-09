@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T09:27:16.514756+00:00",
+  "scope": "CPU_SIMULATION_ONLY",
+  "image": {
+    "reference": "ghcr.io/ihsenalaya/cc-contract-cpu@sha256:6834aed4c85fca810cb30345d7263a209e06ed85e437121364d443ad06623b1e",
+    "git_commit": "4fea14aecec0ef831903b6a2cc37c006d158e779",
+    "built_locally": true,
+    "runtime": "python3.12.12",
+    "runtime_dependencies": [
+      {
+        "name": "pip",
+        "version": "25.0.1"
+      }
+    ]
+  },
+  "initial_kind_validation": {
+    "verified": true,
+    "scope": "CPU_SIMULATION_ONLY",
+    "build_image_id": "sha256:6834aed4c85fca810cb30345d7263a209e06ed85e437121364d443ad06623b1e",
+    "git_commit": "4fea14aecec0ef831903b6a2cc37c006d158e779",
+    "workers": [
+      "cc-contract-worker2",
+      "cc-contract-worker"
+    ],
+    "runs": [
+      {
+        "pod": "kind-20261009t092125z-761df216-0-dpn7q",
+        "node": "cc-contract-worker2",
+        "runtime_image_id": "sha256:69bb436cdabad047ccd4bceb1d1e7090d43c596ef2f21b0d2c28a839a015c2e3",
+        "run_id": "local-20261009T092138Z-b172917b2216",
+        "raw_sha256": "7b866a61f6c58b7cde4db928e39a16e64f2b1430d73b87c93051f0e4bde35da2"
+      },
+      {
+        "pod": "kind-20261009t092125z-761df216-1-tpjxk",
+        "node": "cc-contract-worker",
+        "runtime_image_id": "sha256:69bb436cdabad047ccd4bceb1d1e7090d43c596ef2f21b0d2c28a839a015c2e3",
+        "run_id": "local-20261009T092138Z-663a55fe875c",
+        "raw_sha256": "de4849f9d0441b15caed99ec9fe0785a09734bddf870deb79654001ce816aa66"
+      }
+    ],
+    "evidence_sha256": {
+      "apply.log": "1002b57d94e61d19fb3a533c084faa081371355720ea2652e941e8e830e8fc20",
+      "dry-run.log": "15703473fa87ed8d039db5a64d4bdaf8ee2938eb397b8a0182150d6f0c0c8190",
+      "events.json": "f991606454b4551bd8a56b76a433778df23ff6ac50582f950988d0a8e3461b13",
+      "job.json": "4c6ae2ec6431ff1c332372b05a34572c3490bdfe00ba9070688a05a66d0a84d4",
+      "kind-20261009t092125z-761df216-0-dpn7q.jsonl": "7ce37c3fd1069b40217f8b096a91fd6811b8c026ebebc7c3abd528202b2632c4",
+      "kind-20261009t092125z-761df216-1-tpjxk.jsonl": "34675266cef9176f3052dbef4ed377a2f62e7111c776b5ffa7391c7d5d0acee6",
+      "manifests.json": "6252358cbd25aa59a1f6258180772fd83925644d951ca7e83e31a2c0794ead70",
+      "namespace.json": "63276bef925dc52463623aa505a06f5051386ecead2665d28dde9288a8406222",
+      "pods.json": "ea1e502df54964de049fd6562652f0701cf03cc6fe0ae831c3ab9ab34af32ea5"
+    },
+    "evidence_directory": ".local/integration/kind-20261009t092125z-761df216"
+  },
+  "unit_tests_passed": 12,
+  "gpu_executed": false,
+  "hardware_attestation": "NOT_RUN",
+  "scientific_comparison": "NOT_RUN"
+}

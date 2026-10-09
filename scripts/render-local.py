@@ -1,9 +1,12 @@
 """Kubernetes JSON is YAML-compatible; generate explicit immutable test inputs."""
 import json
 import os
+import re
 
 ns = "cc-contract"
 job_name = os.environ["CC_LOCAL_JOB"]
+if not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,48}[a-z0-9]", job_name):
+    raise ValueError("Job name must be a short lowercase DNS label")
 container = {"name": "runner", "image": os.environ["CC_LOCAL_IMAGE"], "imagePullPolicy": "Never", "args": ["selftest", "--emit-records"], "env": [{"name": "CC_BUILD_IMAGE_ID", "value": os.environ["CC_LOCAL_IMAGE_ID"]}, {"name": "CC_IMAGE_DIGEST", "value": "LOCAL_IMAGE_UNPUBLISHED"}], "resources": {"requests": {"cpu": "50m", "memory": "32Mi"}, "limits": {"cpu": "250m", "memory": "128Mi"}}, "securityContext": {"allowPrivilegeEscalation": False, "readOnlyRootFilesystem": True, "capabilities": {"drop": ["ALL"]}}}
 items = [
     {"apiVersion": "v1", "kind": "Namespace", "metadata": {"name": ns, "labels": {"pod-security.kubernetes.io/enforce": "restricted", "pod-security.kubernetes.io/enforce-version": "v1.35"}}},
