@@ -185,9 +185,9 @@
     "full_comparative_campaigns_complete": false
   },
   "finite_work_sample": {
-    "state": "LOCAL_VALIDATED_AWAITING_COSTED_WINDOW_APPROVAL",
+    "state": "APPROVED_STOP_ONLY_LIFECYCLE_VALIDATED",
     "pilot_requested": true,
-    "budget_approved": false,
+    "budget_approved": true,
     "parallel_gpu_jobs": false,
     "planned_jobs": 14,
     "selected_cases_per_job": 100,
@@ -195,6 +195,9 @@
     "proposal": "docs/environment/finite-work-sample-window.md",
     "local_qualification": "results/manifests/finite-work-sample-local-qualification.json",
     "reserved_comparison_schedule_changed": false,
-    "full_comparative_campaigns_complete": false
+    "full_comparative_campaigns_complete": false,
+    "post_sample_action": "DEALLOCATE_AND_RETAIN_VM_DISK_UNTIL_USER_DECISION",
+    "destroy_authorized": false,
+    "stop_only_qualification": "results/manifests/finite-work-stop-only-lifecycle-qualification.json"
   }
 }

@@ -87,7 +87,7 @@
   "workload_bundle_sha256": "2d9a9effb018d27687ef3dec050c22ae1a2c5e41f7209896c41c685adf634dd8",
   "host_script_sha256": "55a351982a285a854f1d6a79ad96a485cc3d8ee9214b700907322f767ede47d8",
   "schema_version": 2,
-  "state": "PREPARED_AWAITING_USER_BUDGET_APPROVAL",
+  "state": "APPROVED_STOP_ONLY_LIFECYCLE_VALIDATED",
   "gpu_created": false,
   "proposed_total_budget_usd": 15,
   "max_window_minutes": 90,
@@ -98,5 +98,9 @@
   "GPU_jobs_parallel": false,
   "local_qualification": "results/manifests/finite-work-sample-local-qualification.json",
   "proposal": "docs/environment/finite-work-sample-window.md",
-  "timestamp_utc": "2026-10-09T20:09:51.561912+00:00"
+  "timestamp_utc": "2026-10-09T20:09:51.561912+00:00",
+  "budget_approved": true,
+  "post_sample_action": "DEALLOCATE_AND_RETAIN_VM_DISK_UNTIL_USER_DECISION",
+  "destroy_authorized": false,
+  "stop_only_qualification": "results/manifests/finite-work-stop-only-lifecycle-qualification.json"
 }

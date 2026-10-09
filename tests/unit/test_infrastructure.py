@@ -266,8 +266,9 @@ class InfrastructureTests(unittest.TestCase):
                 cleanup.assert_called_once_with(state / 'fixture')
             self.assertEqual(json.loads((state / 'fixture/qualification-exit.json').read_text())['returncode'], 1)
 
-    def test_run_still_destroys_verified_window_when_qualification_fails(self):
-        with tempfile.TemporaryDirectory() as tmp:
+    def test_run_retains_verified_resources_after_qualification_success_or_failure(self):
+      for qualification_fails in (False,True):
+        with self.subTest(qualification_fails=qualification_fails),tempfile.TemporaryDirectory() as tmp:
             state = Path(tmp)
             directory = state / 'fixture'
             directory.mkdir()
@@ -277,20 +278,57 @@ class InfrastructureTests(unittest.TestCase):
             calls = []
             def child(args):
                 calls.append(args[2])
-                if args[2] == 'qualify':
+                if args[2] == 'qualify' and qualification_fails:
                     raise subprocess.CalledProcessError(1, 'MOCK_QUALIFICATION_ONLY')
             with patch.object(window, 'STATE', state), patch.object(window, 'command', side_effect=child), patch('sys.argv', ['window', 'run', '--window', 'fixture', '--approved-plan-sha256', window.sha(plan)]):
-                with self.assertRaises(subprocess.CalledProcessError):
-                    window.main()
-            self.assertEqual(calls, ['apply', 'qualify', 'destroy'])
+                if qualification_fails:
+                    with self.assertRaises(subprocess.CalledProcessError):window.main()
+                else:
+                    self.assertEqual(window.main(),0)
+            self.assertEqual(calls, ['apply', 'qualify'])
             phases=[json.loads(line) for line in (directory/'run-phases.jsonl').read_text().splitlines()]
             self.assertEqual([(p['phase'],p['state']) for p in phases],
                 [('apply','STARTED'),('apply','FINISHED'),('qualify_collect_release','STARTED'),
-                 ('qualify_collect_release','FAILED'),('destroy','STARTED'),('destroy','FINISHED')])
+                 ('qualify_collect_release','FAILED' if qualification_fails else 'FINISHED')])
             result=json.loads((directory/'run-exit.json').read_text())
-            self.assertEqual(result['error_type'],'CalledProcessError')
+            self.assertEqual(result['error_type'],'CalledProcessError' if qualification_fails else None)
+            self.assertEqual(result['scope'],'APPLY_QUALIFICATION_SAMPLE_EXPORT_AND_DEALLOCATION_KEEP_RESOURCES')
+            self.assertTrue(result['temporary_resources_retained_for_user_decision'])
+            self.assertFalse(result['resources_destroyed_automatically'])
             self.assertGreaterEqual(result['elapsed_seconds'],sum(p.get('elapsed_seconds',0) for p in phases))
             self.assertFalse(result['analysis_and_user_decision_time_included'])
+
+    def test_destroy_requires_explicit_confirmation_before_cloud_access(self):
+        with tempfile.TemporaryDirectory() as tmp,patch.object(window,'STATE',Path(tmp)), \
+                patch.object(window,'ensure_window') as ensure,patch.object(window,'tf') as terraform, \
+                patch('sys.stderr',new_callable=io.StringIO), \
+                patch('sys.argv',['window','destroy','--window','fixture']):
+            with self.assertRaises(SystemExit) as error:window.main()
+            self.assertEqual(error.exception.code,2)
+            ensure.assert_not_called();terraform.assert_not_called()
+
+    def test_explicit_destroy_still_requires_verified_original_export(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state=Path(tmp);directory=state/'fixture';directory.mkdir()
+            outputs={'resource_group':{'value':'cc-contract-fixture'}}
+            with patch.object(window,'STATE',state), \
+                    patch.object(window,'ensure_window',return_value=({},outputs)), \
+                    patch.object(window,'tf') as terraform, \
+                    patch('sys.argv',['window','destroy','--window','fixture','--confirm-destroy']):
+                with self.assertRaisesRegex(AssertionError,'Verified evidence export'):window.main()
+                terraform.assert_not_called()
+            archive=directory/'evidence.tar.gz';archive.write_bytes(b'CPU_FIXTURE_ONLY')
+            (directory/'collection.json').write_text(json.dumps({'archive_file':archive.name,
+                'archive_sha256':window.sha(archive)}))
+            (directory/'outputs.json').write_text(json.dumps(outputs))
+            with patch.object(window,'STATE',state), \
+                    patch.object(window,'ensure_window',return_value=({},outputs)), \
+                    patch.object(window,'tf') as terraform, \
+                    patch.object(window.subprocess,'check_output',return_value='false'), \
+                    patch('sys.stdout',new_callable=io.StringIO), \
+                    patch('sys.argv',['window','destroy','--window','fixture','--confirm-destroy']):
+                self.assertEqual(window.main(),0)
+                self.assertEqual([call.args[0] for call in terraform.call_args_list],['init','destroy'])
 
     def test_critical_attestation_error_blocks_cuda_even_with_success_text(self):
         with tempfile.TemporaryDirectory() as tmp:

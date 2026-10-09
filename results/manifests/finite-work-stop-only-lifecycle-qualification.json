@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T20:14:18.679778+00:00",
+  "state": "PASS_STOP_ONLY_LIFECYCLE_LOCAL_CHECKS",
+  "unit_tests_passed": 18,
+  "log_sha256": "3f3214b5a7942c41a9cef23393b885d9dd83d7ac967279abef1c621eacd105c6",
+  "controller_sha256": "7fe79504a6727f14ae81288e206a5ea3a771b63decd460280d71b439b9dba65a",
+  "plan_sha256": "74397e689b9a7cc87a87f817412dafcb29f1ce264199c2439279e602864a37a5",
+  "scientific_workload_unchanged": true,
+  "GPU_executed": false,
+  "budget_approved": true,
+  "budget_usd": 15,
+  "post_sample_action": "DEALLOCATE_AND_RETAIN_VM_DISK_UNTIL_USER_DECISION",
+  "destroy_authorized": false,
+  "automatic_destroy_disabled": true,
+  "standalone_destroy_requires_explicit_confirmation": true,
+  "independent_plan_and_patch_review": "PASS"
+}

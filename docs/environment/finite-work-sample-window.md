@@ -1,7 +1,7 @@
 # Finite-work H100 timing sample — provisioning proposal
 
-Status: local checks completed and saved read-only plan verified; no new GPU
-provisioned or budget approved.
+Status: local checks completed and saved read-only plan verified; USD 15 / 90
+minutes approved by the user. Stop and retain the VM until the user's decision.
 
 Window `work-sample-1009b`: thirteen creations, zero changes to existing
 resources, zero resources created. Saved plan SHA-256:
@@ -33,7 +33,7 @@ preserves those earlier results and the reserved comparison schedule.
 | Retail compute estimate | USD 6.98/hour; USD 10.47 for 90 minutes |
 | Proposed total budget | USD 15, including USD 4.53 allowance for temporary disk, IP, guard and evidence transfer/storage |
 | Temporary resources | One VM; saved Terraform plan must contain only thirteen creations and no changes to existing resources |
-| Finish | Export and hash-verify originals, immediately confirm deallocation, then destroy temporary resources |
+| Finish | Export and hash-verify originals, immediately confirm deallocation, retain the VM and disk until the user's decision |
 
 The retail rate and read-only quota inventory were checked at
 2026-10-09 19:54–19:55 UTC: zero project VMs, regional usage 0/82 vCPUs,
@@ -64,10 +64,13 @@ Two jobs give an observed range, not a confidence interval or a scientific
 sample-size justification. Longer runs may scale differently.
 
 Report the full elapsed cloud cycle, with provisioning, qualification, sample,
-export, confirmed stop and destruction. Report preparation, offline review,
+export and confirmed stop. Report preparation, offline review,
 verified Azure backup, publication and any user waiting separately. Stop the
-H100 before CPU review and keep it stopped while the user decides. Preserve
-the disk if export fails while still releasing compute.
+H100 before CPU review and keep the VM, disk and restart resources while the
+user decides. Preserve the disk if export fails while still releasing compute.
+Destruction requires a later explicit user instruction. Deallocation releases
+the hardware allocation; retained disks and networking can still incur charges,
+as explained in [Azure's billing states](https://learn.microsoft.com/en-us/azure/virtual-machines/states-billing).
 
 Before apply: pass all applicable local checks, both Kind worker checks, the
 independent original CPU trace review and the full-schedule storage projection;

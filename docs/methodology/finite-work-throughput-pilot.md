@@ -96,8 +96,8 @@ p-value, outcome or coverage threshold retroactively chooses this pilot's work.
 ## Total cycle and shutdown
 
 Report the full elapsed time from cloud execution start to confirmed H100
-deallocation, and separately to deletion of all temporary resources. Break out
-provisioning, qualification, the fourteen fixed-work jobs, export and cleanup.
+deallocation, retaining the VM and its disk until the user's decision. Break out
+provisioning, qualification, the fourteen fixed-work jobs, export and release.
 Report local preparation, independent review, verified Azure backup and
 publication durations separately, including any limits on available timestamps.
 Do not present only kernel time or the sum of campaign deadlines as total time.
@@ -106,8 +106,9 @@ The costed window binds a saved infrastructure plan and immutable workload
 hashes before execution. An independent Azure expiry mechanism deallocates the
 VM at the approved deadline. After collecting and verifying the originals,
 deallocate the H100 immediately; perform the independent semantic audit and
-long-term backup locally with the H100 off. Delete the window's temporary
-resources after verified collection. Preserve the permanent Azure model and
+long-term backup locally with the H100 off. Retain the window's VM, disk and
+restart resources until the user's decision; deletion requires a later explicit
+user instruction. Preserve the permanent Azure model and
 evidence store and unrelated resources. Invoice amounts remain unknown until
 Azure publishes actual subscription billing data; retail calculations are
 forecasts, not an observed cost.

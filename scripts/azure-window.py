@@ -251,6 +251,8 @@ def main():
     p.add_argument("--window", required=True)
     p.add_argument("--ssh-source-cidr")
     p.add_argument("--approved-plan-sha256")
+    p.add_argument('--confirm-destroy',action='store_true',
+                   help='Explicit user-approved deletion of retained temporary resources')
     p.add_argument('--workload-bundle',type=Path)
     p.add_argument('--max-window-minutes',type=int,choices=(60,90,120),default=120,
                    help='Absolute expiry from planning; does not extend on apply')
@@ -260,13 +262,14 @@ def main():
     directory = STATE / args.window
     directory.mkdir(exist_ok=True, mode=0o700)
     if args.action == "run":
-        # One approved command drives the entire cycle, including cleanup on failure.
+        # Export evidence and deallocate compute; retain disks and infrastructure
+        # until the user explicitly decides whether to resume or destroy them.
         if args.approved_plan_sha256 != sha(directory / "plan.tfplan"):
             p.error("explicit user-approved matching plan hash required")
         child = [sys.executable, str(Path(__file__).resolve())]
         started=time.monotonic()
         run_start={'timestamp_utc':datetime.now(timezone.utc).isoformat(),
-                   'scope':'APPLY_QUALIFICATION_SAMPLE_EXPORT_RELEASE_AND_DESTROY',
+                   'scope':'APPLY_QUALIFICATION_SAMPLE_EXPORT_AND_DEALLOCATION_KEEP_RESOURCES',
                    'plan_sha256':args.approved_plan_sha256}
         with (directory/'run-start.json').open('x') as output:
             json.dump(run_start,output,indent=2);output.write('\n')
@@ -278,22 +281,17 @@ def main():
             failure=type(error).__name__
             raise
         finally:
-            try:
-                if (directory / "collection.json").exists():
-                    run_phase(directory,'destroy',child + ["destroy", "--window", args.window])
-                else:
-                    print("Evidence export unverified: any allocated compute is released by recovery/expiry; persistent disk is preserved. Inspect private logs.", file=sys.stderr)
-            except BaseException as error:
-                failure=type(error).__name__
-                raise
-            finally:
-                result={'started_at_utc':run_start['timestamp_utc'],
-                        'finished_at_utc':datetime.now(timezone.utc).isoformat(),
-                        'elapsed_seconds':time.monotonic()-started,'error_type':failure,
-                        'scope':run_start['scope'],
-                        'analysis_and_user_decision_time_included':False}
-                with (directory/'run-exit.json').open('x') as output:
-                    json.dump(result,output,indent=2);output.write('\n')
+            if not (directory / "collection.json").exists():
+                print("Evidence export unverified: any allocated compute is released by recovery/expiry; temporary resources are preserved. Inspect private logs.", file=sys.stderr)
+            result={'started_at_utc':run_start['timestamp_utc'],
+                    'finished_at_utc':datetime.now(timezone.utc).isoformat(),
+                    'elapsed_seconds':time.monotonic()-started,'error_type':failure,
+                    'scope':run_start['scope'],
+                    'temporary_resources_retained_for_user_decision':True,
+                    'resources_destroyed_automatically':False,
+                    'analysis_and_user_decision_time_included':False}
+            with (directory/'run-exit.json').open('x') as output:
+                json.dump(result,output,indent=2);output.write('\n')
     elif args.action == "plan":
         if not args.ssh_source_cidr:
             p.error("--ssh-source-cidr is required for planning")
@@ -446,6 +444,8 @@ def main():
     elif args.action == "release":
         release(directory)
     elif args.action == "destroy":
+        if not args.confirm_destroy:
+            p.error('--confirm-destroy requires an explicit user decision to delete retained temporary resources')
         ensure_window(directory)
         assert (directory / "collection.json").exists(), "Verified evidence export required before destroying persistent disk"
         collection = json.loads((directory / "collection.json").read_text())
