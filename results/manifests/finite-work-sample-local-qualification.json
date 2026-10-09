@@ -1,0 +1,109 @@
+{
+  "schema_version": 2,
+  "timestamp_utc": "2026-10-09T20:07:56.206201+00:00",
+  "state": "LOCAL_VALIDATED_FINITE_WORK_TIMING_SAMPLE",
+  "gpu_executed": false,
+  "scope": "LOCAL_SOURCE_CPU_KIND_ORIGINAL_TRACE_REVIEW_AND_STORAGE_PLANNING_ONLY",
+  "source_checks": {
+    "unit_tests_passed": 104,
+    "log_sha256": "a5a9cd6b1a3bb3465d63126571e3902c3e62c284132995df889f1cdcf16ba660"
+  },
+  "final_infrastructure_binding_checks": {
+    "unit_tests_passed": 16,
+    "log_sha256": "b53ced5d689988dc8ea724a026271c93b396acf23eaf489a294038de69b782a7"
+  },
+  "cloud_terraform_checks": {
+    "mock_tests_passed": 2,
+    "log_sha256": "14f8e38636003715a293f1eb00f7db2f7bafc4ca299490559baefa145dde1e79"
+  },
+  "kind": {
+    "receipt_sha256": "6c168b40ba87d8d0b8ba9565131b6d6fbe35ef8e790f130c774940ba71c153ad",
+    "harness_sha256": "adf1f2fed8d5db7230ce41bededfc1c74255031cb5baeacd4943e670e32ce489",
+    "image_digest": "ghcr.io/ihsenalaya/cc-contract-ir@sha256:e09597869dab698d082cc56ceb5cbb7c6eb348760e08f617387491837ad1fc8a",
+    "selected_cases_per_job": 4,
+    "jobs_per_worker": 14,
+    "workers": [
+      {
+        "node": "cc-contract-worker",
+        "archive_sha256": "3bb01042a51a8d23e3a010ecf55e1e4e793208e5aebc4d1bc1a9ec050920d04d",
+        "archive_bytes": 1852024,
+        "completed_jobs": 14,
+        "gpu_executed": false,
+        "finite_work_completed_jobs": 14,
+        "selected_cases_per_job": 4,
+        "first_job_started_monotonic_ns": 133584221046453,
+        "last_job_finished_monotonic_ns": 133604952638534,
+        "actual_total_seconds": 20.815593714
+      },
+      {
+        "node": "cc-contract-worker2",
+        "archive_sha256": "0a4245933220ab07e8f19c3051a6d5e38af087f26293847bd4ced382b0b0b1cd",
+        "archive_bytes": 1850655,
+        "completed_jobs": 14,
+        "gpu_executed": false,
+        "finite_work_completed_jobs": 14,
+        "selected_cases_per_job": 4,
+        "first_job_started_monotonic_ns": 133611784712485,
+        "last_job_finished_monotonic_ns": 133633008933567,
+        "actual_total_seconds": 21.292214306
+      }
+    ],
+    "secret_access": "DENIED",
+    "namespace_cleanup": {
+      "namespace_deleted": "cc-work-local-92ac6c30",
+      "finished_utc": "2026-10-09T20:01:38.971958+00:00",
+      "total_seconds": 72.788348988
+    }
+  },
+  "independent_cpu_review": {
+    "sha256": "ccdb15deebb5a1a445e4e0ff6ef1a5f3840df7965d252e6375bdcb6ed1b6c9d5",
+    "state": "PASS_BOTH_CPU_WORKERS",
+    "selected_cases": 112,
+    "passing_cases": 100,
+    "invalid_cases": 12,
+    "observations": 454,
+    "gpu_executed": false
+  },
+  "deterministic_volume_preflight": {
+    "sha256": "5fc44f85cf180fdf3e8c1719f395a421275ec638d1157447b64c6c66c564f4c9",
+    "source_binding_sha256": "844f9f266c54e8f1918b5965b1a5a0519074fbb4d0a4bfceadaef111ded137ff",
+    "jobs": 14,
+    "selected_cases_per_job": 100,
+    "volume_planning_bounds": {
+      "scope": "CPU_DETERMINISTIC_GENERATION_AND_SIZE_PROJECTION_NOT_GPU_TIMINGS",
+      "projected_successful_payload_bytes": 628089122,
+      "margin_multiplier": 4,
+      "per_selected_case_allowance_bytes": 65536,
+      "per_job_upper_raw_bytes": [
+        201136660,
+        272585628,
+        63739512,
+        273757612,
+        273830248,
+        359346988,
+        79195888,
+        72798848,
+        57842724,
+        147077912,
+        134086136,
+        147409844,
+        147945488,
+        373353400
+      ],
+      "total_upper_raw_bytes": 2604106888,
+      "guarantees_GPU_success_or_deadline_completion": false
+    },
+    "GPU_time_measured": false
+  },
+  "GPU_spec_sha256": "d55f85971698b49396bc8f224bafe2e12f59fed0fa420623c5fd27688b01d678",
+  "GPU_planned_jobs": 14,
+  "GPU_selected_cases_per_job": 100,
+  "GPU_jobs_parallel": false,
+  "workload_bundle_sha256": "2d9a9effb018d27687ef3dec050c22ae1a2c5e41f7209896c41c685adf634dd8",
+  "GPU_created": false,
+  "budget_approved": false,
+  "reserved_schedule_sha256": "dafb88fb778b115a3a9d2dcdb4f2b498b65be83136a70001b26597ff817621c3",
+  "comparison_schedule_changed": false,
+  "scientific_sample_size_established": false,
+  "proposal": "docs/environment/finite-work-sample-window.md"
+}

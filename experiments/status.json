@@ -183,5 +183,18 @@
     "GPU_released": true,
     "stop_reason": "PREDECLARED_ORIGINAL_TRACE_BYTE_LIMIT",
     "full_comparative_campaigns_complete": false
+  },
+  "finite_work_sample": {
+    "state": "LOCAL_VALIDATED_AWAITING_COSTED_WINDOW_APPROVAL",
+    "pilot_requested": true,
+    "budget_approved": false,
+    "parallel_gpu_jobs": false,
+    "planned_jobs": 14,
+    "selected_cases_per_job": 100,
+    "actual_gpu_jobs_run": 0,
+    "proposal": "docs/environment/finite-work-sample-window.md",
+    "local_qualification": "results/manifests/finite-work-sample-local-qualification.json",
+    "reserved_comparison_schedule_changed": false,
+    "full_comparative_campaigns_complete": false
   }
 }
