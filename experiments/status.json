@@ -185,19 +185,27 @@
     "full_comparative_campaigns_complete": false
   },
   "finite_work_sample": {
-    "state": "APPROVED_STOP_ONLY_LIFECYCLE_VALIDATED",
+    "state": "COMPLETED_AND_INDEPENDENTLY_AUDITED_FINITE_WORK_SAMPLE",
     "pilot_requested": true,
     "budget_approved": true,
     "parallel_gpu_jobs": false,
     "planned_jobs": 14,
     "selected_cases_per_job": 100,
-    "actual_gpu_jobs_run": 0,
+    "actual_gpu_jobs_run": 14,
     "proposal": "docs/environment/finite-work-sample-window.md",
     "local_qualification": "results/manifests/finite-work-sample-local-qualification.json",
     "reserved_comparison_schedule_changed": false,
     "full_comparative_campaigns_complete": false,
     "post_sample_action": "DEALLOCATE_AND_RETAIN_VM_DISK_UNTIL_USER_DECISION",
     "destroy_authorized": false,
-    "stop_only_qualification": "results/manifests/finite-work-stop-only-lifecycle-qualification.json"
+    "stop_only_qualification": "results/manifests/finite-work-stop-only-lifecycle-qualification.json",
+    "completed_finite_work_jobs": 14,
+    "GPU_released": true,
+    "temporary_resources_created": 13,
+    "temporary_resources_destroyed": 0,
+    "temporary_resources_retained": 13,
+    "evidence": "results/manifests/finite-work-sample-gpu-result.json",
+    "result": "docs/environment/finite-work-sample-result.md",
+    "selected_cases_independently_audited": 1400
   }
 }

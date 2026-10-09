@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T21:52:38.384064+00:00",
+  "window": "work-sample-1009b",
+  "state": "AZURE_BACKED_UP_AND_PUBLIC_DELIVERY_LOCALLY_VERIFIED",
+  "scope": "COMPLETED_DEVELOPMENT_TIMING_SAMPLE_ONLY",
+  "gpu_compute_released": true,
+  "power_state": "PowerState/deallocated",
+  "vm_and_disk_retained": true,
+  "resources_destroyed": 0,
+  "original_backup_receipt": {
+    "file": "work-sample-gpu-azure-receipt.json",
+    "sha256": "b74d72ba2f21fe11b44748fd11ec411f51d4e85e2d59a78806a90e7bb62027ab"
+  },
+  "final_audits_backup_receipt": {
+    "file": "work-sample-final-audits-azure-receipt.json",
+    "sha256": "606822e1c0e90f7299d7498ed0dec6b380eea98ed09a60d559fa47432ca19c38"
+  },
+  "final_audits_backup_timing": {
+    "file": "final-audits-backup-timing.json",
+    "sha256": "e35aadbfc1a727ab7d855fad874263fb928852369765ba040b18c13218c6f249"
+  },
+  "final_audits_files_verified": 27,
+  "final_audits_bytes_verified": 320167,
+  "full_remote_GET_sha256_and_length_verified": true,
+  "final_audits_backup_seconds": 35.91334181,
+  "independent_public_delivery_review": {
+    "file": "preview-independent-review.json",
+    "sha256": "bef0db5cfc96321d06592dc970a91a8a68fe0ded529c7beab68953bd65d1f749"
+  },
+  "independent_checks_passed": 16,
+  "public_files_sha256": {
+    "docs/environment/finite-work-sample-window.md": "c343277eb7bbb4d35717269eb2beb5f8364f2c9ae94a702473672208ca9db878",
+    "docs/environment/finite-work-sample-result.md": "ade149fe30a836a7a667ece27d414d01603d4622e9583d5b984486226e5fabfe",
+    "results/manifests/finite-work-sample-proposal.json": "2f79df17c198f4f0d07a7d673fbc9d17e251c5537553bfcf487db389c73e1616",
+    "experiments/status.json": "1bd265cfa2191ec89cc407c4fba12c0270b147321831ddc221c59fa60e9cb2ee",
+    "results/manifests/finite-work-sample-gpu-result.json": "8ebe165293383980bed134043692fa665d468807e9896745be00431834b38d33"
+  },
+  "git_publication_state": "PENDING_SOURCE_CHECKS_AND_PUSH",
+  "retained_vm_may_only_be_started_by_a_new_scoped_campaign": true,
+  "full_E0_E8_complete": false,
+  "statistical_superiority_established": false
+}

@@ -109,7 +109,12 @@ def blob_exists(account,container,blob):
 
 
 def upload_blocks(account,container,blob,file,digest):
-    block_size=BLOCK_SIZE;size=file.stat().st_size;count=max(1,(size+block_size-1)//block_size)
+    block_size=BLOCK_SIZE;size=file.stat().st_size
+    if size==0:
+        with request(account,container,blob,method='PUT',data=b'',headers={
+                'x-ms-blob-type':'BlockBlob','x-ms-meta-sha256':digest,'If-None-Match':'*'}):pass
+        return
+    count=(size+block_size-1)//block_size
     def block(index):
         block_id=base64.b64encode(f'{index:08d}'.encode()).decode()
         with file.open('rb') as source:source.seek(index*block_size);data=source.read(block_size)

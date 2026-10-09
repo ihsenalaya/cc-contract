@@ -1,10 +1,13 @@
 # Finite-work H100 timing sample — provisioning proposal
 
-Status: local checks completed and saved read-only plan verified; USD 15 / 90
-minutes approved by the user. Stop and retain the VM until the user's decision.
+Status: approved USD 15 / 90-minute window executed. All fourteen fixed-work
+jobs completed and passed independent review. VM deallocation is confirmed;
+VM, disk and restart resources are retained until the user decides.
+[Measured result](finite-work-sample-result.md).
 
 Window `work-sample-1009b`: thirteen creations, zero changes to existing
-resources, zero resources created. Saved plan SHA-256:
+resources. All thirteen managed resources were created and retained; none
+were destroyed. Saved plan SHA-256:
 `74397e689b9a7cc87a87f817412dafcb29f1ce264199c2439279e602864a37a5`.
 Expiry: 2026-10-09 21:38:20 UTC. Apply requires at least eighty minutes remaining.
 Local evidence: [qualification manifest](../../results/manifests/finite-work-sample-local-qualification.json).
@@ -13,7 +16,7 @@ completed fourteen four-case functional jobs. Independent review recomputed
 112 cases, 100 passing and 12 invalid. The 100-case storage projection completed
 all fourteen jobs: approximately 599 MiB raw, 2.43 GiB with the planning margin,
 and a largest per-job bound of approximately 356 MiB. These are CPU preparation
-checks; H100 timings are still unmeasured.
+checks; the completed H100 timing sample is linked above.
 
 Measure the actual time needed for a declared amount of work. The earlier
 time-budgeted sample was partial and cannot supply timings for all methods.
