@@ -85,7 +85,15 @@ def main():
             'workloads':['E0_native_reference','E2_96_IR_cases_optional_capabilities','E1_E7_18_float_component_records','E7_24_paired_Qwen_prompts'],
             'comparative_E4_E5_campaigns_included':False}
     if cloud:
+        gate=json.loads((ROOT/'.local/cloud-model-kind/verified.json').read_text())
+        cloud_image=(ROOT/'.local/images/remote-digest').read_text().strip()
+        registry=json.loads((ROOT/'.local/images/registry-manifest.json').read_text())
+        inspection=json.loads((ROOT/'.local/images/inspect.json').read_text())[0]
+        if not gate['verified'] or gate['image_id']!=inspection['Id'] or gate['git_commit']!=inspection['Config']['Labels']['org.opencontainers.image.revision'] or gate['downloader_sha256']!=sha(ROOT/'src/cc_contract/cloud_model.py') or cloud_image.rsplit('@',1)[1]!=registry['digest']:
+            raise ValueError('Cloud downloader lacks matching Kind and registry verification')
         bundle['model_cloud']=cloud
+        bundle['cloud_transport_image']=cloud_image
+        bundle['cloud_transport_kind_sha256']=sha(ROOT/'.local/cloud-model-kind/verified.json')
         bundle['cloud_downloader_sha256']=sha(ROOT/'src/cc_contract/cloud_model.py')
         bundle['model_receipt_sha256']=sha(args.model_receipt)
     (args.output/'workload-bundle.json').write_text(json.dumps(bundle,indent=2)+'\n')

@@ -27,12 +27,14 @@ capture() {
   if [ "$task_code" -ne 0 ]; then
     task_failed=1
     case "$task_label" in
-      cc-mode|cc-environment|secure-boot|cpu-attestation|gpu-attestation|cuda-reference|ir-reference|pytorch-components) task_allowed=0 ;;
+      kernel-version|driver-version|cc-mode|cc-environment|secure-boot|cpu-attestation|gpu-attestation|cuda-reference|ir-reference|pytorch-components) task_allowed=0 ;;
     esac
   fi
 }
 capture kernel uname -a
+capture kernel-version uname -r
 capture nvidia-info nvidia-smi -q
+capture driver-version nvidia-smi --query-gpu=driver_version --format=csv,noheader
 capture cc-mode nvidia-smi conf-compute -f
 capture cc-environment nvidia-smi conf-compute -e
 capture secure-boot mokutil --sb-state
@@ -47,6 +49,8 @@ for task_tool in cpu-attestation gpu-attestation nvidia-smi; do
   [ -z "$task_path" ] || sha256sum "$task_path" >> tool-hashes.txt
 done
 grep -Eq 'CC status:[[:space:]]*ON' cc-mode.stdout || task_allowed=0
+grep -qx '6.8.0-1066-azure-fde' kernel-version.stdout || task_allowed=0
+grep -qx '595.91.07' driver-version.stdout || task_allowed=0
 grep -q 'PRODUCTION' cc-environment.stdout || task_allowed=0
 grep -q 'SecureBoot enabled' secure-boot.stdout || task_allowed=0
 grep -q 'Attested Guest Successfully' cpu-attestation.stdout || task_allowed=0

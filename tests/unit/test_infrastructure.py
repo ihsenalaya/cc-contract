@@ -23,6 +23,32 @@ registry_auth=importlib.util.module_from_spec(spec);spec.loader.exec_module(regi
 
 
 class InfrastructureTests(unittest.TestCase):
+    def test_cloud_bundle_rejects_mutable_transport_changed_reader_and_missing_shard(self):
+        # CPU-only approval guard fixtures, without network, model bytes or GPU.
+        import copy
+        names=['cc-model-manifest.json','inference-corpus.json']
+        names += [f'model-{n}.safetensors' for n in range(4)]
+        names += [f'metadata-{n}.json' for n in range(8)]
+        rows=[{'name':n,'blob':'a'*64+'/'+n,'sha256':'a'*64,'bytes':1} for n in names]
+        bundle={'transport':'AZURE_BLOB_IMDS',
+                'images':{k:'ghcr.io/ihsenalaya/cc-contract-'+k+'@sha256:'+'a'*64 for k in ('cuda','ir','torch')},
+                'cloud_transport_image':'ghcr.io/ihsenalaya/cc-contract-cpu@sha256:'+'b'*64,
+                'model_cloud':{'account':'cccontractabcdefghij','container':'models','files':rows},
+                'cloud_downloader_sha256':window.sha(ROOT/'src/cc_contract/cloud_model.py'),
+                'model_manifest_sha256':'a'*64,'corpus_sha256':'a'*64,
+                'corpus_filename':'inference-corpus.json','model_revision':'a09a35458c702b33eeacc393d103063234e8bc28'}
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'bundle.json';path.write_text(json.dumps(bundle))
+            window.verify_bundle(path)
+            for field,value,message in [
+                ('cloud_transport_image','ghcr.io/ihsenalaya/cc-contract-cpu:latest','immutable'),
+                ('cloud_downloader_sha256','0'*64,'changed')]:
+                mutated=copy.deepcopy(bundle);mutated[field]=value;path.write_text(json.dumps(mutated))
+                with self.assertRaisesRegex(ValueError,message):window.verify_bundle(path)
+            mutated=copy.deepcopy(bundle);mutated['model_cloud']['files'].pop(2)
+            path.write_text(json.dumps(mutated))
+            with self.assertRaisesRegex(ValueError,'incomplete'):window.verify_bundle(path)
+
     def test_temporary_registry_credential_is_removed_when_child_fails(self):
         observed=[]
         def command(args,**kwargs):

@@ -1,0 +1,112 @@
+{
+  "window": "pilot-cloud-1009c",
+  "planned_resources": [
+    {
+      "address": "azurerm_linux_virtual_machine.gpu",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_logic_app_action_custom.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_logic_app_trigger_recurrence.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_logic_app_workflow.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_network_interface.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_network_security_group.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_public_ip.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_resource_group.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_role_assignment.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_role_assignment.model_read[0]",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_role_definition.expiry",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_subnet.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_subnet_network_security_group_association.window",
+      "actions": [
+        "create"
+      ]
+    },
+    {
+      "address": "azurerm_virtual_network.window",
+      "actions": [
+        "create"
+      ]
+    }
+  ],
+  "plan_sha256": "59c85119e8cc605483b8716d86d975fc00200dabfc1690f98ed7332109449c0e",
+  "expires_at_utc": "2026-10-09T17:32:18Z",
+  "approval_required": true,
+  "created_resources": 0,
+  "workload_bundle_sha256": "cbccb2f649134b0ed50246a160ef6d7ff2409e2961b50f204a65cae06f315978",
+  "host_script_sha256": "a28f3c07d042dca43429747111da7e44577656ce5a012c301ba170b85bbf018f",
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T15:33:46.247267+00:00",
+  "scope": "PROPOSED_CLOUD_MODEL_H100_QUALIFICATION_PILOT",
+  "approval_granted": false,
+  "max_allocated_vm_hours": 2,
+  "proposed_budget_usd": 20,
+  "linux_retail_compute_usd_per_hour": 6.98,
+  "estimated_compute_usd_at_max_hours": 13.96,
+  "spending_plan_is_not_guaranteed_invoice_ceiling": true,
+  "long_comparative_campaigns_included": false,
+  "workloads": [
+    "54 CUDA observations",
+    "96 IR cases with explicit unsupported classification",
+    "18 PyTorch component records",
+    "24 paired Qwen prompts"
+  ],
+  "temporary_store_deletion_included": false
+}

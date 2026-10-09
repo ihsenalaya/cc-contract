@@ -57,6 +57,8 @@ def verify_bundle(path, check_archive=True):
         sys.path.insert(0,str(ROOT/'src'))
         from cc_contract.cloud_model import validate_spec
         cloud=validate_spec(bundle['model_cloud'])
+        if not re.fullmatch(r'ghcr.io/ihsenalaya/cc-contract-cpu@sha256:[a-f0-9]{64}',bundle['cloud_transport_image']):
+            raise ValueError('Cloud transport image must be an immutable project digest')
         if sha(ROOT/'src/cc_contract/cloud_model.py')!=bundle['cloud_downloader_sha256']:
             raise ValueError('Planned cloud downloader changed')
         rows={r['name']:r for r in cloud['files']}
@@ -142,6 +144,12 @@ def collect_and_release(directory):
 
 
 def main():
+    # Prefer the qualified Linux client over the unreliable WSL/Windows relay.
+    native = STATE / 'azure-native-cli-venv/bin/az'
+    config = STATE / 'azure-native-cli-config'
+    if native.is_file() and (config / 'azureProfile.json').is_file():
+        os.environ['PATH'] = str(native.parent) + os.pathsep + os.environ['PATH']
+        os.environ['AZURE_CONFIG_DIR'] = str(config)
     p = argparse.ArgumentParser()
     p.add_argument("action", choices=["plan", "run", "apply", "qualify", "collect-release", "release", "destroy"])
     p.add_argument("--window", required=True)
@@ -250,6 +258,7 @@ def main():
                 if scope['workload_bundle_sha256']!=sha(directory/'workload-bundle.json') or scope['host_script_sha256']!=sha(ROOT/'scripts/qualify-host.sh'):
                     raise RuntimeError('Qualification workload changed since plan approval')
             images=list(bundle['images'].values()) if bundle else [image]
+            if bundle and bundle.get('transport')=='AZURE_BLOB_IMDS':images.append(bundle['cloud_transport_image'])
             if bundle:image=bundle['images']['cuda']
             # Credential stays in a root-only RAM directory and is removed after pull.
             credential_file = Path.home() / ".config/gh/hosts.yml"
@@ -261,14 +270,13 @@ def main():
             command(ssh_args(directory, outputs) + [remote], input=match.group(1) + "\n", timeout=600)
             arguments=[image]
             if bundle:
-                # Transfer a fully prepared local archive; never download models
-                # or install Python packages while the GPU is allocated.
+                # Model bytes are already prepared and verified. Download directly
+                # from the private Azure backup, or transfer the prepared archive.
                 target='/home/cccontract/cc-contract-model'
                 cloud=bundle.get('transport')=='AZURE_BLOB_IMDS'
                 streaming=bundle.get('transport')=='DETERMINISTIC_TAR_STREAM'
                 if cloud:
-                    command(ssh_args(directory,outputs)+['umask 077; cat > ~/cc-cloud-model.py'],input=(ROOT/'src/cc_contract/cloud_model.py').read_text(),timeout=60)
-                    download='set -e; mkdir -p ~/cc-contract-evidence; python3 ~/cc-cloud-model.py --manifest /dev/stdin --output '+target+' --receipt ~/cc-contract-evidence/model-download.json > ~/cc-contract-evidence/model-download.stdout 2> ~/cc-contract-evidence/model-download.stderr; sudo chown -R 10001:10001 '+target
+                    download='set -e; mkdir -p ~/cc-contract-evidence; sudo -n install -d -m 700 -o 10001 -g 10001 '+target+' ~/cc-contract-evidence/cloud-transfer; sudo -n docker run --rm -i --network host --read-only --cap-drop ALL --security-opt no-new-privileges --mount type=bind,source='+target+',target=/model --mount type=bind,source=/home/cccontract/cc-contract-evidence/cloud-transfer,target=/evidence --entrypoint python3 '+shlex.quote(bundle['cloud_transport_image'])+' -m cc_contract.cloud_model --manifest /dev/stdin --output /model --receipt /evidence/model-download.json > ~/cc-contract-evidence/model-download.stdout 2> ~/cc-contract-evidence/model-download.stderr'
                     command(ssh_args(directory,outputs)+[download],input=json.dumps(bundle['model_cloud']),timeout=900)
                 else:
                     remote_archive='/home/cccontract/model-bundle.tar'+('' if streaming else '.gz')

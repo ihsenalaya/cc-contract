@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T15:31:48.379616+00:00",
+  "scope": "LOCAL_CLOUD_PILOT_PREPARATION_NOT_REAL_GPU_VALIDATION",
+  "gpu_executed": false,
+  "source_tests_passed": 62,
+  "source_checks_sha256": "25e106375c37df69d1a1a396f5550b96c2d8c86be06d5dd764002c443301b525",
+  "cpu_image_source_commit": "0c6790e877ac3f74d2910dedbab8ac017d8fb68b",
+  "immutable_cpu_transport_image": "ghcr.io/ihsenalaya/cc-contract-cpu@sha256:c188252eac20252000f49611de2c4b913d924699f2d0805e9b6927f80228e6fc",
+  "cloud_reader_kind": {
+    "scope": "CPU_KIND_REAL_AZURE_BLOB_READ_NOT_GPU_OR_IMDS_VALIDATION",
+    "verified": true,
+    "workers": [
+      "cc-contract-worker",
+      "cc-contract-worker2"
+    ],
+    "image_id": "sha256:c188252eac20252000f49611de2c4b913d924699f2d0805e9b6927f80228e6fc",
+    "git_commit": "0c6790e877ac3f74d2910dedbab8ac017d8fb68b",
+    "downloader_sha256": "f8f106c72fc03e8a0e7d84b30c7191871f4db053f3b4e041dca187471a3613a2",
+    "file_sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c",
+    "bytes_per_worker": 663,
+    "secret_API_access": "DENIED",
+    "guest_managed_identity_verified": false
+  },
+  "cloud_reader_kind_sha256": "1025a5dd9f0c5ea3bd49460a63f129eb75cf0d9bf75db2f2860b78d356cdd2d5",
+  "native_azure_cli": "2.78.0",
+  "native_cli_dependencies_check": "PASS",
+  "native_cli_ARM_session": "VERIFIED_EXISTING_AUTHORIZATION",
+  "native_cli_check_log_sha256": "011afc376773dfc52ebd3749460b0d4549c953843394d60edb1a2ed8d939ccf1",
+  "terraform_mock_plans_passed": 2,
+  "terraform_check_log_sha256": "900965ef6d7c0005061ff8fc6279c0dc46f803b736abe322eaa17d60de08399f",
+  "azure_preflight": {
+    "timestamp_utc": "2026-10-09T15:30:03.013715+00:00",
+    "account_enabled": true,
+    "active_project_vms": 0,
+    "sku": [
+      {
+        "name": "Standard_NCC40ads_H100_v5",
+        "restrictions": [],
+        "locations": [
+          "eastus2"
+        ]
+      }
+    ],
+    "quota": [
+      {
+        "name": "cores",
+        "current": "0",
+        "limit": "82"
+      },
+      {
+        "name": "StandardNCCads2023Family",
+        "current": "0",
+        "limit": "40"
+      }
+    ],
+    "capacity_guaranteed": false
+  },
+  "model_transport": "AZURE_BLOB_IMDS",
+  "bundle_sha256": "cbccb2f649134b0ed50246a160ef6d7ff2409e2961b50f204a65cae06f315978",
+  "local_weight_shards_restored": false,
+  "remaining": [
+    "Approved concrete temporary GPU window",
+    "Guest managed identity model transfer verification",
+    "Hardware qualification and actual CUDA/float/paired inference execution",
+    "Independent GPU attestation and expiry-allocated-state branch",
+    "Oracle and protocol freeze before full E4/E5 budgets",
+    "Original H08/H09 evidence and configurations",
+    "Azure kubeadm integration remains unimplemented and unqualified"
+  ],
+  "verified_Azure_evidence_backup": [
+    {
+      "blob": "203fcbc1493b07c49a7e424a53a8b74b217a4e3e30798d3a23b01423985ce3f6/cloud-pilot-local-20261009.tar",
+      "sha256": "203fcbc1493b07c49a7e424a53a8b74b217a4e3e30798d3a23b01423985ce3f6",
+      "bytes": 1884160,
+      "remote_bytes_verified": true
+    },
+    {
+      "blob": "61e37493e58814bd53c1e3899c6f55a06b64b3b5ee8f30e0e7b0886297f6cfd3/cloud-pilot-local-files-20261009.json",
+      "sha256": "61e37493e58814bd53c1e3899c6f55a06b64b3b5ee8f30e0e7b0886297f6cfd3",
+      "bytes": 11828,
+      "remote_bytes_verified": true
+    }
+  ]
+}

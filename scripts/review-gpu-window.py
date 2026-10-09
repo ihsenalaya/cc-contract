@@ -156,7 +156,11 @@ def main():
                   "cpu_attestation": cpu, "gpu_attestation": {"scope": "LOCAL_HARDWARE_VERIFIER_RECEIPTS",
                   "reported_checks_all_true": True, "checks": checks, "hmac_receipts_independently_authenticated": False,
                   "exported_hardware_quote_independently_reverified": False, "NRAS_token": "NOT_RUN"},
-                  "cuda": review_cuda(rows), "host_pytorch_exit_code": commands["python-torch"]["exit_code"]}
+                  "cuda": review_cuda(rows),
+                  "host_pytorch_exit_code": commands.get("python-torch", {}).get("exit_code"),
+                  "container_pytorch_exit_code": commands.get("pytorch-components", {}).get("exit_code"),
+                  "paired_inference_exit_code": commands.get("torch-inference", {}).get("exit_code"),
+                  "container_component_and_inference_results_require_separate_review": True}
     output = directory / ("review-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S") + ".json")
     with output.open("x") as f:
         json.dump(result, f, indent=2)

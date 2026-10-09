@@ -10,7 +10,8 @@
       "evidence": [
         "results/manifests/initial-local-qualification.json",
         "results/manifests/first-real-gpu-qualification.json",
-        "results/manifests/pilot-local-qualification.json"
+        "results/manifests/pilot-local-qualification.json",
+        "results/manifests/cloud-pilot-local-qualification.json"
       ],
       "remaining": [
         "PyTorch GPU and floating-point/inference qualification",
@@ -108,7 +109,8 @@
       "scope": "qualified_CPU_Torch_image_verified_model_data_and_frozen_tokenizer_corpus",
       "evidence": [
         "results/manifests/software-preparation.json",
-        "results/manifests/pilot-local-qualification.json"
+        "results/manifests/pilot-local-qualification.json",
+        "results/manifests/cloud-pilot-local-qualification.json"
       ],
       "remaining": [
         "GPU components and paired Qwen inference",
@@ -142,5 +144,13 @@
     "resources_destroyed": 13,
     "resources_remaining": 0,
     "full_E0_complete": false
+  },
+  "next_gpu_window": {
+    "state": "READY_AWAITING_BUDGET_APPROVAL",
+    "proposal": "docs/environment/cloud-gpu-pilot.md",
+    "approval_granted": false,
+    "gpu_resources_created": 0,
+    "comparative_campaigns_included": false,
+    "evidence": "results/manifests/cloud-pilot-proposal.json"
   }
 }
