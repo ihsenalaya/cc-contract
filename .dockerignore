@@ -1,6 +1,7 @@
 *
 !Dockerfile
 !Dockerfile.cuda
+!Dockerfile.ir
 !src/
 !src/**
 src/**/__pycache__/

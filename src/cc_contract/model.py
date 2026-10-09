@@ -12,6 +12,7 @@ def execute(scenario: dict, mutation: str | None = None) -> list[dict]:
     queue: dict[str, list] = {}
     events: dict[str, tuple[str, int]] = {}
     observations = []
+    graphs = {}
 
     def flush(stream: str, limit: int | None = None) -> None:
         items = queue.setdefault(stream, [])
@@ -33,7 +34,7 @@ def execute(scenario: dict, mutation: str | None = None) -> list[dict]:
             buffers[op["buffer"]] = {"values": [0] * op["size"], "generation": -1}
         elif kind == "write":
             buffers[op["buffer"]] = {"values": list(op["values"]), "generation": op["generation"]}
-        elif kind == "copy":
+        elif kind in {"copy", "mapped_copy"}:
             queue.setdefault(op["stream"], []).append(("copy", op["source"], op["target"]))
         elif kind == "record_event":
             events[op["event"]] = (op["stream"], len(queue.setdefault(op["stream"], [])))
@@ -41,6 +42,14 @@ def execute(scenario: dict, mutation: str | None = None) -> list[dict]:
             queue.setdefault(op["stream"], []).append(("wait", *events[op["event"]]))
         elif kind == "sync":
             flush(op["stream"])
+        elif kind == "define_graph":
+            graphs[op["graph"]] = deepcopy(op["operations"])
+        elif kind == "replay_graph":
+            for _ in range(op["repeats"]):
+                for node in graphs[op["graph"]]:
+                    queue.setdefault(node["stream"], []).append(("copy", node["source"], node["target"]))
+        elif kind == "destroy_graph":
+            del graphs[op["graph"]]
         elif kind == "free":
             del buffers[op["buffer"]]
         elif kind == "observe":

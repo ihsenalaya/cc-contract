@@ -62,10 +62,10 @@ class ContractTests(unittest.TestCase):
         with self.assertRaisesRegex(InvalidScenario, "observable"):
             validate(s)
 
-    def test_graphs_report_unsupported(self):
+    def test_graph_family_requires_actual_replay_operations(self):
         s = scenario(0, "T01")
         s["family"] = "T08"
-        with self.assertRaises(UnsupportedScenario):
+        with self.assertRaisesRegex(InvalidScenario, "graph replay"):
             validate(s)
 
     def test_model_replay_deterministic_and_nonmutating(self):
