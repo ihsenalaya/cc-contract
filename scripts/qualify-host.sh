@@ -57,7 +57,7 @@ if [ "$task_allowed" -eq 1 ]; then
   task_run_id="gpu-$(date -u +%Y%m%dT%H%M%SZ)-$(cat /proc/sys/kernel/random/uuid)"
   capture cuda-reference sudo -n docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --runtime=nvidia --gpus all --ulimit memlock=-1:-1 --env "CC_RUN_ID=$task_run_id" --env "CC_COMMIT=$task_commit" --env "CC_IMAGE_DIGEST=$task_image" "$task_image"
   if [ "$task_allowed" -eq 1 ] && [ -n "$task_ir" ]; then
-    capture ir-reference sudo -n docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --runtime=nvidia --gpus all --ulimit memlock=-1:-1 --env "CC_RUN_ID=$task_run_id-ir" --env "CC_IMAGE_DIGEST=$task_ir" "$task_ir" qualify --backend cuda --allow-unsupported
+    capture ir-reference sudo -n docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges --runtime=nvidia --gpus all --ulimit memlock=-1:-1 --env "CC_RUN_ID=$task_run_id-ir" --env "CC_IMAGE_DIGEST=$task_ir" "$task_ir" qualify --backend cuda --allow-unsupported --emit-records
   fi
   if [ "$task_allowed" -eq 1 ] && [ -n "$task_torch" ]; then
     capture pytorch-components sudo -n docker run --rm --network none --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL --security-opt no-new-privileges --runtime=nvidia --gpus all --ulimit memlock=-1:-1 --env "CC_RUN_ID=$task_run_id-torch" --env "CC_IMAGE_DIGEST=$task_torch" "$task_torch" components --device cuda

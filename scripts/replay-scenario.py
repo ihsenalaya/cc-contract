@@ -2,6 +2,8 @@
 import argparse
 import hashlib
 import json
+import os
+from collections import Counter
 from pathlib import Path
 import time
 from cc_contract.cli import canonical,provenance
@@ -31,20 +33,31 @@ def main():
     commit,dirty=provenance();started=time.monotonic();run_id='replay-'+uuid4().hex
     manifest={'run_id':run_id,'timestamp_utc':utc(),'git_commit':commit,'working_tree_dirty':dirty,
               'scope':executor.environment['scope'],'gpu_executed':executor.environment['gpu_executed'],
+              'environment':executor.environment,'image_digest':os.environ.get('CC_IMAGE_DIGEST','NOT_APPLICABLE_LOCAL_PROCESS'),
               'scenario_sha256':hashlib.sha256(args.scenario.read_bytes()).hexdigest(),'budget_seconds':args.budget_seconds}
     calls=[]
+    raw=args.output/'replays.jsonl';raw.touch(exist_ok=False)
+    def persist(candidate, observations):
+        record={'record_type':'case','run_id':run_id,'case_index':len(calls),'timestamp_utc':utc(),
+                'scenario':candidate,'observations':observations,'fingerprint':fingerprint(observations),
+                'verdict':'FAIL' if fingerprint(observations) else 'PASS',
+                'elapsed_seconds':time.monotonic()-started,'scope':executor.environment['scope'],
+                'gpu_executed':executor.environment['gpu_executed']}
+        with raw.open('ab') as file:
+            file.write(canonical(record));file.flush();os.fsync(file.fileno())
+        calls.append(record)
     try:
+        if executor.environment['gpu_executed'] and ('@sha256:' not in manifest['image_digest'] or dirty is True):
+            raise ValueError('GPU replay requires immutable image digest and committed sources')
         if hasattr(executor,'timeout'):executor.timeout=min(60,args.budget_seconds)
         original=executor.execute(case);target=fingerprint(original)
+        persist(case,original)
         def predicate(candidate):
             remaining=args.budget_seconds-(time.monotonic()-started)
             if remaining<=0:return False
             if hasattr(executor,'timeout'):executor.timeout=min(60,remaining)
             result=executor.execute(candidate)
-            record={'scenario':candidate,'observations':result,'fingerprint':fingerprint(result),
-                    'elapsed_seconds':time.monotonic()-started,'scope':executor.environment['scope']}
-            calls.append(record)
-            with (args.output/'replays.jsonl').open('ab') as file:file.write(canonical(record));file.flush()
+            persist(candidate,result)
             return bool(target) and fingerprint(result)==target
         if not target:
             result={'state':'CONDITIONAL_NOT_APPLICABLE','reason':'original_trace_has_no_candidate_anomaly'}
@@ -62,6 +75,9 @@ def main():
     finally:
         executor.close()
         manifest['duration_seconds']=time.monotonic()-started
+        manifest.update({'raw_file':raw.name,'raw_sha256':hashlib.sha256(raw.read_bytes()).hexdigest(),
+                         'completed_cases':len(calls),'counts':dict(Counter(r['verdict'] for r in calls)),
+                         'reproduction_unit':'one_fresh_process; within_process_repeats_are_not_independent'})
         manifest['hashes']={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in args.output.iterdir() if p.is_file()}
         (args.output/'manifest.json').write_bytes(canonical(manifest))
         for file in args.output.iterdir():file.chmod(0o444)

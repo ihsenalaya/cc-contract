@@ -36,19 +36,41 @@ def backend(name):
     return ModelExecutor() if name=='model' else NativeExecutor(reference=name=='native-reference')
 
 
-def qualify(executor):
+def qualify(executor, record_sink=None):
+    commit, dirty = provenance()
+    image = os.environ.get('CC_IMAGE_DIGEST','NOT_APPLICABLE_LOCAL_PROCESS')
+    if executor.environment['gpu_executed'] and ('@sha256:' not in image or dirty is True):
+        raise ValueError('GPU qualification requires immutable image digest and committed sources')
+    run_id = os.environ.get('CC_RUN_ID') or 'qualification-'+uuid4().hex
+    raw_hash = hashlib.sha256()
     counts, observations = Counter(),0
-    for case in qualification_corpus():
+    for index, case in enumerate(qualification_corpus()):
+        result, reason = [], None
         try:
             result = executor.execute(case)
             verdict = 'FAIL' if any(o['verdict']=='FAIL' for o in result) else 'PASS'
             observations += len(result)
-        except UnsupportedScenario:
-            verdict = 'UNSUPPORTED'
+        except UnsupportedScenario as exc:
+            verdict, reason = 'UNSUPPORTED', str(exc)
+        except InfrastructureFailure as exc:
+            verdict, reason = 'INFRA_FAILURE', str(exc)
+        record = {'record_type':'qualification_case','run_id':run_id,'case_index':index,
+                  'timestamp_utc':utc(),'scenario':case,'observations':result,
+                  'verdict':verdict,'reason':reason,'scope':executor.environment['scope'],
+                  'gpu_executed':executor.environment['gpu_executed']}
+        raw_hash.update(canonical(record))
+        if record_sink is not None:
+            record_sink(record)
         counts[verdict] += 1
+        if verdict == 'INFRA_FAILURE':
+            break
     return {'record_type':'qualification','scope':executor.environment['scope'],
-            'gpu_executed':executor.environment['gpu_executed'],'cases':96,'counts':dict(counts),
+            'run_id':run_id,'timestamp_utc':utc(),'git_commit':commit,'working_tree_dirty':dirty,
+            'image_digest':image,'environment':executor.environment,'capabilities':executor.capabilities,
+            'oracle_version':'integer_physical_tag_v2','planned_cases':96,
+            'gpu_executed':executor.environment['gpu_executed'],'cases':sum(counts.values()),'counts':dict(counts),
             'observations':observations,'verdict':'PASS' if counts['PASS']==96 else 'INCOMPLETE',
+            'case_records_emitted':record_sink is not None,'case_records_sha256':raw_hash.hexdigest(),
             'hardware_attestation':'NOT_RUN_IN_WORKER'}
 
 
@@ -148,6 +170,7 @@ def main():
     parser.add_argument('--blocks',type=int,default=20)
     parser.add_argument('--output',type=Path)
     parser.add_argument('--allow-unsupported',action='store_true',help='Qualification may proceed with explicitly unsupported optional families; verdict/counts stay unchanged')
+    parser.add_argument('--emit-records',action='store_true',help='Stream full qualification scenarios and physical observations before the summary')
     args = parser.parse_args()
     if args.command=='schedule':
         print(json.dumps(schedule(args.blocks,args.budget_seconds,args.seed),indent=2)); return 0
@@ -157,11 +180,13 @@ def main():
         parser.error('GPU comparative budgets cannot be silently replaced by case limits')
     executor = backend(args.backend)
     try:
-        result = qualify(executor) if args.command=='qualify' else campaign(executor,
+        def emit(record):
+            sys.stdout.write(canonical(record).decode()); sys.stdout.flush()
+        result = qualify(executor, emit if args.emit_records else None) if args.command=='qualify' else campaign(executor,
                     {'method':args.method,'seed':args.seed,'budget_seconds':args.budget_seconds,
                      'partition':'development_pilot','max_cases':args.max_cases},args.output,args.max_cases)
         print(json.dumps(result,indent=2))
-        if args.command=='qualify' and args.allow_unsupported and result['counts'].get('PASS',0)>0 and not result['counts'].get('FAIL',0):
+        if args.command=='qualify' and args.allow_unsupported and result['counts'].get('PASS',0)>0 and not any(result['counts'].get(v,0) for v in ('FAIL','INFRA_FAILURE')):
             return 0
         return 0 if result.get('verdict')=='PASS' or result.get('state','').startswith('COMPLETE') else 1
     finally:

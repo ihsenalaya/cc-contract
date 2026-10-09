@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import math
 import tempfile
 import unittest
@@ -8,10 +9,35 @@ from cc_contract.model import execute
 from cc_contract.oracles import dot_reference, dot_verdict
 from cc_contract.search import Search, METHODS, schedule
 from cc_contract.reducer import reduce
-from cc_contract.runner import ModelExecutor, campaign
+from cc_contract.runner import ModelExecutor, campaign, qualify
+from cc_contract.cli import canonical
+from cc_contract.native import InfrastructureFailure
 
 
 class ExtendedTests(unittest.TestCase):
+    def test_qualification_preserves_recomputable_case_evidence(self):
+        records=[]
+        report=qualify(ModelExecutor(),records.append)
+        self.assertEqual(report['counts'],{'PASS':96})
+        self.assertEqual(report['observations'],252)
+        self.assertEqual(report['case_records_sha256'],hashlib.sha256(b''.join(canonical(r) for r in records)).hexdigest())
+        for record in records:
+            self.assertEqual(record['run_id'],report['run_id'])
+            self.assertEqual(record['observations'],execute(record['scenario']))
+            self.assertFalse(record['gpu_executed'])
+
+    def test_qualification_keeps_partial_records_on_worker_failure(self):
+        class BrokenWorker(ModelExecutor):
+            def execute(self,case):
+                raise InfrastructureFailure('controlled CPU infrastructure fixture')
+        records=[]
+        report=qualify(BrokenWorker(),records.append)
+        self.assertEqual(report['verdict'],'INCOMPLETE')
+        self.assertEqual(report['counts'],{'INFRA_FAILURE':1})
+        self.assertEqual(report['cases'],1)
+        self.assertEqual(len(records),1)
+        self.assertIn('controlled CPU',records[0]['reason'])
+
     def test_all_eight_families_and_boundaries(self):
         cases=qualification_corpus()
         self.assertEqual(len(cases),96)

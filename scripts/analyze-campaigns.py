@@ -110,6 +110,9 @@ def analyze(paths, reviews=None):
     if len(scopes)!=1:
         raise ValueError('Never pool CPU and GPU execution scopes')
     reviewed=reviewed_defects(reviews,campaigns)
+    reviewed_cases = {(r['run_id'],r['case_index']) for r in json.loads(Path(reviews).read_text())} if reviews else set()
+    unreviewed = sum(r['verdict']=='FAIL' and (m['run_id'],i) not in reviewed_cases
+                     for m,records in campaigns for i,r in enumerate(records))
     keyed={}; excluded=[]
     rows=[]
     for manifest,raw in campaigns:
@@ -161,7 +164,8 @@ def analyze(paths, reviews=None):
     return {'scope':next(iter(scopes)) if scopes else 'NO_DATA','campaign_rows':rows,
             'excluded_from_confirmatory_comparison':excluded,'comparisons':comparisons,
             'confirmed_defect_review':'EXTERNAL_REVIEW_WITH_TWO_HASHED_REPLAYS' if reviews else 'NOT_PERFORMED',
-            'analysis_state':'INCOMPLETE_DEFECT_REVIEW' if any(r['candidate_failures'] for r in rows) and not reviews else 'COLLECTED_DATA_SUMMARY',
+            'analysis_state':'INCOMPLETE_DEFECT_REVIEW' if unreviewed else 'COLLECTED_DATA_SUMMARY',
+            'unreviewed_candidate_failures':unreviewed,
             'claim':'NO_AUTOMATIC_SUPERIORITY_CLAIM',
             'statistical_unit':'independent_campaign_block','confidence':.95,
             'bootstrap':{'seed':59001,'draws':5000},'multiple_comparisons':'Holm across B4 versus B1/B2/B3',

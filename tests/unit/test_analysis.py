@@ -1,16 +1,48 @@
 import hashlib
 import importlib.util
 import json
+import os
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
 from cc_contract.runner import campaign,ModelExecutor
+from cc_contract.generators import generate
 
 spec=importlib.util.spec_from_file_location('analysis',Path(__file__).resolve().parents[2]/'scripts/analyze-campaigns.py')
 analysis=importlib.util.module_from_spec(spec); spec.loader.exec_module(analysis)
 
 
 class AnalysisTests(unittest.TestCase):
+    def test_replay_cli_evidence_is_readable_by_review_loader(self):
+        with tempfile.TemporaryDirectory() as root:
+            scenario=Path(root)/'scenario.json';scenario.write_text(json.dumps(generate(17,'T02',size=2)))
+            output=Path(root)/'replay'
+            env={**os.environ,'PYTHONPATH':str(Path(__file__).resolve().parents[2]/'src')}
+            subprocess.run([sys.executable,str(Path(__file__).resolve().parents[2]/'scripts/replay-scenario.py'),
+                            '--scenario',str(scenario),'--output',str(output),'--backend','model'],
+                           env=env,capture_output=True,text=True,check=True)
+            manifest,rows=analysis.load_campaign(output/'manifest.json')
+            self.assertEqual(manifest['state'],'CONDITIONAL_NOT_APPLICABLE')
+            self.assertEqual(len(rows),1)
+            self.assertEqual(rows[0]['scenario'],json.loads(scenario.read_text()))
+            self.assertFalse(rows[0]['gpu_executed'])
+
+    def test_supplied_empty_reviews_do_not_hide_unreviewed_candidates(self):
+        class CandidateFixture(ModelExecutor):
+            def execute(self,case):
+                records=super().execute(case)
+                records[0]['verdict']='FAIL'
+                return records
+        with tempfile.TemporaryDirectory() as root:
+            campaign(CandidateFixture(),{'method':'B4','seed':5,'budget_seconds':10},root,1)
+            reviews=Path(root)/'reviews.json'; reviews.write_text('[]')
+            result=analysis.analyze(list(Path(root).glob('*/manifest.json')),reviews)
+            self.assertEqual(result['analysis_state'],'INCOMPLETE_DEFECT_REVIEW')
+            self.assertEqual(result['unreviewed_candidate_failures'],1)
+            self.assertEqual(result['campaign_rows'][0]['confirmed_defects'],0)
+
     def test_zero_detections_have_positive_upper_confidence_limit(self):
         interval=analysis.wilson(0,20)
         self.assertLess(interval[0],1e-14)
