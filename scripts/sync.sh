@@ -10,7 +10,7 @@ unset GH_DEBUG
 export PATH="/usr/local/bin:/usr/bin:/bin:$PATH"
 cd "$task_root"
 echo "$(date -u +%FT%TZ) sync starting"
-trap 'echo "$(date -u +%FT%TZ) sync failed exit=$?"' ERR
+trap 'task_status=$?; echo "$(date -u +%FT%TZ) sync failed exit=$task_status"; exit "$task_status"' ERR
 if [ -f .local/sync/last-attempt ]; then
   task_last="$(cat .local/sync/last-attempt)"
   if [ "$(( $(date +%s) - task_last ))" -gt 10800 ]; then

@@ -93,6 +93,26 @@ class FixedWorkCloudTests(unittest.TestCase):
                 self.assertTrue(producer.stdout.closed)
                 self.assertFalse((directory/'collection.json').exists())
 
+    def test_actual_export_sorts_chronological_job_folders_for_forward_stream_audit(self):
+        import tarfile
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=Path(temporary)/'fixed-work-fixture';directory.mkdir()
+            root=Path(temporary)/'guest/cc-contract-evidence';root.mkdir(parents=True)
+            for number in (3,1,4,0,2):
+                folder=root/('20261010T00000'+str(number)+'Z-job-'+str(number));folder.mkdir()
+                (folder/'records.jsonl').write_text('CPU FIXTURE ORIGINAL '+str(number))
+            (directory/'workload-bundle.json').write_text(json.dumps({'transport':'FIXED_WORK_IR_CAMPAIGN',
+                'campaign_id':directory.name,'archive_download_byte_limit':window.ARCHIVE_DOWNLOAD_BYTE_LIMIT}))
+            target=directory/'original.tar.gz'
+            with patch.object(window,'ssh_args',return_value=['bash','-c']), \
+                 patch.object(window,'remote_evidence_directory',return_value=str(root)):
+                window.download_evidence(directory,{},target)
+            with tarfile.open(target,'r|gz') as archive:
+                actual=[]
+                for member in archive:
+                    if member.isfile():actual.append(archive.extractfile(member).read().decode())
+            self.assertEqual(actual,['CPU FIXTURE ORIGINAL '+str(n) for n in range(5)])
+
     def test_host_campaign_mount_hash_and_gate_block_later_gpu_jobs(self):
         for failure in ('none','helper','ir'):
             with self.subTest(failure=failure),tempfile.TemporaryDirectory() as temporary:

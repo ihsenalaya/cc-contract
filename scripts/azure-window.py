@@ -260,7 +260,7 @@ def download_evidence(directory, outputs, path):
     limit=bundle.get('archive_download_byte_limit')
     if limit!=ARCHIVE_DOWNLOAD_BYTE_LIMIT:
         raise ValueError('Approved bounded archive download required')
-    arguments=ssh_args(directory,outputs)+['set -o pipefail; tar -cf - -C '+
+    arguments=ssh_args(directory,outputs)+['set -o pipefail; tar --sort=name -cf - -C '+
         shlex.quote(str(PurePosixPath(root).parent))+' cc-contract-evidence | gzip -1']
     # Stop the producer at the byte bound; originals remain on the retained disk.
     # Deadline is also bounded by the independent Azure expiry on this window.
