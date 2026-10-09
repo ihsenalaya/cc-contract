@@ -46,6 +46,14 @@ variable "host_script_sha256" {
   type    = string
   default = ""
 }
+variable "model_container_scope" {
+  type    = string
+  default = ""
+  validation {
+    condition     = var.model_container_scope == "" || can(regex("^/subscriptions/[a-f0-9-]+/resourceGroups/cc-contract-artifacts/providers/Microsoft.Storage/storageAccounts/cccontract[a-z0-9]{8,14}/blobServices/default/containers/models$", var.model_container_scope))
+    error_message = "The GPU may read only the dedicated project model container."
+  }
+}
 variable "confidential_image_id" {
   type    = string
   default = "/communityGalleries/cgpuimage-db870bae-5bcf-4120-9415-b841adef61d3/images/cgpu-NCC-2204-base-image/versions/2204.20260928.0"
@@ -199,6 +207,10 @@ resource "azurerm_linux_virtual_machine" "gpu" {
   secure_boot_enabled             = true
   vtpm_enabled                    = true
   tags                            = local.tags
+  dynamic "identity" {
+    for_each = var.model_container_scope == "" ? [] : [1]
+    content { type = "SystemAssigned" }
+  }
   admin_ssh_key {
     username   = "cccontract"
     public_key = var.ssh_public_key
@@ -212,6 +224,12 @@ resource "azurerm_linux_virtual_machine" "gpu" {
   }
   boot_diagnostics {}
   depends_on = [azurerm_logic_app_action_custom.expiry, azurerm_logic_app_trigger_recurrence.expiry, azurerm_subnet_network_security_group_association.window]
+}
+resource "azurerm_role_assignment" "model_read" {
+  count                = var.model_container_scope == "" ? 0 : 1
+  scope                = var.model_container_scope
+  role_definition_name = "Storage Blob Data Reader"
+  principal_id         = azurerm_linux_virtual_machine.gpu.identity[0].principal_id
 }
 output "vm_id" { value = azurerm_linux_virtual_machine.gpu.id }
 output "ssh_address" { value = azurerm_public_ip.window.ip_address }

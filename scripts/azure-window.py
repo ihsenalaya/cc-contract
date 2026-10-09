@@ -53,7 +53,18 @@ def verify_bundle(path, check_archive=True):
     for kind in ('cuda','ir','torch'):
         if not re.fullmatch(r'ghcr.io/ihsenalaya/cc-contract-'+kind+r'@sha256:[a-f0-9]{64}',bundle['images'][kind]):
             raise ValueError('Bundle image must be an immutable project digest')
-    if check_archive:
+    if bundle.get('transport')=='AZURE_BLOB_IMDS':
+        sys.path.insert(0,str(ROOT/'src'))
+        from cc_contract.cloud_model import validate_spec
+        cloud=validate_spec(bundle['model_cloud'])
+        if sha(ROOT/'src/cc_contract/cloud_model.py')!=bundle['cloud_downloader_sha256']:
+            raise ValueError('Planned cloud downloader changed')
+        rows={r['name']:r for r in cloud['files']}
+        if rows['cc-model-manifest.json']['sha256']!=bundle['model_manifest_sha256'] or rows['inference-corpus.json']['sha256']!=bundle['corpus_sha256']:
+            raise ValueError('Cloud model manifest/corpus changed')
+        if len(rows)!=14 or sum(name.endswith('.safetensors') for name in rows)!=4:
+            raise ValueError('Cloud model shard set incomplete')
+    elif check_archive:
         if bundle.get('transport')=='DETERMINISTIC_TAR_STREAM':
             directory=Path(bundle['model_directory']);manifest=directory/'cc-model-manifest.json'
             if sha(manifest)!=bundle['model_manifest_sha256'] or sha(Path(bundle['corpus_path']))!=bundle['corpus_sha256']:
@@ -171,6 +182,8 @@ def main():
         if args.workload_bundle:
             inputs['workload_sha256']=sha(directory/'workload-bundle.json')
             inputs['host_script_sha256']=sha(ROOT/'scripts/qualify-host.sh')
+            bundle=verify_bundle(directory/'workload-bundle.json')
+            if bundle.get('transport')=='AZURE_BLOB_IMDS':inputs['model_container_scope']=bundle['model_cloud']['resource_scope']
         (directory / "inputs.json").write_text(json.dumps(inputs, indent=2) + "\n")
         with (directory / "plan.log").open("w") as log:
             tf("init", "-input=false", "-reconfigure", f"-backend-config=path={directory / 'terraform.tfstate'}", stdout=log, stderr=subprocess.STDOUT)
@@ -251,9 +264,15 @@ def main():
                 # Transfer a fully prepared local archive; never download models
                 # or install Python packages while the GPU is allocated.
                 target='/home/cccontract/cc-contract-model'
+                cloud=bundle.get('transport')=='AZURE_BLOB_IMDS'
                 streaming=bundle.get('transport')=='DETERMINISTIC_TAR_STREAM'
-                remote_archive='/home/cccontract/model-bundle.tar'+('' if streaming else '.gz')
-                transfer='set -e; cat > '+remote_archive+'; echo '+shlex.quote(bundle['model_archive_sha256']+'  '+remote_archive)+' | sha256sum -c -; mkdir -p '+target+'; tar --no-same-owner '+('-xf ' if streaming else '-xzf ')+remote_archive+' -C '+target+'; sudo chown -R 10001:10001 '+target
+                if cloud:
+                    command(ssh_args(directory,outputs)+['umask 077; cat > ~/cc-cloud-model.py'],input=(ROOT/'src/cc_contract/cloud_model.py').read_text(),timeout=60)
+                    download='set -e; mkdir -p ~/cc-contract-evidence; python3 ~/cc-cloud-model.py --manifest /dev/stdin --output '+target+' --receipt ~/cc-contract-evidence/model-download.json > ~/cc-contract-evidence/model-download.stdout 2> ~/cc-contract-evidence/model-download.stderr; sudo chown -R 10001:10001 '+target
+                    command(ssh_args(directory,outputs)+[download],input=json.dumps(bundle['model_cloud']),timeout=900)
+                else:
+                    remote_archive='/home/cccontract/model-bundle.tar'+('' if streaming else '.gz')
+                    transfer='set -e; cat > '+remote_archive+'; echo '+shlex.quote(bundle['model_archive_sha256']+'  '+remote_archive)+' | sha256sum -c -; mkdir -p '+target+'; tar --no-same-owner '+('-xf ' if streaming else '-xzf ')+remote_archive+' -C '+target+'; sudo chown -R 10001:10001 '+target
                 if streaming:
                     with (directory/'model-stream.stderr').open('wb') as errors:
                         producer=subprocess.Popen([sys.executable,str(ROOT/'scripts/stream-model-bundle.py'),'--bundle',str(directory/'workload-bundle.json')],stdout=subprocess.PIPE,stderr=errors)
@@ -264,7 +283,7 @@ def main():
                         finally:
                             if producer.poll() is None:producer.kill();producer.wait()
                             producer.stdout.close()
-                else:
+                elif not cloud:
                     with Path(bundle['model_archive']).open('rb') as stream:
                         subprocess.run(ssh_args(directory,outputs)+[transfer],stdin=stream,check=True,timeout=1800)
                 arguments += [bundle['images']['ir'],bundle['images']['torch'],target,bundle['corpus_filename']]
@@ -273,7 +292,12 @@ def main():
             (directory / "qualification-exit.json").write_text(json.dumps({"returncode": result.returncode, "timestamp_utc": datetime.now(timezone.utc).isoformat()}) + "\n")
             return result.returncode
         finally:
-            collect_and_release(directory)
+            try:
+                # Hash partial pull/download failures as well as completed workloads.
+                finalize="set -e; mkdir -p ~/cc-contract-evidence; cd ~/cc-contract-evidence; sudo -n chown -R $(id -u):$(id -g) .; find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS"
+                command(ssh_args(directory,outputs)+[finalize],timeout=60)
+            finally:
+                collect_and_release(directory)
     elif args.action == "collect-release":
         collect_and_release(directory)
     elif args.action == "release":

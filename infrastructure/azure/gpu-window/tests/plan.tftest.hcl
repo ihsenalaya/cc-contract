@@ -6,6 +6,20 @@ variables {
   ssh_source_cidr = "192.0.2.1/32"
   expires_at_utc  = "2026-10-09T12:00:00Z"
 }
+run "cloud_model_read_only" {
+  command = plan
+  variables {
+    model_container_scope = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/cc-contract-artifacts/providers/Microsoft.Storage/storageAccounts/cccontract12345678/blobServices/default/containers/models"
+  }
+  assert {
+    condition     = azurerm_linux_virtual_machine.gpu.identity[0].type == "SystemAssigned" && azurerm_role_assignment.model_read[0].role_definition_name == "Storage Blob Data Reader"
+    error_message = "The GPU must use its own identity with read-only model rights."
+  }
+  assert {
+    condition     = endswith(azurerm_role_assignment.model_read[0].scope, "/containers/models")
+    error_message = "Model access must be scoped to the single private container."
+  }
+}
 run "confidential_single_gpu_window" {
   command = plan
   assert {
