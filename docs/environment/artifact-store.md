@@ -34,11 +34,15 @@ dans une archive dédiée, avec index et vérification de chaque membre avant
 transfert. Les clés SSH et les caches d'authentification ne sont pas sélectionnés.
 Les preuves originales restent conservées localement.
 
-La fin du transfert et la libération des poids locaux restent à confirmer dans
-les reçus privés. Ne pas confondre un stockage créé avec des fichiers sauvegardés.
-La préparation du prochain pilote doit utiliser les copies Azure vérifiées avant
-suppression des poids ; le transport actuel du pilote exige encore les sources
-locales. Aucun nouveau pilote n'est déclaré prêt ou exécuté sur cette base.
+Les quatorze fichiers de modèle et de corpus sont sauvegardés :
+15 242 896 869 octets, tous relus depuis Azure et vérifiés par SHA-256 et longueur.
+Les quatre copies locales des poids ont été supprimées après nouvelle
+vérification des sources : 15 231 271 888 octets retirés du cache Linux.
+Cela ne constitue pas une mesure supplémentaire d’espace Windows récupéré.
+Les petits fichiers de configuration et les preuves originales restent conservés.
+La préparation du prochain pilote doit maintenant exploiter les copies Azure
+vérifiées ; le transport actuel du pilote exige encore les sources locales et
+doit être adapté. Aucun nouveau pilote n'est déclaré prêt ou exécuté sur cette base.
 
 Le cluster Kind du projet, ses copies d'images et le cache de compilation Docker
 ont été retirés après qualification et publication. La taille physique du VHD
