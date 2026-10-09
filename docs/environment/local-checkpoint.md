@@ -34,7 +34,9 @@ See [evidence manifest](../../results/manifests/local-infrastructure-qualificati
 and [incident journal](../incidents/incidents.jsonl). Earlier failures are retained.
 
 Cron is active with two-hour synchronization, reboot catch-up and five-minute
-retry. A manual invocation completed tests, secret scanning, commit and push;
+retry. A limited-privilege Windows Scheduled Task is also installed to start WSL
+and invoke the retry script every five minutes and at user logon, independently
+of any terminal/conversation. A manual invocation completed tests, secret scanning, commit and push;
 GitHub CI passed. Actual passage of a full two-hour interval and a powered-off
 host recovery cannot be claimed from the initial invocation alone. WSL must be
 running for cron to execute, and missed intervals are logged on resumption.

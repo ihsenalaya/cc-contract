@@ -46,6 +46,13 @@ an allowlist/credential-pattern check and Trivy secret scanning before committin
 permitted artifacts and pushing, without force. Failures are logged in
 .local/sync/events.log; >3 h gaps are recorded on the next attempt.
 
+On this Windows/WSL host, `scripts/install-windows-sync.ps1` also installs the
+`CCContractGitSync` Windows task. Every five minutes and at user logon it invokes
+WSL's retry script; an actual backup runs only when the two-hour checkpoint is due.
+This wakes WSL independently of an open conversation. The task runs with the
+current logged-on Windows user and limited privileges, without storing a password.
+WSL cron remains a second trigger; flock prevents simultaneous backup runs.
+
 WSL must be running for its cron daemon to execute. Nothing logs while the host
 is powered off. The gap is detected on restart/reconnection; checkpoints resume
 with the next retry. The schedule does not authorize any GPU experiments.
@@ -61,8 +68,14 @@ storage, egress and any CPU control plane. A guest shutdown is insufficient:
 the Azure state must be deallocated, as described in
 [Azure billing states](https://learn.microsoft.com/azure/virtual-machines/states-billing).
 
-Provisioning, confidential-image/driver onboarding, independent expiration,
-durable evidence export and destroy/recreate qualification remain gates for GPU
-work. Reviewers without Azure H100 access can reproduce only local model checks.
+A pinned Terraform module and `scripts/azure-window.py` now implement the first
+window: read-only plan, hash-approved apply/run, qualification, verified archive
+export, release and destruction. `scripts/cuda-image.sh build|kind|publish` builds
+and tests the native E0 probe locally and verifies absence of hardware is reported
+as UNSUPPORTED. The CUDA image is separate from the Python CPU model image.
+
+The real cloud lifecycle, confidential-image/verifier compatibility, expiration
+and H100 destroy/recreate qualification remain unvalidated. These require the
+approved first window; see the costed proposal in docs/environment. Reviewers without Azure H100 access can reproduce only local model checks.
 Sensitive attestation reports, cloud identifiers and nonredistributable model
 weights must remain protected; sanitize and hash shared evidence.

@@ -5,7 +5,8 @@ Experimental software for **Stateful Contract-Guided Testing of Host–Device Da
 This repository implements and records experiments; it is not a paper manuscript.
 Current scope: an initial **CPU simulation**, a conservative sequence validator,
 exact integer/metadata oracles, a 24 legal / 24 controlled mutant / 12 invalid
-development corpus, and local Kubernetes qualification infrastructure.
+development corpus, local Kubernetes qualification infrastructure, a compiled native CUDA E0 probe,
+and a planned temporary Azure lifecycle with independent expiry.
 No CPU result establishes CUDA correctness, GPU attestation or method superiority.
 
 ## Reproduce the initial checks
@@ -25,7 +26,9 @@ only into the CPU observation adapter, never into a GPU memory race. The runner
 checks that their expected FAIL verdicts are produced; they are not discoveries.
 Invalid sequences are rejected before the execution adapter is invoked.
 
-See [reproducibility](docs/reproducibility/README.md),
+See [verified local checkpoint](docs/environment/local-checkpoint.md),
+[first GPU window proposal](docs/environment/first-gpu-window.md),
+[reproducibility](docs/reproducibility/README.md),
 [protocol and gates](docs/methodology/protocol.md),
 [experiment status](experiments/status.json), and
 [incident history](docs/incidents/incidents.jsonl).

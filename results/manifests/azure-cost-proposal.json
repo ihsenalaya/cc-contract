@@ -20,5 +20,7 @@
   "maximum_list_compute_estimate_usd": 13.96,
   "proposed_total_budget_usd": 20,
   "budget_approved": false,
-  "not_a_guaranteed_invoice_ceiling": true
+  "not_a_guaranteed_invoice_ceiling": true,
+  "price_observed_at_utc": "2026-10-09T09:14:57.717124+00:00",
+  "observation_timestamp_basis": "original_API_response_file_mtime"
 }
