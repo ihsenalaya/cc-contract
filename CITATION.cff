@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "Please cite the software version and commit used in your experiment."
+type: software
+title: "CC-Contract experimental software"
+authors:
+  - name: "ihsenalaya"
+version: 0.1.0
+repository-code: "https://github.com/ihsenalaya/cc-contract"
+license: MIT
