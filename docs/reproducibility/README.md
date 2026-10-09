@@ -52,6 +52,11 @@ WSL's retry script; an actual backup runs only when the two-hour checkpoint is d
 This wakes WSL independently of an open conversation. The task runs with the
 current logged-on Windows user and limited privileges, without storing a password.
 WSL cron remains a second trigger; flock prevents simultaneous backup runs.
+The PowerShell launcher passes validated arguments directly to a managed WSL
+process, closes its standard input and records its exit status. Distribution,
+Linux username and workspace path must contain no spaces or shell metacharacters.
+A scheduled invocation completed with exit code 0 while no backup was due;
+manual Linux synchronization separately completed checks and a GitHub push.
 
 WSL must be running for its cron daemon to execute. Nothing logs while the host
 is powered off. The gap is detected on restart/reconnection; checkpoints resume

@@ -1,6 +1,10 @@
 # Working rules
 
 Read docs/methodology/protocol.md and experiments/status.json before changes.
+Read docs/incidents/historical-gpu.md before GPU changes: preserve the
+qualified host driver/kernel and CC, do not retry AKS, enable MIG or reset the
+GPU. GPU Operator must use the host driver (driver.enabled=false). Historical
+vLLM H08/H09 causes remain unconfirmed; never downgrade the driver to reproduce.
 Never claim CPU fixtures validate CUDA, confidential computing or attestation.
 Preserve original evidence outside Git. Use verified hashes to link public summaries.
 No GPU provisioning before local qualification and approval of a concrete costed window.

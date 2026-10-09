@@ -112,5 +112,19 @@
   "real_gpu_execution": "NOT_RUN",
   "real_attestation": "NOT_RUN",
   "cloud_expiry_runtime_validation": "NOT_RUN",
-  "azure_resources_created": 0
+  "azure_resources_created": 0,
+  "windows_backup_trigger": {
+    "scope": "SCHEDULED_NOOP_LAUNCH_ONLY",
+    "verified": true,
+    "last_task_result": 0,
+    "log_sha256": "23fdaddbe73a73faa564155a80fd3192af9a0940adf23158bc72190edd280e37",
+    "task_info_sha256": "19c551422038b0e349c5c6043f83b1be11d168f04724d5a996dad67045eb6f73",
+    "full_scheduled_push": "NOT_RUN",
+    "powered_off_host_recovery": "NOT_RUN"
+  },
+  "cuda_sbom": {
+    "format": "CycloneDX",
+    "sha256": "b2dec9c2d276f0fa49661af8ad6c2e036b2d9c6c067ee9c1744eefb6e6b8f171",
+    "vulnerability_free_claim": false
+  }
 }

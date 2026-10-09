@@ -40,3 +40,11 @@ of any terminal/conversation. A manual invocation completed tests, secret scanni
 GitHub CI passed. Actual passage of a full two-hour interval and a powered-off
 host recovery cannot be claimed from the initial invocation alone. WSL must be
 running for cron to execute, and missed intervals are logged on resumption.
+The final PowerShell Windows launcher was invoked by Task Scheduler and completed
+with exit code 0 when no backup was due. Earlier command-wrapper failures remain
+in the incident journal; a successful no-op trigger is not an end-to-end scheduled
+push or a powered-off-host recovery test.
+
+Historical H100 constraints and reported H08/H09 anomalies are recorded in
+[historical GPU reports](../incidents/historical-gpu.md). Previous campaign logs
+are unavailable here and those anomalies have not been reproduced by this project.
