@@ -24,7 +24,11 @@ def file_hash(path):
 
 def available_bytes(destination):
     free=shutil.disk_usage(destination).free
-    if 'microsoft' in platform.release().lower() and shutil.which('powershell.exe'):
+    if 'microsoft' in platform.release().lower() and Path('/mnt/c').is_dir():
+        # The current workspace and WSL backing disks reside on C:. Query its
+        # mounted filesystem directly, avoiding unreliable Windows interop.
+        free=min(free,shutil.disk_usage('/mnt/c').free)
+    elif 'microsoft' in platform.release().lower() and shutil.which('powershell.exe'):
         response=subprocess.check_output(['powershell.exe','-NoProfile','-Command',
                  'Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Select-Object DeviceID,FreeSpace | ConvertTo-Json -Compress'])
         disks=json.loads(response.decode()); disks=[disks] if isinstance(disks,dict) else disks

@@ -9,12 +9,38 @@ import tempfile
 import unittest
 from cc_contract.runner import campaign,ModelExecutor
 from cc_contract.generators import generate
+from cc_contract.runner import qualify
+from cc_contract.cli import canonical
+from cc_contract.native import InfrastructureFailure
 
 spec=importlib.util.spec_from_file_location('analysis',Path(__file__).resolve().parents[2]/'scripts/analyze-campaigns.py')
 analysis=importlib.util.module_from_spec(spec); spec.loader.exec_module(analysis)
+spec=importlib.util.spec_from_file_location('qualification_review',Path(__file__).resolve().parents[2]/'scripts/review-ir-qualification.py')
+qualification_review=importlib.util.module_from_spec(spec);spec.loader.exec_module(qualification_review)
 
 
 class AnalysisTests(unittest.TestCase):
+    def test_independent_qualification_review_rejects_wrong_raw_generation(self):
+        class PartialFixture(ModelExecutor):
+            calls=0
+            def execute(self,case):
+                self.calls+=1
+                if self.calls>1:raise InfrastructureFailure('controlled partial CPU fixture')
+                return super().execute(case)
+        records=[];summary=qualify(PartialFixture(),records.append)
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'qualification.stdout'
+            def save():
+                data=b''.join(canonical(r) for r in records)
+                summary['case_records_sha256']=hashlib.sha256(data).hexdigest()
+                path.write_bytes(data+json.dumps(summary,indent=2).encode())
+            save()
+            self.assertEqual(qualification_review.review(path)['verdict'],'INCOMPLETE')
+            records[0]['observations'][0]['observed']['generation']+=1
+            save()
+            with self.assertRaisesRegex(ValueError,'raw payload/generation'):
+                qualification_review.review(path)
+
     def test_replay_cli_evidence_is_readable_by_review_loader(self):
         with tempfile.TemporaryDirectory() as root:
             scenario=Path(root)/'scenario.json';scenario.write_text(json.dumps(generate(17,'T02',size=2)))
