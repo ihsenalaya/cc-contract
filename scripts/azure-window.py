@@ -108,7 +108,9 @@ def preserve_applied_identity(directory):
 
 def verify_bundle(path, check_archive=True):
     bundle=json.loads(path.read_text())
-    sample=bundle.get('transport')=='SEQUENTIAL_IR_SAMPLE'
+    finite_work=bundle.get('transport')=='FINITE_WORK_IR_SAMPLE'
+    sample=bundle.get('transport') in ('SEQUENTIAL_IR_SAMPLE','FINITE_WORK_IR_SAMPLE')
+    sample_script='run-work-sample.py' if finite_work else 'run-sequential-sample.py'
     kinds=('cuda','ir') if sample else ('cuda','ir','torch')
     if sample and set(bundle['images'])!=set(kinds):
         raise ValueError('Sequential sample may pull only CUDA and IR images')
@@ -116,7 +118,7 @@ def verify_bundle(path, check_archive=True):
         if not re.fullmatch(r'ghcr.io/ihsenalaya/cc-contract-'+kind+r'@sha256:[a-f0-9]{64}',bundle['images'][kind]):
             raise ValueError('Bundle image must be an immutable project digest')
     if sample:
-        if sha(ROOT/'scripts/run-sequential-sample.py')!=bundle['sample_harness_sha256']:
+        if sha(ROOT/'scripts'/sample_script)!=bundle['sample_harness_sha256']:
             raise ValueError('Planned sequential harness changed')
         spec_path=Path(bundle['sample_spec_path'])
         if sha(spec_path)!=bundle['sample_spec_sha256']:
@@ -130,10 +132,18 @@ def verify_bundle(path, check_archive=True):
             raise ValueError('Sequential sample must remain a nonconfirmatory development pilot')
         import importlib.util
         sys.path.insert(0,str(ROOT/'src'))
-        module_spec=importlib.util.spec_from_file_location('sequential_sample_guard',ROOT/'scripts/run-sequential-sample.py')
+        module_spec=importlib.util.spec_from_file_location('sequential_sample_guard',ROOT/'scripts'/sample_script)
         harness=importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(harness)
         if spec!=harness.make_spec('cuda'):
             raise ValueError('Sequential sample schedule, limits or provenance changed')
+        if finite_work:
+            # Retain the exact local gates reviewed before approving this window.
+            for name in ('cpu_kind_receipt','independent_cpu_review','volume_preflight',
+                         'volume_preflight_source_binding'):
+                if not bundle.get(name+'_path') or not bundle.get(name+'_sha256'):
+                    raise ValueError('Finite-work local gate binding missing: '+name)
+                if sha(Path(bundle[name+'_path']))!=bundle[name+'_sha256']:
+                    raise ValueError('Finite-work local gate changed: '+name)
         return bundle
     if bundle.get('transport')=='AZURE_BLOB_IMDS':
         sys.path.insert(0,str(ROOT/'src'))
@@ -323,7 +333,8 @@ def main():
             p.error("explicit user-approved matching plan hash required")
         bundle=verify_workload_plan(directory)
         expiry = datetime.fromisoformat(json.loads((directory / "inputs.json").read_text())["expires_at_utc"].replace("Z", "+00:00"))
-        minimum_minutes=75 if bundle and bundle.get('transport')=='SEQUENTIAL_IR_SAMPLE' else 45
+        minimum_minutes=(80 if bundle and bundle.get('transport')=='FINITE_WORK_IR_SAMPLE' else
+                         75 if bundle and bundle.get('transport')=='SEQUENTIAL_IR_SAMPLE' else 45)
         if expiry - datetime.now(timezone.utc) < timedelta(minutes=minimum_minutes):
             p.error("expiry too close; prepare a new plan and obtain approval")
         # If provisioning fails partway, independently-created cloud expiry still applies.
@@ -378,17 +389,20 @@ def main():
             remote = "set -e; mkdir -p ~/cc-contract-evidence; sudo install -d -m 700 /run/cc-contract-registry; trap 'sudo rm -rf /run/cc-contract-registry' EXIT; sudo docker --config /run/cc-contract-registry login ghcr.io -u ihsenalaya --password-stdin > ~/cc-contract-evidence/registry-login.log 2>&1; "+pulls
             command(ssh_args(directory, outputs) + [remote], input=match.group(1) + "\n", timeout=600)
             arguments=[image]
-            if bundle and bundle.get('transport')=='SEQUENTIAL_IR_SAMPLE':
+            if bundle and bundle.get('transport') in ('SEQUENTIAL_IR_SAMPLE','FINITE_WORK_IR_SAMPLE'):
                 # Small, hash-bound scripts only. No Qwen download or Torch pull.
+                finite_work=bundle['transport']=='FINITE_WORK_IR_SAMPLE'
+                sample_script='run-work-sample.py' if finite_work else 'run-sequential-sample.py'
                 sample_root='/home/cccontract/cc-contract-evidence/sample-inputs'
                 command(ssh_args(directory,outputs)+['mkdir -p '+sample_root],timeout=30)
                 for name,source,expected in (
                     ('spec.json',Path(bundle['sample_spec_path']),bundle['sample_spec_sha256']),
-                    ('run-sequential-sample.py',ROOT/'scripts/run-sequential-sample.py',bundle['sample_harness_sha256'])):
+                    (sample_script,ROOT/'scripts'/sample_script,bundle['sample_harness_sha256'])):
                     target=sample_root+'/'+name
                     remote='set -e; cat > '+shlex.quote(target)+'; printf "%s\\n" '+shlex.quote(expected+'  '+target)+' | sha256sum -c -; chmod 444 '+shlex.quote(target)
                     command(ssh_args(directory,outputs)+[remote],input=source.read_bytes().decode('utf-8'),timeout=60)
-                arguments += [bundle['images']['ir'],'','','',sample_root+'/spec.json',sample_root+'/run-sequential-sample.py',bundle['sample_spec_sha256'],bundle['sample_harness_sha256']]
+                arguments += [bundle['images']['ir'],'','','',sample_root+'/spec.json',sample_root+'/'+sample_script,bundle['sample_spec_sha256'],bundle['sample_harness_sha256']]
+                if finite_work:arguments.append('work')
             elif bundle:
                 # Model bytes are already prepared and verified. Download directly
                 # from the private Azure backup, or transfer the prepared archive.
@@ -416,7 +430,8 @@ def main():
                         subprocess.run(ssh_args(directory,outputs)+[transfer],stdin=stream,check=True,timeout=1800)
                 arguments += [bundle['images']['ir'],bundle['images']['torch'],target,bundle['corpus_filename']]
             with (directory / "qualification-session.log").open("w") as log:
-                result = subprocess.run(ssh_args(directory, outputs) + ["bash -s -- " + ' '.join(shlex.quote(value) for value in arguments)], input=(ROOT / "scripts/qualify-host.sh").read_text(), text=True, stdout=log, stderr=subprocess.STDOUT, timeout=1800)
+                qualification_timeout=2100 if bundle and bundle.get('transport')=='FINITE_WORK_IR_SAMPLE' else 1800
+                result = subprocess.run(ssh_args(directory, outputs) + ["bash -s -- " + ' '.join(shlex.quote(value) for value in arguments)], input=(ROOT / "scripts/qualify-host.sh").read_text(), text=True, stdout=log, stderr=subprocess.STDOUT, timeout=qualification_timeout)
             (directory / "qualification-exit.json").write_text(json.dumps({"returncode": result.returncode, "timestamp_utc": datetime.now(timezone.utc).isoformat()}) + "\n")
             return result.returncode
         finally:

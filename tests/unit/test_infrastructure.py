@@ -74,6 +74,45 @@ class InfrastructureTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'schedule, limits or provenance'):
                 window.verify_bundle(path)
 
+    def test_finite_work_sample_binds_exact_work_without_model_images(self):
+        import copy
+        module_spec=importlib.util.spec_from_file_location('work_sample_fixture',ROOT/'scripts/run-work-sample.py')
+        sample=importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(sample)
+        with tempfile.TemporaryDirectory() as tmp:
+            directory=Path(tmp);spec_path=directory/'spec.json'
+            spec_path.write_text(json.dumps(sample.make_spec('cuda')))
+            bundle={'transport':'FINITE_WORK_IR_SAMPLE',
+                    'images':{'cuda':'ghcr.io/ihsenalaya/cc-contract-cuda@sha256:'+'a'*64,'ir':sample.IMAGE_DIGEST},
+                    'sample_spec_path':str(spec_path),'sample_spec_sha256':window.sha(spec_path),
+                    'sample_harness_sha256':sample.harness_sha256()}
+            for name in ('cpu_kind_receipt','independent_cpu_review','volume_preflight',
+                         'volume_preflight_source_binding'):
+                fixture=directory/(name+'.json');fixture.write_text('{"scope":"CPU_FIXTURE_ONLY"}')
+                bundle[name+'_path']=str(fixture);bundle[name+'_sha256']=window.sha(fixture)
+            path=directory/'bundle.json';path.write_text(json.dumps(bundle))
+            self.assertEqual(window.verify_bundle(path)['transport'],'FINITE_WORK_IR_SAMPLE')
+            changed=copy.deepcopy(bundle);changed['volume_preflight_sha256']='0'*64
+            path.write_text(json.dumps(changed))
+            with self.assertRaisesRegex(ValueError,'local gate changed'):
+                window.verify_bundle(path)
+            changed=copy.deepcopy(bundle);del changed['independent_cpu_review_path']
+            path.write_text(json.dumps(changed))
+            with self.assertRaisesRegex(ValueError,'local gate binding missing'):
+                window.verify_bundle(path)
+            changed=copy.deepcopy(bundle);changed['images']['torch']='ghcr.io/ihsenalaya/cc-contract-torch@sha256:'+'b'*64
+            path.write_text(json.dumps(changed))
+            with self.assertRaisesRegex(ValueError,'only CUDA and IR'):
+                window.verify_bundle(path)
+            changed=copy.deepcopy(bundle);changed['sample_harness_sha256']='0'*64
+            path.write_text(json.dumps(changed))
+            with self.assertRaisesRegex(ValueError,'harness changed'):
+                window.verify_bundle(path)
+            spec=json.loads(spec_path.read_text());spec['selected_case_target']=99
+            spec_path.write_text(json.dumps(spec));bundle['sample_spec_sha256']=window.sha(spec_path)
+            path.write_text(json.dumps(bundle))
+            with self.assertRaisesRegex(ValueError,'schedule, limits or provenance'):
+                window.verify_bundle(path)
+
     def test_applied_identity_is_preserved_for_post_cleanup_review_without_overwrite(self):
         with tempfile.TemporaryDirectory() as tmp:
             directory=Path(tmp)
@@ -343,7 +382,7 @@ case "$(basename "$0")" in
      echo 'MOCK FIXTURE ONLY: unsupported incorrectly tolerated'; exit 0
     fi
     echo 'MOCK FIXTURE ONLY: unsupported IR'; exit 77;;
-   *'/run-sequential-sample.py'*) echo 'MOCK FIXTURE ONLY: FORBIDDEN_SAMPLE' > "$CC_EVIDENCE_DIRECTORY/forbidden-execution";;
+   *'/run-sequential-sample.py'*|*'/run-work-sample.py'*) echo 'MOCK FIXTURE ONLY: FORBIDDEN_SAMPLE' > "$CC_EVIDENCE_DIRECTORY/forbidden-execution";;
   esac;;
 esac
 '''
@@ -360,6 +399,16 @@ esac
             self.assertFalse((evidence/'forbidden-execution').exists())
             self.assertIn('ir-reference\t77',(evidence/'commands.tsv').read_text())
             self.assertTrue((evidence/'timings.tsv').exists())
+            work_evidence=directory/'work-evidence'
+            env['CC_EVIDENCE_DIRECTORY']=str(work_evidence)
+            result=subprocess.run(['bash',str(ROOT/'scripts/qualify-host.sh'),
+                'ghcr.io/ihsenalaya/cc-contract-cuda@sha256:'+'a'*64,
+                'ghcr.io/ihsenalaya/cc-contract-ir@sha256:'+'b'*64,'','','',
+                '/MOCK_SPEC_NOT_USED','/MOCK_HARNESS_NOT_USED','c'*64,'d'*64,'work'],
+                env=env,capture_output=True,text=True)
+            self.assertEqual(result.returncode,1,result.stderr)
+            self.assertFalse((work_evidence/'forbidden-execution').exists())
+            self.assertIn('ir-reference\t77',(work_evidence/'commands.tsv').read_text())
 
 
 if __name__ == "__main__":
