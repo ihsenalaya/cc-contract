@@ -1,7 +1,7 @@
 FROM nvidia/cuda:12.8.1-devel-ubuntu22.04@sha256:a99a1860ba8e2916e5c3e73b72ec4c4301653a84586e05bfc9a2aa2d58027e97 AS build
 COPY src/cuda/qualification.cu /src/qualification.cu
 RUN nvcc -std=c++17 -O2 -gencode arch=compute_90,code=sm_90 -gencode arch=compute_90,code=compute_90 /src/qualification.cu -o /qualification
-FROM nvidia/cuda:12.8.1-devel-ubuntu22.04@sha256:a99a1860ba8e2916e5c3e73b72ec4c4301653a84586e05bfc9a2aa2d58027e97
+FROM nvidia/cuda:12.8.1-base-ubuntu22.04@sha256:001469ea0f3dec85a1ca929aeea3b58ae369d4c11228b10aec1f642bb6ca7a6f
 ARG CC_COMMIT
 LABEL org.opencontainers.image.title="CC-Contract bounded CUDA qualification" \
       org.opencontainers.image.source="https://github.com/ihsenalaya/cc-contract" \
