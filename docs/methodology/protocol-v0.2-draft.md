@@ -20,6 +20,10 @@ synchronous. Agreement tests the implementation on legal traces; neither
 establishes CUDA legality, CC support, or GPU attestation. Capability probes are
 real CUDA operations. Only explicit cudaErrorNotSupported is an unsupported
 capability; other CUDA errors stop the run as infrastructure failures.
+The pilot uses `--allow-unsupported` to continue after explicit unsupported
+optional families. Their counts and incomplete qualification verdict remain
+unchanged; they never become passing cases. Actual failures still block the
+subsequent workloads.
 
 Reserved evaluation schedules use independent block seeds >= 1,000,000 and
 randomized within-block order. Parameter generation uses an independent PRNG

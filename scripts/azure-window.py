@@ -41,7 +41,24 @@ def tf(*args, **kwargs):
 
 
 def sha(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    digest=hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda:stream.read(8*1024*1024),b''):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def verify_bundle(path, check_archive=True):
+    bundle=json.loads(path.read_text())
+    for kind in ('cuda','ir','torch'):
+        if not re.fullmatch(r'ghcr.io/ihsenalaya/cc-contract-'+kind+r'@sha256:[a-f0-9]{64}',bundle['images'][kind]):
+            raise ValueError('Bundle image must be an immutable project digest')
+    archive=Path(bundle['model_archive'])
+    if check_archive and sha(archive)!=bundle['model_archive_sha256']:
+        raise ValueError('Prepared model archive hash mismatch')
+    if bundle['corpus_filename']!='inference-corpus.json' or bundle['model_revision']!='a09a35458c702b33eeacc393d103063234e8bc28':
+        raise ValueError('Unqualified model/corpus bundle')
+    return bundle
 
 
 def ensure_window(directory):
@@ -111,6 +128,7 @@ def main():
     p.add_argument("--window", required=True)
     p.add_argument("--ssh-source-cidr")
     p.add_argument("--approved-plan-sha256")
+    p.add_argument('--workload-bundle',type=Path)
     args = p.parse_args()
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]{2,20}", args.window):
         p.error("use a unique lowercase window name")
@@ -134,10 +152,17 @@ def main():
             p.error("--ssh-source-cidr is required for planning")
         if (directory / "inputs.json").exists():
             p.error("window already planned; choose a new identifier to preserve provenance")
+        if args.workload_bundle:
+            verify_bundle(args.workload_bundle)
+            (directory/'workload-bundle.json').write_bytes(args.workload_bundle.read_bytes())
+            (directory/'workload-sha256').write_text(sha(directory/'workload-bundle.json'))
         # Public key only enters Terraform. Private key stays off the Windows workspace.
         command(["ssh-keygen", "-q", "-t", "ed25519", "-N", "", "-f", str(directory / "id_ed25519")])
         account = az_json("account", "show")
         inputs = {"subscription_id": account["id"], "window_id": args.window, "ssh_public_key": (directory / "id_ed25519.pub").read_text().strip(), "ssh_source_cidr": args.ssh_source_cidr, "expires_at_utc": (datetime.now(timezone.utc) + timedelta(hours=2)).strftime("%Y-%m-%dT%H:%M:%SZ")}
+        if args.workload_bundle:
+            inputs['workload_sha256']=sha(directory/'workload-bundle.json')
+            inputs['host_script_sha256']=sha(ROOT/'scripts/qualify-host.sh')
         (directory / "inputs.json").write_text(json.dumps(inputs, indent=2) + "\n")
         with (directory / "plan.log").open("w") as log:
             tf("init", "-input=false", "-reconfigure", f"-backend-config=path={directory / 'terraform.tfstate'}", stdout=log, stderr=subprocess.STDOUT)
@@ -148,11 +173,23 @@ def main():
         assert sum(c["address"] == "azurerm_linux_virtual_machine.gpu" for c in changes) == 1
         (directory / "plan.json").write_text(json.dumps(plan, indent=2) + "\n")
         summary = {"window": args.window, "planned_resources": changes, "plan_sha256": sha(directory / "plan.tfplan"), "expires_at_utc": inputs["expires_at_utc"], "approval_required": True, "created_resources": 0}
+        if (directory/'workload-bundle.json').exists():
+            summary['workload_bundle_sha256']=sha(directory/'workload-bundle.json')
+            summary['host_script_sha256']=sha(ROOT/'scripts/qualify-host.sh')
+            (directory/'approved-workload-plan.json').write_text(json.dumps(summary,indent=2)+'\n')
         (directory / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
         print(json.dumps(summary, indent=2))
     elif args.action == "apply":
         if args.approved_plan_sha256 != sha(directory / "plan.tfplan"):
             p.error("explicit user-approved matching plan hash required")
+        if (directory/'approved-workload-plan.json').exists():
+            scope=json.loads((directory/'approved-workload-plan.json').read_text())
+            if scope['workload_bundle_sha256']!=sha(directory/'workload-bundle.json') or scope['host_script_sha256']!=sha(ROOT/'scripts/qualify-host.sh'):
+                p.error('Planned workload or host script changed; create a new reviewable plan')
+            verify_bundle(directory/'workload-bundle.json')
+            bound=json.loads((directory/'inputs.json').read_text())
+            if bound['workload_sha256']!=scope['workload_bundle_sha256'] or bound['host_script_sha256']!=scope['host_script_sha256']:
+                p.error('Workload scope is not bound to Terraform plan inputs')
         expiry = datetime.fromisoformat(json.loads((directory / "inputs.json").read_text())["expires_at_utc"].replace("Z", "+00:00"))
         if expiry - datetime.now(timezone.utc) < timedelta(minutes=45):
             p.error("expiry too close; prepare a new plan and obtain approval")
@@ -183,15 +220,35 @@ def main():
                 raise RuntimeError("Window already executed; preserve finalized evidence and use a new window")
             image = (ROOT / ".local/cuda/remote-digest").read_text().strip()
             assert re.fullmatch(r"ghcr.io/ihsenalaya/cc-contract-cuda@sha256:[a-f0-9]{64}", image)
+            # The archive was verified before apply. The guest independently
+            # hashes the bytes actually transferred, avoiding local rereading
+            # of 14 GiB while GPU compute is allocated.
+            bundle=verify_bundle(directory/'workload-bundle.json',check_archive=False) if (directory/'workload-bundle.json').exists() else None
+            if bundle:
+                scope=json.loads((directory/'approved-workload-plan.json').read_text())
+                if scope['workload_bundle_sha256']!=sha(directory/'workload-bundle.json') or scope['host_script_sha256']!=sha(ROOT/'scripts/qualify-host.sh'):
+                    raise RuntimeError('Qualification workload changed since plan approval')
+            images=list(bundle['images'].values()) if bundle else [image]
+            if bundle:image=bundle['images']['cuda']
             # Credential stays in a root-only RAM directory and is removed after pull.
             credential_file = Path.home() / ".config/gh/hosts.yml"
             match = re.search(r"^\s+oauth_token:\s*(\S+)\s*$", credential_file.read_text(), re.M)
             if not match:
                 raise RuntimeError("GHCR read credential unavailable")
-            remote = "set -e; mkdir -p ~/cc-contract-evidence; sudo install -d -m 700 /run/cc-contract-registry; trap 'sudo rm -rf /run/cc-contract-registry' EXIT; sudo docker --config /run/cc-contract-registry login ghcr.io -u ihsenalaya --password-stdin > ~/cc-contract-evidence/registry-login.log 2>&1; sudo docker --config /run/cc-contract-registry pull " + shlex.quote(image) + " > ~/cc-contract-evidence/image-pull.log 2>&1"
+            pulls='; '.join('sudo docker --config /run/cc-contract-registry pull '+shlex.quote(ref)+' >> ~/cc-contract-evidence/image-pull.log 2>&1' for ref in images)
+            remote = "set -e; mkdir -p ~/cc-contract-evidence; sudo install -d -m 700 /run/cc-contract-registry; trap 'sudo rm -rf /run/cc-contract-registry' EXIT; sudo docker --config /run/cc-contract-registry login ghcr.io -u ihsenalaya --password-stdin > ~/cc-contract-evidence/registry-login.log 2>&1; "+pulls
             command(ssh_args(directory, outputs) + [remote], input=match.group(1) + "\n", timeout=600)
+            arguments=[image]
+            if bundle:
+                # Transfer a fully prepared local archive; never download models
+                # or install Python packages while the GPU is allocated.
+                target='/home/cccontract/cc-contract-model'
+                transfer='set -e; cat > /home/cccontract/model-bundle.tar.gz; echo '+shlex.quote(bundle['model_archive_sha256']+'  /home/cccontract/model-bundle.tar.gz')+' | sha256sum -c -; mkdir -p '+target+'; tar --no-same-owner -xzf /home/cccontract/model-bundle.tar.gz -C '+target+'; sudo chown -R 10001:10001 '+target
+                with Path(bundle['model_archive']).open('rb') as stream:
+                    subprocess.run(ssh_args(directory,outputs)+[transfer],stdin=stream,check=True,timeout=1800)
+                arguments += [bundle['images']['ir'],bundle['images']['torch'],target,bundle['corpus_filename']]
             with (directory / "qualification-session.log").open("w") as log:
-                result = subprocess.run(ssh_args(directory, outputs) + ["bash -s -- " + shlex.quote(image)], input=(ROOT / "scripts/qualify-host.sh").read_text(), text=True, stdout=log, stderr=subprocess.STDOUT, timeout=1800)
+                result = subprocess.run(ssh_args(directory, outputs) + ["bash -s -- " + ' '.join(shlex.quote(value) for value in arguments)], input=(ROOT / "scripts/qualify-host.sh").read_text(), text=True, stdout=log, stderr=subprocess.STDOUT, timeout=1800)
             (directory / "qualification-exit.json").write_text(json.dumps({"returncode": result.returncode, "timestamp_utc": datetime.now(timezone.utc).isoformat()}) + "\n")
             return result.returncode
         finally:

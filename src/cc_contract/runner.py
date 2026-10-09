@@ -147,6 +147,7 @@ def main():
     parser.add_argument('--max-cases',type=int)
     parser.add_argument('--blocks',type=int,default=20)
     parser.add_argument('--output',type=Path)
+    parser.add_argument('--allow-unsupported',action='store_true',help='Qualification may proceed with explicitly unsupported optional families; verdict/counts stay unchanged')
     args = parser.parse_args()
     if args.command=='schedule':
         print(json.dumps(schedule(args.blocks,args.budget_seconds,args.seed),indent=2)); return 0
@@ -160,6 +161,8 @@ def main():
                     {'method':args.method,'seed':args.seed,'budget_seconds':args.budget_seconds,
                      'partition':'development_pilot','max_cases':args.max_cases},args.output,args.max_cases)
         print(json.dumps(result,indent=2))
+        if args.command=='qualify' and args.allow_unsupported and result['counts'].get('PASS',0)>0 and not result['counts'].get('FAIL',0):
+            return 0
         return 0 if result.get('verdict')=='PASS' or result.get('state','').startswith('COMPLETE') else 1
     finally:
         executor.close()

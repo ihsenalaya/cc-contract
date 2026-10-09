@@ -220,6 +220,13 @@ def main():
         if args.command=='local-selftest' and result['verdict']=='PASS':
             result['tiny_transformer_fixture']=tiny_transformer(torch)
             if result['tiny_transformer_fixture']['verdict']!='PASS': result['verdict']='FAIL'
+    commit,dirty=provenance()
+    result.setdefault('run_id',os.environ.get('CC_RUN_ID','torch-'+uuid4().hex))
+    result.setdefault('timestamp_utc',datetime.now(timezone.utc).isoformat())
+    result.setdefault('git_commit',commit)
+    result.setdefault('working_tree_dirty',dirty)
+    result.setdefault('image_digest',os.environ.get('CC_IMAGE_DIGEST','NOT_APPLICABLE_LOCAL_PROCESS'))
+    result.setdefault('seed',17001)
     print(json.dumps(result,indent=2))
     return 77 if result.get('verdict')=='UNSUPPORTED' else 0 if result.get('verdict')=='PASS' or result.get('state')=='COMPLETE_PAIRED_DIAGNOSTIC' else 1
 

@@ -16,6 +16,20 @@ spec.loader.exec_module(window)
 
 
 class InfrastructureTests(unittest.TestCase):
+    def test_prepared_bundle_rejects_changed_archive_and_mutable_images(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            directory=Path(tmp);archive=directory/'model.tar.gz';archive.write_bytes(b'CPU_MODEL_ARCHIVE_FIXTURE')
+            bundle={'images':{k:'ghcr.io/ihsenalaya/cc-contract-'+k+'@sha256:'+'a'*64 for k in ('cuda','ir','torch')},
+                    'model_archive':str(archive),'model_archive_sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),
+                    'corpus_filename':'inference-corpus.json','model_revision':'a09a35458c702b33eeacc393d103063234e8bc28'}
+            path=directory/'bundle.json';path.write_text(json.dumps(bundle))
+            self.assertEqual(window.verify_bundle(path)['model_archive_sha256'],bundle['model_archive_sha256'])
+            archive.write_bytes(b'CHANGED_CPU_FIXTURE')
+            with self.assertRaisesRegex(ValueError,'archive hash'):window.verify_bundle(path)
+            bundle['images']['ir']='ghcr.io/ihsenalaya/cc-contract-ir:latest';path.write_text(json.dumps(bundle))
+            with self.assertRaisesRegex(ValueError,'immutable'):window.verify_bundle(path)
+
     def test_windows_cli_encoding_is_preserved(self):
         raw = '{"name":"abonnement expérimental"}'.encode("cp1252")
         with patch.object(window.subprocess, "check_output", return_value=raw):
@@ -121,6 +135,17 @@ esac
             self.assertEqual(result.returncode, 1, result.stderr)
             self.assertFalse((evidence / "forbidden-execution").exists())
             self.assertIn("NOT_RUN_ATTESTATION_OR_CC_GATE", (evidence / "commands.tsv").read_text())
+
+            # The extended image bundle must retain the same fail-closed gate.
+            extended = directory / 'extended-evidence'
+            env['CC_EVIDENCE_DIRECTORY'] = str(extended)
+            result = subprocess.run(['bash',str(ROOT/'scripts/qualify-host.sh'),
+                'ghcr.io/ihsenalaya/cc-contract-cuda@sha256:'+'a'*64,
+                'ghcr.io/ihsenalaya/cc-contract-ir@sha256:'+'b'*64,
+                'ghcr.io/ihsenalaya/cc-contract-torch@sha256:'+'c'*64,
+                '/MOCK_MODEL_NOT_USED','corpus.json'],env=env,capture_output=True,text=True)
+            self.assertEqual(result.returncode,1,result.stderr)
+            self.assertFalse((extended/'forbidden-execution').exists())
 
 
 if __name__ == "__main__":

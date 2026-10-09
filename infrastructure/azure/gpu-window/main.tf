@@ -38,6 +38,14 @@ variable "expires_at_utc" {
     error_message = "Specify the approved absolute UTC expiry, with Z suffix."
   }
 }
+variable "workload_sha256" {
+  type    = string
+  default = ""
+}
+variable "host_script_sha256" {
+  type    = string
+  default = ""
+}
 variable "confidential_image_id" {
   type    = string
   default = "/communityGalleries/cgpuimage-db870bae-5bcf-4120-9415-b841adef61d3/images/cgpu-NCC-2204-base-image/versions/2204.20260928.0"
@@ -49,7 +57,7 @@ variable "confidential_image_id" {
 locals {
   location = "eastus2"
   name     = "cc-contract-${var.window_id}"
-  tags     = { project = "cc-contract", window = var.window_id, expires_at = var.expires_at_utc }
+  tags     = merge({ project = "cc-contract", window = var.window_id, expires_at = var.expires_at_utc }, var.workload_sha256 == "" ? {} : { workload_sha256 = var.workload_sha256, host_script_sha256 = var.host_script_sha256 })
   vm_id    = "/subscriptions/${var.subscription_id}/resourceGroups/${local.name}/providers/Microsoft.Compute/virtualMachines/${local.name}"
 }
 resource "azurerm_resource_group" "window" {
