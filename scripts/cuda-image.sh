@@ -11,7 +11,14 @@ case "${1:-}" in
   build)
     bash scripts/quick-check.sh
     test -z "$(git status --porcelain -- src/cuda Dockerfile.cuda .dockerignore)"
-    docker build --platform linux/amd64 --file Dockerfile.cuda --build-arg "CC_COMMIT=$task_commit" --tag "$task_image" .
+    task_commit="$(git rev-parse HEAD)"
+    task_image="cc-contract-cuda:$task_commit"
+    task_context="$(mktemp -d)"
+    trap 'rm -rf "$task_context"' EXIT
+    git archive "$task_commit" | tar -xf - -C "$task_context"
+    docker build --platform linux/amd64 --file "$task_context/Dockerfile.cuda" --build-arg "CC_COMMIT=$task_commit" --tag "$task_image" "$task_context"
+    rm -rf "$task_context"
+    trap - EXIT
     docker image inspect "$task_image" > .local/cuda/inspect.json
     docker run --rm --network none --read-only --cap-drop ALL --security-opt no-new-privileges "$task_image" --cpu-reference-tests > .local/cuda/reference.json
     set +e
