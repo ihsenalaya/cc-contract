@@ -2,6 +2,7 @@
 set -euo pipefail
 task_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$task_root"
+export PYTHONPATH="$task_root/src"
 mkdir -p .local/images
 task_commit="$(git rev-parse HEAD)"
 task_image="cc-contract-cpu:$task_commit"

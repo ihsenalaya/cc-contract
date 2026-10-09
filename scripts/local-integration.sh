@@ -14,6 +14,9 @@ export CC_LOCAL_COMMIT="$(git rev-parse HEAD)"
 export CC_LOCAL_JOB="$task_run"
 python3 scripts/render-local.py > "$task_artifacts/manifests.json"
 kind load docker-image "$task_image" --name cc-contract
+python3 -c 'import json,sys; print(json.dumps(json.load(sys.stdin)["items"][0]))' < "$task_artifacts/manifests.json" > "$task_artifacts/namespace.json"
+kubectl --context kind-cc-contract apply --dry-run=server -f "$task_artifacts/namespace.json"
+kubectl --context kind-cc-contract apply -f "$task_artifacts/namespace.json"
 kubectl --context kind-cc-contract apply --dry-run=server -f "$task_artifacts/manifests.json" > "$task_artifacts/dry-run.log"
 kubectl --context kind-cc-contract apply -f "$task_artifacts/manifests.json" > "$task_artifacts/apply.log"
 if kubectl --context kind-cc-contract auth can-i get secrets --as=system:serviceaccount:cc-contract:runner -n cc-contract; then

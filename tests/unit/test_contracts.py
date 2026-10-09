@@ -1,12 +1,17 @@
 import copy
 import unittest
-from cc_contract.cli import run_case
+from unittest.mock import patch
+from cc_contract.cli import run_case, provenance
 from cc_contract.contracts import InvalidScenario, UnsupportedScenario, validate
 from cc_contract.corpus import initial_corpus, scenario
 from cc_contract.model import execute
 
 
 class ContractTests(unittest.TestCase):
+    def test_container_without_git_uses_pinned_commit(self):
+        with patch.dict("os.environ", {"CC_COMMIT": "a" * 40}), patch("cc_contract.cli.subprocess.run", side_effect=FileNotFoundError):
+            self.assertEqual(provenance(), ("a" * 40, None))
+
     def test_initial_corpus_counts_and_expected_classification(self):
         corpus = initial_corpus()
         self.assertEqual(len(corpus), 60)
