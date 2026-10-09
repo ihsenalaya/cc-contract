@@ -162,15 +162,26 @@
     "gpu_resources_remaining": 0
   },
   "sequential_sample": {
-    "state": "APPROVED_PENDING_EXECUTION",
+    "state": "COMPLETED_PARTIAL_SEQUENTIAL_SAMPLE",
     "pilot_requested": true,
     "budget_approved": true,
     "parallel_gpu_jobs": false,
     "planned_jobs": 14,
-    "actual_gpu_jobs_run": 0,
+    "actual_gpu_jobs_run": 1,
     "proposal": "docs/environment/sequential-sample-window.md",
     "local_qualification": "results/manifests/sequential-sample-local-qualification.json",
     "plan": "results/manifests/sequential-sample-proposal.json",
-    "reserved_comparison_schedule_changed": false
+    "reserved_comparison_schedule_changed": false,
+    "completed_budget_jobs": 0,
+    "jobs_not_started": 13,
+    "temporary_resources_created": 13,
+    "temporary_resources_destroyed": 13,
+    "temporary_resources_remaining": 0,
+    "gpu_vms_created": 1,
+    "evidence": "results/manifests/sequential-sample-gpu-result.json",
+    "result": "docs/environment/sequential-sample-result.md",
+    "GPU_released": true,
+    "stop_reason": "PREDECLARED_ORIGINAL_TRACE_BYTE_LIMIT",
+    "full_comparative_campaigns_complete": false
   }
 }

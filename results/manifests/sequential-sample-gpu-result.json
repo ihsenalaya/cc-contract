@@ -1,0 +1,737 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-09T19:39:39.264955+00:00",
+  "state": "COMPLETED_PARTIAL_SEQUENTIAL_SAMPLE",
+  "scope": "REAL_H100_DEVELOPMENT_PILOT_PARTIAL_INDEPENDENTLY_AUDITED",
+  "window": "sample-seq-1009a",
+  "approval": {
+    "budget_forecast_usd": 15,
+    "max_window_minutes_from_plan": 90,
+    "expires_at_utc": "2026-10-09T20:17:51Z",
+    "plan_sha256": "46ce75e6defd87e74115c5d91b9f8a7b9eda3452155d91c64ed3302f0b481f40",
+    "user_approval_receipt_sha256": "f11f26d7b18768463a6c15fdfd7f6e252e53cf31f379202dd2f2954ea3659bbb",
+    "full_comparative_campaigns_approved": false
+  },
+  "execution_source_commit": "84929ba3da9368b173b7b465335ff0fc93121f11",
+  "local_qualification": "results/manifests/sequential-sample-local-qualification.json",
+  "protocol": "docs/methodology/sequential-throughput-pilot.md",
+  "pilot_retained_in_results": true,
+  "confirmatory_results_pooled": false,
+  "planned_jobs": 14,
+  "actual_gpu_jobs_run": 1,
+  "completed_budget_jobs": 0,
+  "jobs_not_started": 13,
+  "parallel_gpu_jobs": false,
+  "stop_reason": "PREDECLARED_ORIGINAL_TRACE_BYTE_LIMIT",
+  "limits": {
+    "trace_byte_limit_per_job": 268435456,
+    "actual_raw_trace_bytes": 268507365,
+    "overshoot_bytes": 71909,
+    "overshoot_policy": "AT_MOST_ONE_COMPLETE_ORIGINAL_RECORD",
+    "minimum_free_bytes": 2147483648,
+    "nominal_campaign_seconds": 60,
+    "actual_campaign_seconds": 50.391845647
+  },
+  "host": {
+    "gpu": "NVIDIA H100 NVL",
+    "driver": "595.91.07",
+    "kernel": "6.8.0-1066-azure-fde",
+    "CC": "ON",
+    "CC_environment": "PRODUCTION",
+    "secure_boot": true
+  },
+  "cpu_attestation": {
+    "scope": "MAA_SIGNATURE_AND_SELECTED_CLAIMS",
+    "signature_verified": true,
+    "vm_identity_matches": true,
+    "secureboot": true,
+    "tee_type": "sevsnpvm",
+    "azure_compliance": true,
+    "provider_TEE_signing_key_binding_independently_checked": false
+  },
+  "gpu_attestation": {
+    "scope": "LOCAL_HARDWARE_VERIFIER_RECEIPTS",
+    "reported_checks_all_true": true,
+    "checks": {
+      "x-nvidia-gpu-arch-check": true,
+      "x-nvidia-gpu-attestation-report-cert-chain-validated": true,
+      "x-nvidia-gpu-attestation-report-parsed": true,
+      "x-nvidia-gpu-attestation-report-nonce-match": true,
+      "x-nvidia-gpu-attestation-report-signature-verified": true,
+      "x-nvidia-gpu-driver-rim-fetched": true,
+      "x-nvidia-gpu-driver-rim-schema-validated": true,
+      "x-nvidia-gpu-driver-rim-cert-validated": true,
+      "x-nvidia-gpu-driver-rim-signature-verified": true,
+      "x-nvidia-gpu-driver-rim-measurements-available": true,
+      "x-nvidia-gpu-vbios-rim-fetched": true,
+      "x-nvidia-gpu-vbios-rim-schema-validated": true,
+      "x-nvidia-gpu-vbios-rim-cert-validated": true,
+      "x-nvidia-gpu-vbios-rim-signature-verified": true,
+      "x-nvidia-gpu-vbios-rim-measurements-available": true,
+      "x-nvidia-gpu-vbios-index-no-conflict": true
+    },
+    "hmac_receipts_independently_authenticated": false,
+    "exported_hardware_quote_independently_reverified": false,
+    "NRAS_token": "NOT_RUN"
+  },
+  "cuda_reference": {
+    "scope": "BOUNDED_REAL_CUDA_INTEGER_QUALIFICATION",
+    "observations": 54,
+    "independent_array_comparison": "PASS",
+    "families": {
+      "T01": 3,
+      "T02": 9,
+      "T03": 3,
+      "T05": 9,
+      "T06": 27,
+      "E0_KERNEL_REFERENCE": 3
+    },
+    "repeats": 3,
+    "independent_campaigns": 1,
+    "git_commit": "e8f34fddc62479a6995dcf260a4242e1494cc26b",
+    "image_digest": "ghcr.io/ihsenalaya/cc-contract-cuda@sha256:98eda97f53d3b77c9dee5629ab11e9484f644e7d7c38d57ffaa3feb6a4c74302",
+    "scientific_superiority_claim": false
+  },
+  "IR": {
+    "scope": "REAL_CUDA_IR",
+    "gpu_executed": true,
+    "run_id": "gpu-20261009T192649Z-0130f7d8-016c-4453-9f4a-69fce1ad48f1-ir",
+    "verdict": "PASS",
+    "cases": 96,
+    "observations": 252,
+    "counts": {
+      "PASS": 96
+    },
+    "independently_recomputed": true,
+    "original_sha256": "3db5c5bd401b021a20d32fbfac78b0877d32e5cb84c85c24f8d7dc6e116c3d6e",
+    "attestation_review": "SEPARATE_REQUIRED",
+    "confirmed_defects": []
+  },
+  "sample_audit": {
+    "actual_sample_seconds": 53.292514952,
+    "all_case_traces_independently_recomputed": true,
+    "all_original_file_hashes_verified": true,
+    "archive_sha256": "37447bb6aa6f0c34f998133d834d6123f2e5cd29edb6c61fa94407fcd3bd18ef",
+    "attestation_review": "SEPARATE_REQUIRED",
+    "audited_jobs": 1,
+    "backend_close_seconds": 0.36502138,
+    "backend_initialization_seconds": 2.031445835,
+    "campaign_seconds": 50.391845647,
+    "candidate_failures_require_fresh_replays_and_characterization": true,
+    "confirmatory": false,
+    "confirmed_defects": [],
+    "descriptive_by_method": {
+      "A_NO_DIVERSITY": {
+        "job_rates": [],
+        "maximum_observed_rate": null,
+        "minimum_observed_rate": null,
+        "observed_jobs": 0,
+        "planned_jobs": 2,
+        "variance_or_power_established": false
+      },
+      "A_NO_STATE": {
+        "job_rates": [],
+        "maximum_observed_rate": null,
+        "minimum_observed_rate": null,
+        "observed_jobs": 0,
+        "planned_jobs": 2,
+        "variance_or_power_established": false
+      },
+      "A_NO_VALIDITY_GUIDANCE": {
+        "job_rates": [],
+        "maximum_observed_rate": null,
+        "minimum_observed_rate": null,
+        "observed_jobs": 0,
+        "planned_jobs": 2,
+        "variance_or_power_established": false
+      },
+      "B1": {
+        "job_rates": [
+          34.767529895073466
+        ],
+        "maximum_observed_rate": 34.767529895073466,
+        "minimum_observed_rate": 34.767529895073466,
+        "observed_jobs": 1,
+        "planned_jobs": 2,
+        "variance_or_power_established": false
+      },
+      "B2": {
+        "job_rates": [],
+        "maximum_observed_rate": null,
+        "minimum_observed_rate": null,
+        "observed_jobs": 0,
+        "planned_jobs": 2,
+        "variance_or_power_established": false
+      },
+      "B3": {
+        "job_rates": [],
+        "maximum_observed_rate": null,
+        "minimum_observed_rate": null,
+        "observed_jobs": 0,
+        "planned_jobs": 2,
+        "variance_or_power_established": false
+      },
+      "B4": {
+        "job_rates": [],
+        "maximum_observed_rate": null,
+        "minimum_observed_rate": null,
+        "observed_jobs": 0,
+        "planned_jobs": 2,
+        "variance_or_power_established": false
+      }
+    },
+    "establishes_absolute_gpu_correctness": false,
+    "establishes_shorter_comparative_budget": false,
+    "establishes_statistical_superiority": false,
+    "experiment": "SEQUENTIAL_THROUGHPUT_DEVELOPMENT_PILOT",
+    "full_E0_complete": false,
+    "gpu_executed": true,
+    "harness_sha256": "bb0bbc2c05e61d77927126d437d573f2c71f6d4756e0100caa571c8f42deab75",
+    "image_digest": "ghcr.io/ihsenalaya/cc-contract-ir@sha256:e09597869dab698d082cc56ceb5cbb7c6eb348760e08f617387491837ad1fc8a",
+    "jobs": [
+      {
+        "actual_seconds": 50.391845647,
+        "budget_seconds": 60,
+        "candidate_draws": 2063,
+        "candidate_failures": 0,
+        "cases": 2063,
+        "confirmed_defects": [],
+        "counts": {
+          "INVALID_TEST": 311,
+          "PASS": 1752
+        },
+        "coverage": {
+          "structural": 37,
+          "temporal": 48
+        },
+        "diagnostic_passing_cases_per_second": 34.767529895073466,
+        "gpu_passing_cases_per_second": 34.767529895073466,
+        "independently_recomputed": true,
+        "invalid_proposals": 311,
+        "job_index": 0,
+        "method": "B1",
+        "observations": 1973,
+        "passing_cases": 1752,
+        "raw_bytes": 268507365,
+        "sample_block": 0,
+        "seed": 1812272866,
+        "state": "INTERRUPTED"
+      }
+    ],
+    "nonoverlapping_job_intervals_verified": true,
+    "offline_review_seconds": 57.31931331800297,
+    "original_state": "STOPPED_RESOURCE_LIMIT",
+    "partition": "development_sequential_throughput_pilot",
+    "planned_jobs": 14,
+    "rate_denominator": "actual_campaign_wall_seconds_including_generation_validation_execution_fsync",
+    "raw_trace_bytes": 268507365,
+    "reserved_campaign_budget_changed": false,
+    "schema_version": 1,
+    "scope": "REAL_CUDA_IR",
+    "source_commit": "1f62b1838196e495d715c1cf063b03ea777aaa94",
+    "spec_sha256": "2abbabefc6a14a89a0977787c14ef6ae1412c43017e66e9b81271f70220e1206",
+    "state": "PARTIAL_SAMPLE_AUDIT",
+    "trace_review": "STREAMED_INDEPENDENT_DEFERRED_MODEL_AND_POLICY_RECOMPUTATION",
+    "unlisted_partial_trace_files": []
+  },
+  "timing": {
+    "cloud_started_at_utc": "2026-10-09T18:53:17.444593+00:00",
+    "deallocation_confirmed_at_utc": "2026-10-09T19:31:01.897586+00:00",
+    "cloud_finished_at_utc": "2026-10-09T19:36:12.776304+00:00",
+    "start_to_confirmed_deallocation_seconds_utc": 2264.452993,
+    "full_cloud_cycle_seconds_monotonic": 2570.9594177800027,
+    "full_cloud_cycle_seconds_utc": 2575.331711,
+    "utc_minus_monotonic_seconds": 4.372293219997118,
+    "local_preparation": {
+      "first_observed_utc": "2026-10-09T18:23:41Z",
+      "qualification_completed_utc": "2026-10-09T18:50:28.125896+00:00",
+      "elapsed_since_first_observation_seconds": 1607.125896,
+      "coverage": "lower_bound; preparation began before the first observed clock timestamp"
+    },
+    "host_ir_cpu_review": {
+      "scope": "CPU_OFFLINE_AUDIT_AFTER_CONFIRMED_GPU_DEALLOCATION",
+      "started_utc": "2026-10-09T19:32:04.338487+00:00",
+      "finished_utc": "2026-10-09T19:33:02.785412+00:00",
+      "elapsed_seconds": 58.364373722
+    },
+    "sample_cpu_review": {
+      "started_at_utc": "2026-10-09T19:31:28.104277+00:00",
+      "finished_at_utc": "2026-10-09T19:32:26.171029+00:00",
+      "elapsed_seconds": 57.966848466021474,
+      "returncode": 1,
+      "release_sha256": "bfaebd4bf0febc41be8621b75a91864a079638b3e25aa7d36996da7519b77bbc",
+      "scope": "LOCAL_OFFLINE_SAMPLE_AUDIT_AFTER_CONFIRMED_DEALLOCATION"
+    },
+    "evidence_backup_completed_utc": "2026-10-09T19:37:51.749067+00:00",
+    "first_observed_preparation_to_backed_up_evidence_seconds_utc": 4450.749067,
+    "end_to_end_coverage": "LOWER_BOUND_FROM_FIRST_OBSERVED_PREPARATION; EXCLUDES_PREVIOUS_PREPARATION_AND_GIT_PUBLICATION",
+    "phase_durations_overlap_do_not_sum": true,
+    "controller_phases": [
+      {
+        "timestamp_utc": "2026-10-09T18:53:17.445105+00:00",
+        "monotonic_ns": 129547120145644,
+        "phase": "apply",
+        "state": "STARTED"
+      },
+      {
+        "timestamp_utc": "2026-10-09T19:26:19.160588+00:00",
+        "monotonic_ns": 131525607438531,
+        "phase": "apply",
+        "state": "FINISHED",
+        "elapsed_seconds": 1978.4853231239977
+      },
+      {
+        "timestamp_utc": "2026-10-09T19:26:19.181440+00:00",
+        "monotonic_ns": 131525627120160,
+        "phase": "qualify_collect_release",
+        "state": "STARTED"
+      },
+      {
+        "timestamp_utc": "2026-10-09T19:31:01.925473+00:00",
+        "monotonic_ns": 131807836502391,
+        "phase": "qualify_collect_release",
+        "state": "FAILED",
+        "elapsed_seconds": 282.20930781099014,
+        "error_type": "CalledProcessError"
+      },
+      {
+        "timestamp_utc": "2026-10-09T19:31:01.937167+00:00",
+        "monotonic_ns": 131807848151715,
+        "phase": "destroy",
+        "state": "STARTED"
+      },
+      {
+        "timestamp_utc": "2026-10-09T19:36:12.766573+00:00",
+        "monotonic_ns": 132118069343803,
+        "phase": "destroy",
+        "state": "FINISHED",
+        "elapsed_seconds": 310.22110172201064
+      }
+    ],
+    "host_commands": [
+      {
+        "started_utc": "2026-10-09T19:26:41.921413908Z",
+        "command": "kernel",
+        "elapsed_seconds": 0.013990640640258789,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:41.941316503Z",
+        "command": "kernel-version",
+        "elapsed_seconds": 0.0046901702880859375,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:41.951199800Z",
+        "command": "nvidia-info",
+        "elapsed_seconds": 0.579634428024292,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:42.536514631Z",
+        "command": "driver-version",
+        "elapsed_seconds": 0.033277034759521484,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:42.575758816Z",
+        "command": "cc-mode",
+        "elapsed_seconds": 0.0335538387298584,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:42.614965300Z",
+        "command": "cc-environment",
+        "elapsed_seconds": 0.03390979766845703,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:42.654297585Z",
+        "command": "secure-boot",
+        "elapsed_seconds": 1.7589080333709717,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:44.419526071Z",
+        "command": "cpu-attestation",
+        "elapsed_seconds": 0.5015275478363037,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:44.926516235Z",
+        "command": "gpu-attestation",
+        "elapsed_seconds": 4.169207334518433,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:26:49.198914872Z",
+        "command": "cuda-reference",
+        "elapsed_seconds": 16.82677936553955,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:27:06.031759505Z",
+        "command": "ir-reference",
+        "elapsed_seconds": 8.833610773086548,
+        "exit_code": 0
+      },
+      {
+        "started_utc": "2026-10-09T19:27:14.889124387Z",
+        "command": "sequential-sample",
+        "elapsed_seconds": 55.3331139087677,
+        "exit_code": 1
+      }
+    ],
+    "billed_duration_established": false,
+    "azure_backup": {
+      "scope": "PRIVATE_EVIDENCE_BACKUP_NO_GPU_JOB",
+      "started_utc": "2026-10-09T19:31:55.836268+00:00",
+      "finished_utc": "2026-10-09T19:37:51.749067+00:00",
+      "total_backup_wall_seconds": 355.912799,
+      "stages": [
+        {
+          "name": "initial_originals_backup_and_wait_for_run_exit",
+          "started_utc": "2026-10-09T19:31:55.836268+00:00",
+          "finished_utc": "2026-10-09T19:36:28.796924+00:00",
+          "monotonic_elapsed_seconds": 272.461417315,
+          "includes_wait_for_destroy": true
+        },
+        {
+          "name": "review_staging_backup",
+          "started_utc": "2026-10-09T19:36:41.148631+00:00",
+          "finished_utc": "2026-10-09T19:36:53.495060+00:00",
+          "monotonic_elapsed_seconds": 12.346380135,
+          "includes_wait_for_destroy": false
+        },
+        {
+          "name": "final_merge_and_cleanup_backup",
+          "started_utc": "2026-10-09T19:37:43.630597+00:00",
+          "finished_utc": "2026-10-09T19:37:51.749067+00:00",
+          "monotonic_elapsed_seconds": 8.118417941,
+          "includes_wait_for_destroy": false
+        }
+      ],
+      "controller_destroy": {
+        "started_utc": "2026-10-09T19:31:01.937167+00:00",
+        "finished_utc": "2026-10-09T19:36:12.766573+00:00",
+        "monotonic_elapsed_seconds": 310.22110172201064
+      },
+      "all_remote_bytes_verified": true,
+      "proof_sha256": "1dd8f5199f8c281b260460129c916c00adc98324df8a631e2df4f41fc194fde6"
+    }
+  },
+  "cost": {
+    "query_started_utc": "2026-10-09T19:22:07.313596Z",
+    "query_finished_utc": "2026-10-09T19:22:12.215826Z",
+    "scope": "THIS_WINDOW_RESOURCE_GROUP_ONLY",
+    "resource_group": "cc-contract-sample-seq-1009a",
+    "query_type": "ActualCost",
+    "api_version": "2025-03-01",
+    "return_code": 0,
+    "timed_out": false,
+    "response_sha256": "b74241f72f472aef6b11e31804b6cd9a7709564a42b55d33d375c70118c96115",
+    "response_bytes": 696,
+    "stderr_bytes": 0,
+    "rows": 0,
+    "data_available": false,
+    "cost": null,
+    "currency": null,
+    "empty_result_does_not_prove_zero_charges": true,
+    "invoiced_final_amount": false,
+    "latency_documentation": "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/understand-cost-mgt-data",
+    "documented_latency": {
+      "EA_MCA_typical_hours": [
+        8,
+        24
+      ],
+      "PAYG_up_to_hours": 72
+    },
+    "response_column_names": [
+      "Cost",
+      "UsageDate",
+      "ResourceType",
+      "Currency"
+    ],
+    "state": "NO_COST_DATA_AVAILABLE_YET"
+  },
+  "evidence": {
+    "archive_file": "guest-evidence-b7d22e8e08ca4e3d972aa35d6072e205.tar.gz",
+    "archive_sha256": "37447bb6aa6f0c34f998133d834d6123f2e5cd29edb6c61fa94407fcd3bd18ef",
+    "archive_bytes": 111216691,
+    "files_verified": 38,
+    "azure_backup_receipt_sha256": "be6a396058dc9c477a04bfe148a82279dbf828e22c7772e09ffb2bf22b9b919c",
+    "azure_verified_files": 19,
+    "azure_verified_bytes": 111345545,
+    "azure_originals_retained": true,
+    "azure_remote_full_bytes_verified": true,
+    "remote_backups": [
+      {
+        "blob": "37447bb6aa6f0c34f998133d834d6123f2e5cd29edb6c61fa94407fcd3bd18ef/guest-evidence-b7d22e8e08ca4e3d972aa35d6072e205.tar.gz",
+        "sha256": "37447bb6aa6f0c34f998133d834d6123f2e5cd29edb6c61fa94407fcd3bd18ef",
+        "bytes": 111216691,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:09.593941+00:00",
+        "file": "guest-evidence-b7d22e8e08ca4e3d972aa35d6072e205.tar.gz"
+      },
+      {
+        "blob": "32b5c15d5cfea00afba7ec47f34d2771b26bc0cb37ba9fa86eee49e0e355d317/collection.json",
+        "sha256": "32b5c15d5cfea00afba7ec47f34d2771b26bc0cb37ba9fa86eee49e0e355d317",
+        "bytes": 298,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:11.415718+00:00",
+        "file": "collection.json"
+      },
+      {
+        "blob": "bfaebd4bf0febc41be8621b75a91864a079638b3e25aa7d36996da7519b77bbc/release.json",
+        "sha256": "bfaebd4bf0febc41be8621b75a91864a079638b3e25aa7d36996da7519b77bbc",
+        "bytes": 129,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:13.163484+00:00",
+        "file": "release.json"
+      },
+      {
+        "blob": "e990fe3fd8558e8e96c922f81926dec78d721db63966827c677eca23243621c1/run-start.json",
+        "sha256": "e990fe3fd8558e8e96c922f81926dec78d721db63966827c677eca23243621c1",
+        "bytes": 211,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:14.986546+00:00",
+        "file": "run-start.json"
+      },
+      {
+        "blob": "f11f26d7b18768463a6c15fdfd7f6e252e53cf31f379202dd2f2954ea3659bbb/user-approval.json",
+        "sha256": "f11f26d7b18768463a6c15fdfd7f6e252e53cf31f379202dd2f2954ea3659bbb",
+        "bytes": 602,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:16.669552+00:00",
+        "file": "user-approval.json"
+      },
+      {
+        "blob": "68a221b7da9779973ccd3f49f2758898bf3ead7e686418fef167e68125eed779/guard-readback.json",
+        "sha256": "68a221b7da9779973ccd3f49f2758898bf3ead7e686418fef167e68125eed779",
+        "bytes": 8112,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:18.362310+00:00",
+        "file": "guard-readback.json"
+      },
+      {
+        "blob": "f70408e903817f4da358c457e306261fa176c45328f0e7487a4192fec74f43f7/billing-state-readback.json",
+        "sha256": "f70408e903817f4da358c457e306261fa176c45328f0e7487a4192fec74f43f7",
+        "bytes": 218,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:20.089162+00:00",
+        "file": "billing-state-readback.json"
+      },
+      {
+        "blob": "b74241f72f472aef6b11e31804b6cd9a7709564a42b55d33d375c70118c96115/response.raw",
+        "sha256": "b74241f72f472aef6b11e31804b6cd9a7709564a42b55d33d375c70118c96115",
+        "bytes": 696,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:21.808191+00:00",
+        "file": "response.raw"
+      },
+      {
+        "blob": "b6eb3fa4230aaadb3938966519153bd10f29c72b17050c51d4bd4fe3662190f8/summary.json",
+        "sha256": "b6eb3fa4230aaadb3938966519153bd10f29c72b17050c51d4bd4fe3662190f8",
+        "bytes": 987,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:32:23.502026+00:00",
+        "file": "summary.json"
+      },
+      {
+        "blob": "e8ca337bc84b4770423e63c7652cca9fb3b4c14338e9aea43ef127999be4bc44/run-phases.jsonl",
+        "sha256": "e8ca337bc84b4770423e63c7652cca9fb3b4c14338e9aea43ef127999be4bc44",
+        "bytes": 894,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:36:26.883147+00:00",
+        "file": "run-phases.jsonl"
+      },
+      {
+        "blob": "bc09cd88e897819acd2a2c2a69de40293c791544d5287d22d5c93e8c7060ed2c/run-exit.json",
+        "sha256": "bc09cd88e897819acd2a2c2a69de40293c791544d5287d22d5c93e8c7060ed2c",
+        "bytes": 316,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:36:28.597872+00:00",
+        "file": "run-exit.json"
+      },
+      {
+        "blob": "bdcf912a94f2f3024cab3f0c1f63636448a9ae0d3e760e45ee70a57c1326f124/review-sequential-sample.json",
+        "sha256": "bdcf912a94f2f3024cab3f0c1f63636448a9ae0d3e760e45ee70a57c1326f124",
+        "bytes": 4962,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:37:44.680727+00:00",
+        "file": "review-sequential-sample.json"
+      },
+      {
+        "blob": "30b59d1958a7c199c41acff9427afee5e4f312f278d05f4b7d651a54673da3a5/review-sample-timings.json",
+        "sha256": "30b59d1958a7c199c41acff9427afee5e4f312f278d05f4b7d651a54673da3a5",
+        "bytes": 334,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:37:45.541853+00:00",
+        "file": "review-sample-timings.json"
+      },
+      {
+        "blob": "d288e66292cc176b8894df6ea370374ab0fdb34b4f3414f9c72bb73264b50a0a/review-host.stdout",
+        "sha256": "d288e66292cc176b8894df6ea370374ab0fdb34b4f3414f9c72bb73264b50a0a",
+        "bytes": 2521,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:37:46.381883+00:00",
+        "file": "review-host.stdout"
+      },
+      {
+        "blob": "2f2ca2cefeb4641d546fea06cb555aee41a8cbefe0268b6aaf4138e2235881c6/review-ir.json",
+        "sha256": "2f2ca2cefeb4641d546fea06cb555aee41a8cbefe0268b6aaf4138e2235881c6",
+        "bytes": 420,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:37:47.218741+00:00",
+        "file": "review-ir.json"
+      },
+      {
+        "blob": "ff061db9a383eda1e74b306dfb20ecc78610e48528816badcdc7bb2b0f430b70/review-host-ir-timings.json",
+        "sha256": "ff061db9a383eda1e74b306dfb20ecc78610e48528816badcdc7bb2b0f430b70",
+        "bytes": 2746,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:37:48.070878+00:00",
+        "file": "review-host-ir-timings.json"
+      },
+      {
+        "blob": "e56a772858d39b23671e08c927f023c0088f17471f9fe2d2bda0c5e24a906b07/cpu-signing-jwks.json",
+        "sha256": "e56a772858d39b23671e08c927f023c0088f17471f9fe2d2bda0c5e24a906b07",
+        "bytes": 96368,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:37:49.086510+00:00",
+        "file": "cpu-signing-jwks.json"
+      },
+      {
+        "blob": "13a75141cd26da4e85e0eb1e168500fefeb870ee655a905bee4193c2d6ac131e/vm-identity.json",
+        "sha256": "13a75141cd26da4e85e0eb1e168500fefeb870ee655a905bee4193c2d6ac131e",
+        "bytes": 5867,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:37:49.917387+00:00",
+        "file": "vm-identity.json"
+      },
+      {
+        "blob": "b9d482865c0499b47865a664fa21c82ed25cd6205d980ce915f2cbf0cbc84bc2/cleanup-verified.json",
+        "sha256": "b9d482865c0499b47865a664fa21c82ed25cd6205d980ce915f2cbf0cbc84bc2",
+        "bytes": 3173,
+        "remote_bytes_verified": true,
+        "timestamp_utc": "2026-10-09T19:37:51.587253+00:00",
+        "file": "cleanup-verified.json"
+      }
+    ],
+    "review_hashes": {
+      "review-sequential-sample.json": "bdcf912a94f2f3024cab3f0c1f63636448a9ae0d3e760e45ee70a57c1326f124",
+      "review-host.stdout": "d288e66292cc176b8894df6ea370374ab0fdb34b4f3414f9c72bb73264b50a0a",
+      "review-ir.json": "2f2ca2cefeb4641d546fea06cb555aee41a8cbefe0268b6aaf4138e2235881c6",
+      "review-sample-timings.json": "30b59d1958a7c199c41acff9427afee5e4f312f278d05f4b7d651a54673da3a5",
+      "review-host-ir-timings.json": "ff061db9a383eda1e74b306dfb20ecc78610e48528816badcdc7bb2b0f430b70",
+      "cleanup-verified.json": "b9d482865c0499b47865a664fa21c82ed25cd6205d980ce915f2cbf0cbc84bc2",
+      "run-start.json": "e990fe3fd8558e8e96c922f81926dec78d721db63966827c677eca23243621c1",
+      "run-phases.jsonl": "e8ca337bc84b4770423e63c7652cca9fb3b4c14338e9aea43ef127999be4bc44",
+      "run-exit.json": "bc09cd88e897819acd2a2c2a69de40293c791544d5287d22d5c93e8c7060ed2c"
+    }
+  },
+  "cleanup": {
+    "timestamp_utc": "2026-10-09T19:36:56.209038Z",
+    "queries_started_utc": "2026-10-09T19:36:54.439722Z",
+    "window": "sample-seq-1009a",
+    "state": "CLEANUP_VERIFIED",
+    "verified": true,
+    "created_managed_resources": 13,
+    "destroyed_managed_resources": 13,
+    "remaining_managed_resources": 0,
+    "remaining_project_vms": 0,
+    "resource_group_exists": false,
+    "remaining_window_custom_roles": 0,
+    "terraform_state_sha256": "2ac0b507abc7639c66cdbcb18a7199d6feba50a752f616554fbb9a7520018523",
+    "applied_state_sha256": "d2cac2c629fa7aeafdc7a75df65e237eb6c0d731aeaecb13fc3c916a39de1adb",
+    "release_confirmed_at_utc": "2026-10-09T19:31:01.897586+00:00",
+    "released_power_state": "PowerState/deallocated",
+    "run_started_at_utc": "2026-10-09T18:53:17.444593+00:00",
+    "run_finished_at_utc": "2026-10-09T19:36:12.776304+00:00",
+    "start_to_release_seconds": 2264.452993,
+    "run_exit_elapsed_seconds": 2570.9594177800027,
+    "run_error_type": "CalledProcessError",
+    "actual_cost": null,
+    "cost_state": "UNKNOWN_PENDING_COST_MANAGEMENT_DATA",
+    "query_receipts": {
+      "project_vms": {
+        "started_utc": "2026-10-09T19:36:54.443965Z",
+        "finished_utc": "2026-10-09T19:36:56.206725Z",
+        "return_code": 0,
+        "timeout": false,
+        "response_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "response_bytes": 3,
+        "stderr_bytes": 0,
+        "parsed": true
+      },
+      "resource_group_exists": {
+        "started_utc": "2026-10-09T19:36:54.444565Z",
+        "finished_utc": "2026-10-09T19:36:56.107479Z",
+        "return_code": 0,
+        "timeout": false,
+        "response_sha256": "2ed27c1421e6928dbe13dbfdb5c59e1045b30341fe7ebe05700006bc5ac572c0",
+        "response_bytes": 6,
+        "stderr_bytes": 0,
+        "parsed": true
+      },
+      "window_custom_role": {
+        "started_utc": "2026-10-09T19:36:54.445143Z",
+        "finished_utc": "2026-10-09T19:36:55.826478Z",
+        "return_code": 0,
+        "timeout": false,
+        "response_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "response_bytes": 3,
+        "stderr_bytes": 0,
+        "parsed": true
+      }
+    },
+    "original_receipt_hashes": {
+      "run-start.json": {
+        "sha256": "e990fe3fd8558e8e96c922f81926dec78d721db63966827c677eca23243621c1",
+        "bytes": 211
+      },
+      "run-exit.json": {
+        "sha256": "bc09cd88e897819acd2a2c2a69de40293c791544d5287d22d5c93e8c7060ed2c",
+        "bytes": 316
+      },
+      "release.json": {
+        "sha256": "bfaebd4bf0febc41be8621b75a91864a079638b3e25aa7d36996da7519b77bbc",
+        "bytes": 129
+      },
+      "collection.json": {
+        "sha256": "32b5c15d5cfea00afba7ec47f34d2771b26bc0cb37ba9fa86eee49e0e355d317",
+        "bytes": 298
+      },
+      "qualification-exit.json": {
+        "sha256": "ec91f510a831568c895ad283b1723b4cf2c23b3af787fc4ad750b001aea21b06",
+        "bytes": 71
+      },
+      "approved-workload-plan.json": {
+        "sha256": "3ce10897fbfd19d8ada7afd7f7802052013bf56f77cd227e5a78e4f73715c213",
+        "bytes": 1886
+      },
+      "user-approval.json": {
+        "sha256": "f11f26d7b18768463a6c15fdfd7f6e252e53cf31f379202dd2f2954ea3659bbb",
+        "bytes": 602
+      }
+    },
+    "preserved_existing_cleanup_receipt": false
+  },
+  "reserved_comparisons": {
+    "schedule_sha256": "dafb88fb778b115a3a9d2dcdb4f2b498b65be83136a70001b26597ff817621c3",
+    "changed": false,
+    "jobs": 140,
+    "budget_seconds_per_job": 600,
+    "nominal_total_seconds": 84000,
+    "complete": false
+  },
+  "limitations": [
+    "Only one truncated B1 development job; no full fourteen-job sample",
+    "No all-method throughput estimate or shorter comparison budget established",
+    "No stable variance, rare-defect detection power or superiority established",
+    "No independently authenticated GPU quote/NRAS token",
+    "Actual allocated-state expiry and Azure kubeadm integration remain unqualified"
+  ],
+  "full_E0_complete": false,
+  "confirmed_defects": []
+}

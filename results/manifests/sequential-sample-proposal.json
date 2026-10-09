@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "timestamp_utc": "2026-10-09T18:50:28.125896+00:00",
-  "state": "APPROVED_PENDING_EXECUTION",
+  "state": "COMPLETED_PARTIAL_SEQUENTIAL_SAMPLE",
   "window": "sample-seq-1009a",
   "plan_sha256": "46ce75e6defd87e74115c5d91b9f8a7b9eda3452155d91c64ed3302f0b481f40",
   "expires_at_utc": "2026-10-09T20:17:51Z",
@@ -88,7 +88,7 @@
     }
   ],
   "planned_gpu_count": 1,
-  "actual_gpu_resources_created": 0,
+  "actual_gpu_resources_created": 1,
   "planned_jobs": 14,
   "parallel_gpu_jobs": false,
   "campaign_budget_seconds": 840,
@@ -132,5 +132,11 @@
   "model_download_required": false,
   "full_E0_complete": false,
   "approval_received_utc": "2026-10-09T18:51:48.310085+00:00",
-  "user_approval_receipt_sha256": "f11f26d7b18768463a6c15fdfd7f6e252e53cf31f379202dd2f2954ea3659bbb"
+  "user_approval_receipt_sha256": "f11f26d7b18768463a6c15fdfd7f6e252e53cf31f379202dd2f2954ea3659bbb",
+  "temporary_resources_created": 13,
+  "temporary_resources_destroyed": 13,
+  "actual_gpu_jobs_run": 1,
+  "completed_budget_jobs": 0,
+  "result_manifest": "results/manifests/sequential-sample-gpu-result.json",
+  "result_recorded_utc": "2026-10-09T19:39:39.264955+00:00"
 }

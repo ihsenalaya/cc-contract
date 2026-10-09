@@ -1,6 +1,6 @@
 # Sequential H100 sample — provisioning proposal
 
-Status: locally qualified and explicitly approved by the user for USD 15 / 90 minutes; execution pending.
+Status: executed as a partial sample; all thirteen temporary resources destroyed. See the [actual result](sequential-sample-result.md). The approved USD 15 / 90-minute plan below is retained for provenance.
 
 The user requested a sample, explicitly removed parallel GPU jobs, requested
 immediate shutdown before deciding on further work, and prioritized total
