@@ -2,7 +2,10 @@
 
 Experimental software for **Runtime Semantic State-Continuity Verification for Confidential GPU Execution**. Historical stateful-testing campaigns remain separately documented.
 
-This repository implements and records experiments; it is not a paper manuscript.
+This repository contains experimental software, audited evidence and a
+[research manuscript draft](docs/paper/manuscript.md). The
+[completion register](docs/paper/completion-register.md) distinguishes delivered
+artifacts, unavailable comparisons and the remaining journal-submission decisions.
 Latest checkpoint: the [supported HDSC evaluation](docs/environment/hdsc-final-evaluation-result.md)
 is independently audited: 433 executed jobs and two additional GPU development
 controls; 720 sanitizer-dependent jobs remain explicitly unsupported.

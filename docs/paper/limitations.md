@@ -13,8 +13,8 @@
   memcheck, initcheck and synccheck explicitly rejected the tested CC environment;
   720 dependent jobs were not executed. B2 comparison remains unavailable.
   Unsupported is never a clean/missed result.
-- LGT4CG metadata verification overlaps this problem. Available primary material
-  supports that overlap but does not settle its entire dynamic capability. The
+- LGT4CG metadata verification overlaps this problem. The indexed publisher
+  §4.2 supports parameter/dataflow overlap but does not settle its entire dynamic capability. The
   scientific gap is provisional; no categorical novelty claim is justified.
 - The trained TinyStories model is small and uses fixed input width, no KV cache.
   It supports a real-workload boundary test, not a Qwen7B performance claim.

@@ -19,8 +19,8 @@ An exact output oracle can nevertheless detect all output-changing faults in our
 integer workload. Equal output does not imply equal consumed state. That distinction
 is useful only where the application actually requires identity/version continuity.
 
-The [related-work matrix](related-work-matrix.md) leaves unverified LGT4CG details
-unknown. We cannot claim it fails on all dynamic execution, nor that HDSC is the
+The updated [related-work matrix](related-work-matrix.md) confirms parameter
+and dataflow overlap with LGT4CG while leaving its full dynamic scope unresolved. We cannot claim it fails on all dynamic execution, nor that HDSC is the
 first state/version monitor. Comparison of trust assumptions is essential: our
 trusted host adapter is a larger assumption than monitors protecting against an
 untrusted runtime. No security superiority or new NVIDIA vulnerability is claimed.
