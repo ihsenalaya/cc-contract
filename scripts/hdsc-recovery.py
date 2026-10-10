@@ -3,6 +3,7 @@
 No container is started, stopped or deleted. Originals are never rewritten.
 The caller verifies all streamed hashes before admitting a new GPU workload.
 """
+import argparse
 import hashlib
 import io
 import json
@@ -64,9 +65,12 @@ def archive(root, containers, output):
 
 
 def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--window',choices=('hdsc-eval-1010a','hdsc-eval-1010b'),default='hdsc-eval-1010a')
+    args=parser.parse_args()
     ids=subprocess.check_output(['docker','ps','-aq'],timeout=15).decode().split()
     containers=json.loads(subprocess.check_output(['docker','inspect',*ids],timeout=15)) if ids else []
-    archive(PREVIOUS,containers,sys.stdout.buffer)
+    archive(PREVIOUS.parent/('cc-hdsc-'+args.window),containers,sys.stdout.buffer)
 
 
 if __name__=='__main__':main()

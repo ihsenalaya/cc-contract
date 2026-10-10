@@ -93,3 +93,14 @@ self-referential Git SHA.
 - Read-only Azure review confirms retained VM DEALLOCATED, matching VM/disk identities, seven ARM resources and valid independent guard. No mutations during review.
 - Executable plan SHA-256: `28e07560b63ecd77b86d6953413ce64d989eaee679e9e21efc31f6d601f59ff2`; 30-minute / USD 4 window, 433 expected executed jobs, 720 unsupported records without execution. Old evidence is recovered and verified first; no pooling.
 - The user's fresh conditional instruction is now fulfilled and recorded in a private plan-bound receipt. This is not a reuse of the completed-window approval. Publication precedes the authorized start; no additional permission request is needed.
+
+## 2026-10-10T20:29:57.131931+00:00 — native GPU results audited; AI failure and recovery preparation
+
+- Executed source: `df88b4cf8a67d1c51751a9131b465b7b2e72156f` (282-test source CI passed); prestart publication `e7c32176cd6c83a322def2e62309c25cbcbba392`. New changes are recorded in this checkpoint commit.
+- H100 window `hdsc-eval-1010b`: 363 native jobs completed, 720 unsupported records not executed. Independent CPU audit passed; core originals and analysis backed up with full Azure GET verification.
+- RQ2: 120/120 injected detections, 0/120 paired healthy alerts; output-only misses the 80 unchanged-output cases. RQ3 native: 40/40 injected alerts, 0/10 healthy; 0/70 additional native healthy alerts. Ten paired blocks, controlled variants only. No sanitizer superiority claim.
+- Prior archive recovered: 75 complete recorded jobs (72 reserved); entire attempt excluded. Original 52-row prefix verified. No frozen workload, seed or scientific metric changes; old RQ1/campaign results unchanged.
+- INC-0128: AI guest exit 1, cause unconfirmed until final log recovery. Image download succeeded. Native checkpoint preserved independently. Final AI counts unknown; 70 AI jobs unvalidated, no RQ4 result.
+- VM start-to-confirmed-deallocation: 791.671670 seconds (13 min 12 s). VM/disk retained, zero deletion. H100: **DEALLOCATED**.
+- Local host correction forwards bounded error tails before automatic release without retry; original status survives cleanup errors. Next: user-authorized recovery-only window, zero experiments, 10-minute planned ceiling / USD 2 forecast, then immediate release and local diagnosis.
+- Validation: full local 283-test suite passed, followed by the final 41 targeted HDSC tests including three new recovery-only regressions (286 total tests expected in source CI). Shell syntax, compilation and public result-count checks passed. Frozen recovery plan SHA: `c80fa3037c06ce0933131d7e33e383b5e271cdb927f0b1ae26a2c027bde65fad`.

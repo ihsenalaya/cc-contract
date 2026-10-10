@@ -29,17 +29,24 @@ and four fault pairs on a real pretrained TinyStories Transformer. These are not
 RQ2–RQ4 GPU results or evidence of general superiority. Historical GPU campaigns
 are preserved separately.
 
-The [frozen H100 plan](docs/environment/final-h100-evaluation-plan.md) scheduled 1,153
-serial jobs / 1,433 workload requests, plus declared graph-setup forwards. The owner
-approved its execution, but the [attempt was stopped](docs/environment/hdsc-interrupted-window.md)
-after a sanitizer capability-classification error. The H100 is **deallocated**;
-its VM and disk are retained. Reserved inputs were exposed in this interrupted
-attempt; no completed comparison is claimed. Follow the
-[checkpoint journal](docs/research/hourly-progress.md). A new frozen plan and fresh
-explicit approval are required before another restart. The
-[reduced resumption plan](docs/environment/hdsc-resumption-plan.md) is being
-qualified locally under the owner’s fresh conditional start instruction; the
-H100 remains off until all qualification gates pass.
+The approved [reduced H100 window](docs/environment/hdsc-resumption-plan.md)
+completed **363 native jobs**, independently audited and privately backed up:
+[results and remaining work](docs/environment/hdsc-resumption-result.md).
+CC-Contract detected 120/120 injected RQ2 violations, including 80 with unchanged
+final output; 120 paired healthy runs had no alert. Native dynamic runs detected
+40/40 injections, with no alerts on ten dynamic and 70 additional healthy runs.
+These are controlled benchmark results, not evidence of discovered real bugs.
+Compute Sanitizer rejected the CC configuration; 720 dependent records were
+explicitly skipped and cannot support a sanitizer comparison.
+
+The Transformer phase failed after its image downloaded; its exact cause remains
+unconfirmed pending recovery of final guest logs. **70 AI jobs remain unvalidated**,
+including the overhead experiment. The VM is **deallocated**, with disk retained;
+the complete start-to-release interval was **13 min 12 s**. The earlier
+[interrupted attempt](docs/environment/hdsc-interrupted-window.md) was recovered
+and excluded as a whole; exposed inputs must not be called an unseen holdout.
+Follow the [checkpoint journal](docs/research/hourly-progress.md). Any further
+restart requires a fresh approved plan; local analysis and publication continue.
 
 Reproduce CPU-only native development checks without model downloads:
 

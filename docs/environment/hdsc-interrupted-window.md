@@ -83,3 +83,13 @@ A new reviewed resumption plan and fresh owner approval are required for another
 window, including recovery of old evidence and a retained-container preflight. At the next approved access, recover the complete
 interrupted evidence before deciding how to handle the remaining reserved jobs.
 Do not rerun unsupported sanitizer jobs or claim they missed semantic faults.
+
+## Subsequent recovery, 2026-10-10
+
+The separately approved resumption recovered the original guest archive before
+new workloads: 75 complete recorded rows, including 72 reserved RQ2 rows, 17
+direct-CUDA calls and 58 disabled-tool calls. The original plan hash and captured
+52-row prefix matched. This supersedes only the earlier uncertainty about the
+recorded row count, not the preserved snapshot or its classifications. All of
+this attempt remains excluded from replacement results. See the
+[resumption report](hdsc-resumption-result.md) for recovery provenance and limits.

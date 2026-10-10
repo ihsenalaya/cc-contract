@@ -2,6 +2,7 @@
 import hashlib
 import importlib.util
 import json
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import subprocess
@@ -23,6 +24,26 @@ def module(name):
 
 
 class HDSCWindowTest(unittest.TestCase):
+    def test_guest_failure_diagnostics_survive_cleanup_errors(self):
+        host=(ROOT/'scripts/run-hdsc-host.sh').read_text()
+        cleanup='cleanup() {'+host.split('cleanup() {',1)[1].split('\ntrap cleanup EXIT',1)[0]
+        with tempfile.TemporaryDirectory() as tmp:
+            output=Path(tmp)
+            (output/'ai.stderr').write_text('omitted prefix\n'+'x'*20000+'\noriginal AI error\n')
+            (output/'pull-ai.log').write_text('image pulled successfully\n')
+            script='set -euo pipefail\ncontainer_prefix=test\nsudo() { return 19; }\n'+cleanup+'\ntrap cleanup EXIT\nexit "$requested_status"\n'
+            for status in (0,1,124):
+                result=subprocess.run(['bash','-c',script],capture_output=True,text=True,
+                    env={**os.environ,'output':tmp,'requested_status':str(status)})
+                self.assertEqual(result.returncode,status)
+                self.assertEqual(result.stdout,'')
+                if status:
+                    self.assertIn('original AI error',result.stderr)
+                    self.assertIn('image pulled successfully',result.stderr)
+                    self.assertNotIn('omitted prefix',result.stderr)
+                    self.assertLess(len(result.stderr),18000)
+                else:self.assertEqual(result.stderr,'')
+
     def test_cleanup_worker_error_is_not_silently_successful(self):
         device=Device('cpu-model',None)
         device.process=subprocess.Popen([sys.executable,'-c','import sys;sys.stdin.read();print("cleanup failed");sys.exit(3)'],

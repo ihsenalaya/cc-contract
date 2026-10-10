@@ -20,6 +20,38 @@ def module(name):
 
 
 class RecoveryTest(unittest.TestCase):
+    def test_recovery_only_approval_rejects_experiments_reuse_and_source_changes(self):
+        c=module('recover-hdsc-window');now=datetime.now(timezone.utc)
+        plan={**c.POLICY,'source_files_sha256':c.sources()}
+        receipt={k:plan[k] for k in ('protocol','max_minutes','budget_usd','experiment_jobs')}
+        receipt.update(approved=True,approved_by='user',plan_sha256='a'*64,
+                       reuse_completed_authorization=False,approved_utc=now.isoformat())
+        c.validate(plan,receipt,'a'*64,now)
+        for key,value in (('experiment_jobs',1),('budget_usd',4),('source_files_sha256',{})):
+            with self.assertRaises(ValueError):c.validate({**plan,key:value},receipt,'a'*64,now)
+        with self.assertRaises(ValueError):c.validate(plan,{**receipt,'reuse_completed_authorization':True},'a'*64,now)
+        with self.assertRaises(ValueError):c.validate(plan,receipt,'b'*64,now)
+
+    def test_recovery_only_transport_is_bounded_read_only_and_no_retry(self):
+        c=module('recover-hdsc-window')
+        with tempfile.TemporaryDirectory() as tmp,patch.object(c.subprocess,'run',side_effect=TimeoutError('transfer failed')) as run:
+            with self.assertRaises(TimeoutError):c.transfer(['verified-ssh'],Path(tmp))
+            self.assertEqual(run.call_count,1)
+            self.assertEqual(run.call_args.args[0],['verified-ssh','sudo -n python3 - --window hdsc-eval-1010b'])
+            self.assertEqual(run.call_args.kwargs['timeout'],90)
+            self.assertEqual(run.call_args.kwargs['input'],(ROOT/'scripts/hdsc-recovery.py').read_bytes())
+
+    def test_recovery_window_selection_does_not_accept_arbitrary_paths(self):
+        helper=module('hdsc-recovery')
+        with patch.object(sys,'argv',['helper','--window','hdsc-eval-1010b']), \
+             patch.object(helper.subprocess,'check_output',return_value=b''),patch.object(helper,'archive') as archive:
+            helper.main()
+            self.assertEqual(archive.call_args.args[0],Path('/home/cccontract/cc-hdsc-hdsc-eval-1010b'))
+        with patch.object(sys,'argv',['helper','--window','../../foreign']), \
+             patch.object(helper.subprocess,'check_output') as commands,patch.object(sys,'stderr',io.StringIO()):
+            with self.assertRaises(SystemExit):helper.main()
+            commands.assert_not_called()
+
     def setup_old(self,path):
         (path/'evidence/data/core').mkdir(parents=True)
         (path/'evidence/data/core/jobs.jsonl').write_bytes(b'{"original":true}\n')

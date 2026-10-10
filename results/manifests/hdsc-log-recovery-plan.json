@@ -1,0 +1,34 @@
+{
+  "protocol": "hdsc-recovery-only-v1",
+  "previous_window": "hdsc-eval-1010b",
+  "previous_plan_sha256": "28e07560b63ecd77b86d6953413ce64d989eaee679e9e21efc31f6d601f59ff2",
+  "max_minutes": 10,
+  "budget_usd": 2,
+  "experiment_jobs": 0,
+  "creates": 0,
+  "destroys": 0,
+  "vm_id": "/subscriptions/60f9b06a-66b1-437f-ac92-3b5e9720e34a/resourceGroups/cc-contract-work-sample-1009b/providers/Microsoft.Compute/virtualMachines/cc-contract-work-sample-1009b",
+  "vm_uuid": "2986ddd2-c122-4884-8f42-d7ad3d0a38ef",
+  "disk_uuid": "323889df-fc1f-45ea-a54d-dd47ee8a1f52",
+  "stop_policy": "DEALLOCATE_AND_RETAIN",
+  "source_files_sha256": {
+    "scripts/recover-hdsc-window.py": "0147c55e0fddb66286aafe7c12ca3be8e3d4a81e2c4b162e83cadf0059a11823",
+    "scripts/hdsc-recovery.py": "f490943f39de6b8783aa4f7c55ae49f37eb90da2e203a46598b67046fbaa7bfa",
+    "scripts/hdsc-window.py": "5d33edacd10f3a596ac50b8cd97b183a18c60d1929155a11ebf26d5e231e1723",
+    "scripts/continuity-window.py": "59131960df762982969fea3a44759ec92fd100ae78cee7161fefd7542357d035"
+  },
+  "approval_granted": false,
+  "guard_id": "/subscriptions/60f9b06a-66b1-437f-ac92-3b5e9720e34a/resourceGroups/cc-contract-work-sample-1009b/providers/Microsoft.Logic/workflows/cc-contract-work-sample-1009b-expiry",
+  "guard_definition_sha256": "cd9afb7cf2e101476dd8160ade67fe623d969af40166ae53ab427d8b2db790e4",
+  "completed_core_jobs_sha256": "38ea1e78ffbbe40cf68cd7987bcdcfda0039f72e52bae0d648b7957eeb3a2b2e",
+  "linux_retail_usd_per_hour": 6.98,
+  "compute_at_maximum_minutes_usd": 1.1633333333333333,
+  "expected_minutes": [
+    3,
+    6
+  ],
+  "SSH_allowance_seconds": 240,
+  "transfer_allowance_seconds": 90,
+  "independent_guard_minutes": 7,
+  "post_transfer_verification": "LOCAL_AFTER_DEALLOCATION"
+}

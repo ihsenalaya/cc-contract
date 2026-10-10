@@ -7,9 +7,25 @@ output="$work/evidence"
 container_prefix="cc-hdsc-${work##*/}"
 mkdir "$output"
 cleanup() {
+  local status=$?
+  trap - EXIT
+  set +e
   sudo -n docker stop --time 3 "$container_prefix-core" "$container_prefix-ai" >/dev/null 2>&1 || true
   sudo -n rm -rf /run/cc-hdsc-registry
   sudo -n chown -R "$(id -u):$(id -g)" "$output"
+  if [[ "$status" -ne 0 ]]; then
+    # Preserve diagnostics over the existing SSH connection before the controller
+    # deallocates. Full originals stay on disk; bounded tails contain no registry
+    # credential file or model/evaluation payloads. Never retry a failed job.
+    printf 'HDSC guest failed with exit status %s\n' "$status" >&2
+    for log in core.stderr ai.stderr pull-core.log pull-ai.log; do
+      if [[ -f "$output/$log" ]]; then
+        printf '\n%s (last 16384 bytes):\n' "$log" >&2
+        tail -c 16384 "$output/$log" >&2
+      fi
+    done
+  fi
+  exit "$status"
 }
 trap cleanup EXIT
 uname -r > "$output/kernel.txt"

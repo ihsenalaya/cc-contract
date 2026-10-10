@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "window": "hdsc-eval-1010b",
+  "state": "NATIVE_AUDITED_AI_INCOMPLETE",
+  "plan_sha256": "28e07560b63ecd77b86d6953413ce64d989eaee679e9e21efc31f6d601f59ff2",
+  "executable_source_commit": "df88b4cf8a67d1c51751a9131b465b7b2e72156f",
+  "source_ci": "https://github.com/ihsenalaya/cc-contract/actions/runs/38082539946",
+  "local_and_source_ci_tests_passed": 282,
+  "start_request_utc": "2026-10-10T20:12:08.361080+00:00",
+  "deallocation_utc": "2026-10-10T20:25:20.032750+00:00",
+  "start_request_to_deallocation_seconds": 791.67167,
+  "power_state": "PowerState/deallocated",
+  "disk_retained": true,
+  "resources_destroyed": 0,
+  "restart_authorized": false,
+  "planned_executed_jobs": 433,
+  "completed_and_audited_native_jobs": 363,
+  "unsupported_not_executed_records": 720,
+  "remaining_AI_jobs_without_locally_verified_completion": 70,
+  "AI_status": "Image pull success observed; guest exited 1; final AI logs retained on VM, not recovered locally",
+  "AI_cause_confirmed": false,
+  "AI_breakdown": {
+    "fault_pairs": 40,
+    "separate_healthy": 10,
+    "performance_mode_jobs": 20
+  },
+  "counts": {
+    "direct": {
+      "runs": 240,
+      "activated": 120,
+      "CC_classifications": {
+        "STATE_CONTINUITY_VIOLATION": 120,
+        "PASS": 120
+      },
+      "sanitizer_classifications": {
+        "NOT_RUN": 240
+      }
+    },
+    "memcheck": {
+      "runs": 0,
+      "activated": 0,
+      "CC_classifications": {},
+      "sanitizer_classifications": {}
+    },
+    "initcheck": {
+      "runs": 0,
+      "activated": 0,
+      "CC_classifications": {},
+      "sanitizer_classifications": {}
+    },
+    "synccheck": {
+      "runs": 0,
+      "activated": 0,
+      "CC_classifications": {},
+      "sanitizer_classifications": {}
+    }
+  },
+  "RQ2_effects": {
+    "B0/changed-output": {
+      "effect": {
+        "independent_blocks": 10,
+        "absolute_difference": 1,
+        "relative_difference_percent": null,
+        "absolute_difference_bootstrap_95": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_seed": 20261010,
+        "bootstrap_draws": 2000,
+        "zero_denominator_policy": "relative effect undefined, never infinity"
+      },
+      "eligible_targets_by_block": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4
+      },
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "B0/equal-payload": {
+      "effect": {
+        "independent_blocks": 10,
+        "absolute_difference": 1,
+        "relative_difference_percent": null,
+        "absolute_difference_bootstrap_95": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_seed": 20261010,
+        "bootstrap_draws": 2000,
+        "zero_denominator_policy": "relative effect undefined, never infinity"
+      },
+      "eligible_targets_by_block": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4
+      },
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "B0/sum-collision": {
+      "effect": {
+        "independent_blocks": 10,
+        "absolute_difference": 1,
+        "relative_difference_percent": null,
+        "absolute_difference_bootstrap_95": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_seed": 20261010,
+        "bootstrap_draws": 2000,
+        "zero_denominator_policy": "relative effect undefined, never infinity"
+      },
+      "eligible_targets_by_block": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4
+      },
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "B1/changed-output": {
+      "effect": {
+        "independent_blocks": 10,
+        "absolute_difference": 0,
+        "relative_difference_percent": 0.0,
+        "absolute_difference_bootstrap_95": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_seed": 20261010,
+        "bootstrap_draws": 2000,
+        "zero_denominator_policy": "relative effect undefined, never infinity"
+      },
+      "eligible_targets_by_block": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4
+      },
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "B1/equal-payload": {
+      "effect": {
+        "independent_blocks": 10,
+        "absolute_difference": 1,
+        "relative_difference_percent": null,
+        "absolute_difference_bootstrap_95": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_seed": 20261010,
+        "bootstrap_draws": 2000,
+        "zero_denominator_policy": "relative effect undefined, never infinity"
+      },
+      "eligible_targets_by_block": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4
+      },
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "B1/sum-collision": {
+      "effect": {
+        "independent_blocks": 10,
+        "absolute_difference": 1,
+        "relative_difference_percent": null,
+        "absolute_difference_bootstrap_95": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_seed": 20261010,
+        "bootstrap_draws": 2000,
+        "zero_denominator_policy": "relative effect undefined, never infinity"
+      },
+      "eligible_targets_by_block": {
+        "0": 4,
+        "1": 4,
+        "2": 4,
+        "3": 4,
+        "4": 4,
+        "5": 4,
+        "6": 4,
+        "7": 4,
+        "8": 4,
+        "9": 4
+      },
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "memcheck/changed-output": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "memcheck/equal-payload": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "memcheck/sum-collision": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "initcheck/changed-output": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "initcheck/equal-payload": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "initcheck/sum-collision": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "synccheck/changed-output": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "synccheck/equal-payload": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    },
+    "synccheck/sum-collision": {
+      "effect": {
+        "independent_blocks": 0,
+        "estimate": null,
+        "reason": "fewer_than_two_complete_blocks"
+      },
+      "eligible_targets_by_block": {},
+      "estimand": "Detection difference conditional on activation in both paired executions; four causes per complete block"
+    }
+  },
+  "RQ3": {
+    "jobs": 50,
+    "injected": 40,
+    "injected_with_alert": 40,
+    "healthy": 10,
+    "healthy_with_alert": 0,
+    "effect": {
+      "independent_blocks": 10,
+      "absolute_difference": 1,
+      "relative_difference_percent": null,
+      "absolute_difference_bootstrap_95": [
+        1.0,
+        1.0
+      ],
+      "bootstrap_seed": 20261010,
+      "bootstrap_draws": 2000,
+      "zero_denominator_policy": "relative effect undefined, never infinity"
+    }
+  },
+  "separate_native_healthy": {
+    "runs": 70,
+    "alerts": 0
+  },
+  "RQ4_GPU_results_available": false,
+  "timings": [
+    {
+      "kind": "capability",
+      "jobs": 3,
+      "sum_seconds": 4.132373380000004,
+      "median_seconds": 0.999392560000004,
+      "maximum_seconds": 2.1342724789999963
+    },
+    {
+      "kind": "rq2",
+      "jobs": 240,
+      "sum_seconds": 224.3930192640001,
+      "median_seconds": 0.934972979500003,
+      "maximum_seconds": 0.9471622940000088
+    },
+    {
+      "kind": "dynamic",
+      "jobs": 50,
+      "sum_seconds": 47.36655759300015,
+      "median_seconds": 0.9472220930000219,
+      "maximum_seconds": 0.9932838319999746
+    },
+    {
+      "kind": "healthy",
+      "jobs": 70,
+      "sum_seconds": 66.10879347399981,
+      "median_seconds": 0.9430658889999961,
+      "maximum_seconds": 1.0111646909999763
+    }
+  ],
+  "native_section_wall_seconds": 347.79900055499996,
+  "independent_audit_sha256": "a05663ba7e799a105f48b7dcfe1280f397d746ae8497557f3494459db3053919",
+  "original_core_archive": {
+    "archive_sha256": "293dde3396f0df1d39e0db579424e963abe7a6a523b535bfb4059d5b6960f227",
+    "uncompressed_bytes": 3258822,
+    "scope": "Transport integrity only; independent scientific audit follows deallocation"
+  },
+  "previous_recovery": {
+    "recorded_jobs": 75,
+    "recorded_reserved_RQ2_jobs": 72,
+    "pooled": false,
+    "archive_sha256": "cb967c430b9625dd525a000e3b2c9d5214fdefe7970fa422712c4630c7e311d6",
+    "captured_52_row_prefix_verified": true,
+    "count_scope": "Complete records; not a count of all attempted or in-flight calls"
+  },
+  "limitations": [
+    "Seeded controlled variants, not discovered real defects",
+    "Ten paired blocks; no general false-positive guarantee",
+    "No instrumented Compute Sanitizer comparison under tested CC configuration",
+    "Previously exposed inputs; no fully unseen holdout claim",
+    "RQ2 device projection has three fields; seven-field relations depend on trusted host adapter",
+    "No Transformer or end-to-end overhead result yet",
+    "H100 duration is start request to confirmed deallocation, not exact billing boundaries"
+  ],
+  "private_backup": {
+    "state": "VERIFIED_FULL_REMOTE_GET_SHA256",
+    "analysis_and_control_receipt_sha256": "79a3567e08e4f55bdf6e56c665dae26a3b83d8a81e1266528e6f96f39d149ab2",
+    "core_original_receipt_sha256": "7b22428fbe502097c2c36546563f716b24f464c86b15ddff3abff5edb04a6593",
+    "previous_original_receipt_sha256": "5369531bc0e4ed5f4ba5045e773af6eacbe9484e933b2f68857d250cbf010ab4"
+  }
+}
