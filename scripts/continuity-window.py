@@ -120,6 +120,23 @@ def validate_approval(plan, receipt, plan_hash, now):
         raise ValueError("Approval must be fresh; never reuse a completed window")
 
 
+def guard_update_body(original, definition):
+    """Logic Apps rejects PATCH properties; PUT the existing workflow in place.
+
+    Preserve configured identity, tags and parameters. Provider-generated
+    endpoints and read-only timestamps must not be submitted as configuration.
+    """
+    if original["identity"]["type"] != "SystemAssigned":
+        raise ValueError("Unexpected guard identity configuration")
+    properties = {"definition": definition, "state": original["properties"]["state"],
+                  "parameters": original["properties"].get("parameters", {})}
+    for key in ("accessControl", "integrationAccount", "integrationServiceEnvironment"):
+        if key in original["properties"]:
+            properties[key] = copy.deepcopy(original["properties"][key])
+    return dict(location=original["location"], tags=copy.deepcopy(original.get("tags", {})),
+                identity={"type": "SystemAssigned"}, properties=properties)
+
+
 def review(args):
     if not re.fullmatch(r"ghcr.io/ihsenalaya/cc-contract-continuity@sha256:[a-f0-9]{64}", args.image or ""):
         raise ValueError("Qualified immutable image required")
@@ -190,14 +207,21 @@ def execute(args):
     renewed = copy.deepcopy(definition)
     renewed["actions"]["ExpiryGuard"]["expression"]["greaterOrEquals"][1] = "@ticks('" + expires.strftime("%Y-%m-%dT%H:%M:%SZ") + "')"
     body = args.directory / "guard-update.json"
-    write(body, {"properties": {"definition": renewed}})
+    write(body, guard_update_body(live["guard"], renewed))
     start_attempted = False
     try:
-        az("rest", "--method", "patch", "--url", "https://management.azure.com" + plan["guard_id"] + "?api-version=2019-05-01", "--body", "@" + str(body))
+        az("rest", "--method", "put", "--url", "https://management.azure.com" + plan["guard_id"] + "?api-version=2019-05-01", "--body", "@" + str(body))
         actual = az("resource", "show", "--ids", plan["guard_id"], "--api-version", "2019-05-01")
         validate_guard(actual)
         if actual["properties"]["definition"] != renewed:
             raise ValueError("Renewed guard readback differs")
+        for key in ("id", "location", "identity", "tags"):
+            if actual.get(key) != live["guard"].get(key):
+                raise ValueError("Retained guard identity/configuration changed: " + key)
+        for key in ("createdTime", "parameters", "endpointsConfiguration", "accessControl",
+                    "integrationAccount", "integrationServiceEnvironment"):
+            if actual["properties"].get(key) != live["guard"]["properties"].get(key):
+                raise ValueError("Retained guard property changed: " + key)
         write(args.directory / "renewed-guard.json", actual)
         inventory()  # prove still deallocated immediately before start
         start_attempted = True

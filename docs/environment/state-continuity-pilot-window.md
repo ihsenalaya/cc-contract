@@ -90,7 +90,7 @@ receipt. A completed or stale authorization is rejected.
 After an explicit plan-bound user decision, the controller rereads VM/disk
 identity, stopped state and guard. While compute remains off, it renews only the
 existing workflow's expiry via the documented
-[Logic Apps update API](https://learn.microsoft.com/en-us/rest/api/logic/workflows/update?view=rest-logic-2019-05-01),
+[Logic Apps workflow PUT API](https://learn.microsoft.com/en-us/rest/api/logic/workflows/create-or-update?view=rest-logic-2019-05-01),
 and verifies the readback before requesting start. Expiry is armed for 28 minutes
 to reserve time for release within the 30-minute planning ceiling. The controller
 has at most 8 minutes to establish SSH, invokes the fixed host script, exports

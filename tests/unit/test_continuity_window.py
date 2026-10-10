@@ -29,7 +29,8 @@ def guard():
     definition = dict(triggers={"ExpiryTick": {"type": "Recurrence", "recurrence": {"frequency": "Minute", "interval": 1}}},
                       actions={"ExpiryGuard": dict(type="If", expression={"greaterOrEquals": ["@ticks(utcNow())", "old"]},
                                                     actions={"GetState": get, "IfAllocated": condition})})
-    return dict(id="existing-guard", properties={"state": "Enabled", "definition": definition})
+    return dict(id="existing-guard", location="eastus2", identity={"type": "SystemAssigned", "principalId": "same-principal"},
+                tags={"project": "cc-contract"}, properties={"state": "Enabled", "definition": definition})
 
 
 def plan():
@@ -60,6 +61,15 @@ def archive(tamper=False):
 
 
 class WindowTests(unittest.TestCase):
+    def test_put_body_preserves_configuration_excludes_readonly_fields(self):
+        original = guard()
+        original["properties"]["createdTime"] = "original-time"
+        original["properties"]["endpointsConfiguration"] = {"provider-generated": True}
+        body = window.guard_update_body(original, {"renewed": True})
+        self.assertEqual(body["location"], original["location"])
+        self.assertEqual(body["tags"], original["tags"])
+        self.assertEqual(body["identity"], {"type": "SystemAssigned"})
+        self.assertEqual(body["properties"], {"state": "Enabled", "parameters": {}, "definition": {"renewed": True}})
     def test_approval_rejects_stale_missing_or_larger_scope(self):
         good = approval("hash")
         now = datetime.now(timezone.utc)
@@ -107,6 +117,8 @@ class WindowTests(unittest.TestCase):
             calls = []
             def azure(*arguments):
                 calls.append(arguments)
+                if arguments[0] == "rest":
+                    self.assertEqual(arguments[1:3], ("--method", "put"))
                 if arguments[:2] == ("resource", "show"):
                     current = guard()
                     current["properties"]["definition"] = json.loads((folder / "guard-update.json").read_text())["properties"]["definition"]
