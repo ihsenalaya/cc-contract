@@ -37,6 +37,9 @@ TAGGED = frozenset({"azurerm_resource_group.window", "azurerm_virtual_network.wi
     "azurerm_network_security_group.window", "azurerm_public_ip.window",
     "azurerm_network_interface.window", "azurerm_logic_app_workflow.expiry",
     "azurerm_linux_virtual_machine.gpu"})
+REFRESH_ADDRESSES = frozenset({"azurerm_logic_app_workflow.expiry",
+    "azurerm_network_interface.window", "azurerm_public_ip.window",
+    "azurerm_role_definition.expiry", "azurerm_subnet.window", "azurerm_virtual_network.window"})
 
 
 def utcnow():
@@ -150,6 +153,248 @@ def validate_plan(plan, original, inputs, old_inputs):
 def saved_plan(directory):
     return json.loads(subprocess.check_output(["terraform", f"-chdir={window.MODULE}",
                       "show", "-json", str(directory / "plan.tfplan")], text=True))
+
+
+def copy_new(source, target):
+    """Preserve the exact original bytes, rather than reserializing evidence."""
+    with target.open("xb") as stream:
+        stream.write(source.read_bytes())
+        stream.flush()
+        os.fsync(stream.fileno())
+    target.chmod(0o600)
+
+
+def plan_values(values):
+    module = values.get("root_module", {})
+    if module.get("child_modules"):
+        raise ValueError("Refresh may not include modules")
+    result = {}
+    for row in module.get("resources", []):
+        address = row.get("address")
+        if (address in result or row.get("mode") != "managed" or row.get("index") is not None
+                or row.get("provider_name") != "registry.terraform.io/hashicorp/azurerm"
+                or address != row.get("type", "") + "." + row.get("name", "")):
+            raise ValueError("Unexpected refreshed resource address or provider")
+        result[address] = row["values"]
+    if set(result) != ADDRESSES:
+        raise ValueError("Refresh must contain exactly the 13 original resources")
+    return result
+
+
+def validate_nic_readback(actual, original):
+    nic = original["azurerm_network_interface.window"]
+    vm = original["azurerm_linux_virtual_machine.gpu"]
+    if (str(actual.get("id", "")).lower() != nic["id"].lower()
+            or str(actual.get("virtualMachine", {}).get("id", "")).lower() != vm["id"].lower()
+            or actual.get("name") != nic["name"]
+            or actual.get("resourceGroup") != nic["resource_group_name"]):
+        raise ValueError("Actual NIC does not belong to the retained VM")
+    mac = str(actual.get("macAddress", "")).upper().replace(":", "-")
+    if not re.fullmatch(r"(?:[0-9A-F]{2}-){5}[0-9A-F]{2}", mac):
+        raise ValueError("Actual retained NIC MAC address missing")
+    return mac
+
+
+def validate_refresh_plan(plan, original_state, inputs, nic_readback):
+    """Accept six observed drift resources and one explicit VM empty-list normalization.
+
+    This does not authorize resource updates. The normal resume plan continues
+    to reject every resource_drift entry after this separate state operation.
+    """
+    original = state_resources(original_state)
+    if (plan.get("terraform_version") != "1.12.2" or plan.get("complete") is not True
+            or plan.get("errored") is not False):
+        raise ValueError("A complete Terraform 1.12.2 refresh plan is required")
+    variables = {key: row.get("value") for key, row in plan.get("variables", {}).items()}
+    expected_variables = dict(inputs)
+    expected_variables.setdefault("confidential_image_id", original["azurerm_linux_virtual_machine.gpu"]["source_image_id"])
+    expected_variables.setdefault("model_container_scope", "")
+    if variables != expected_variables:
+        raise ValueError("Refresh variables must equal the retained inputs")
+    drift = plan.get("resource_drift", [])
+    if len(drift) != 6 or {row.get("address") for row in drift} != REFRESH_ADDRESSES:
+        raise ValueError("Refresh permits exactly the six reviewed computed-value resources")
+    expected = copy.deepcopy(original)
+    # Terraform normalizes this optional block during schema decoding without
+    # listing it in resource_drift. Check it explicitly; never ignore VM fields.
+    vm = expected["azurerm_linux_virtual_machine.gpu"]
+    if vm.get("termination_notification") is not None:
+        raise ValueError("Original VM optional-block normalization differs")
+    vm["termination_notification"] = []
+    workflow = expected["azurerm_logic_app_workflow.expiry"]
+    if len(workflow["identity"]) != 1 or workflow["identity"][0].get("identity_ids") is not None:
+        raise ValueError("Original workflow identity normalization differs")
+    workflow["identity"][0]["identity_ids"] = []
+    nic = expected["azurerm_network_interface.window"]
+    if nic.get("dns_servers") is not None or nic.get("mac_address") != "" or nic.get("virtual_machine_id") != "":
+        raise ValueError("Original NIC computed values differ")
+    nic.update(dns_servers=[], mac_address=validate_nic_readback(nic_readback, original),
+               virtual_machine_id=original["azurerm_linux_virtual_machine.gpu"]["id"])
+    public_ip = expected["azurerm_public_ip.window"]
+    if public_ip.get("ip_tags") is not None or public_ip.get("zones") is not None:
+        raise ValueError("Original public IP empty-value normalization differs")
+    public_ip.update(ip_tags={}, zones=[])
+    permissions = expected["azurerm_role_definition.expiry"]["permissions"]
+    if len(permissions) != 1:
+        raise ValueError("Original deallocation permissions differ")
+    for key in ("not_actions", "data_actions", "not_data_actions"):
+        if permissions[0].get(key) is not None:
+            raise ValueError("Original deallocation permission normalization differs")
+        permissions[0][key] = []
+    subnet = expected["azurerm_subnet.window"]
+    nsg = original["azurerm_network_security_group.window"]["id"]
+    association = original["azurerm_subnet_network_security_group_association.window"]
+    if (subnet.get("network_security_group_id") != "" or subnet.get("service_endpoint_policy_ids") is not None
+            or association.get("network_security_group_id") != nsg
+            or association.get("subnet_id") != subnet["id"]
+            or subnet.get("address_prefixes") != ["10.239.0.0/24"]):
+        raise ValueError("Original subnet/NSG association differs")
+    subnet.update(network_security_group_id=nsg, service_endpoint_policy_ids=[])
+    vnet = expected["azurerm_virtual_network.window"]
+    if vnet.get("subnet") != [] or subnet["id"] != vnet["id"] + "/subnets/" + subnet["name"]:
+        raise ValueError("Original VNet/subnet identity differs")
+    vnet["subnet"] = [{key: copy.deepcopy(subnet[key]) for key in (
+        "id", "name", "address_prefixes", "default_outbound_access_enabled", "delegation",
+        "private_endpoint_network_policies", "private_link_service_network_policies_enabled",
+        "route_table_id", "service_endpoint", "service_endpoint_policy_ids")}]
+    vnet["subnet"][0]["security_group"] = nsg
+    for row in drift:
+        address, change = row["address"], row["change"]
+        if (row.get("previous_address") or row.get("deposed") or change.get("importing")
+                or change.get("actions") != ["update"] or unknown(change.get("after_unknown", {}))
+                or change.get("before") != original[address] or change.get("after") != expected[address]):
+            raise ValueError("Unapproved computed-value drift: " + address)
+    expected_outputs = copy.deepcopy(original_state["outputs"])
+    for output in expected_outputs.values():
+        if output.get("sensitive", False) is not False:
+            raise ValueError("Unexpected sensitive retained output")
+        output["sensitive"] = False
+    prior = plan.get("prior_state", {}).get("values", {})
+    planned = plan.get("planned_values", {})
+    if (plan_values(prior) != expected or prior.get("outputs") != expected_outputs
+            or planned.get("root_module") != {} or planned.get("outputs") != expected_outputs):
+        # Terraform 1.12.2 refresh-only stores refreshed resources in prior_state
+        # and has an empty planned root. Reject a normal resource mutation plan.
+        raise ValueError("Refresh values or outputs differ from the reviewed state")
+    changes = plan.get("resource_changes", [])
+    if changes and (len(changes) != 13 or {row.get("address") for row in changes} != ADDRESSES):
+        raise ValueError("Unexpected refresh resource actions")
+    for row in changes:
+        change = row["change"]
+        if (row.get("previous_address") or row.get("deposed") or change.get("importing")
+                or change.get("actions") != ["no-op"] or unknown(change.get("after_unknown", {}))
+                or change.get("before") != expected[row["address"]] or change.get("after") != expected[row["address"]]):
+            raise ValueError("Refresh-only plan may not mutate Azure resources")
+    outputs = plan.get("output_changes", {})
+    if set(outputs) != set(original_state["outputs"]):
+        raise ValueError("Refresh outputs missing or added")
+    for name, change in outputs.items():
+        value = original_state["outputs"][name]["value"]
+        if (change.get("actions") != ["no-op"] or change.get("before") != value
+                or change.get("after") != value or unknown(change.get("after_unknown", False))):
+            raise ValueError("Refresh may not change outputs")
+    return expected
+
+
+def refresh_plan(args):
+    old, directory = window.STATE / args.retained_window, window.STATE / args.refresh_id
+    if old == directory or directory.exists():
+        raise ValueError("A fresh refresh evidence directory is required")
+    inputs, outputs, state = load(old / "inputs.json"), load(old / "outputs.json"), load(old / "terraform.tfstate")
+    if inputs["window_id"] != args.retained_window:
+        raise ValueError("Retained window identity differs")
+    original = state_resources(state)
+    verify_outputs(inputs, outputs, original)
+    gpu = original["azurerm_linux_virtual_machine.gpu"]
+    require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+    actual_nic = window.az_json("network", "nic", "show", "--ids", original["azurerm_network_interface.window"]["id"])
+    validate_nic_readback(actual_nic, original)
+    directory.mkdir(mode=0o700)
+    for source, target in (("terraform.tfstate", "terraform.tfstate-before"), ("inputs.json", "inputs.json"), ("outputs.json", "outputs.json")):
+        copy_new(old / source, directory / target)
+    write_new(directory / "nic-readback.json", actual_nic)
+    with (directory / "plan.log").open("x") as log:
+        window.tf("init", "-input=false", "-reconfigure", f"-backend-config=path={old / 'terraform.tfstate'}", stdout=log, stderr=subprocess.STDOUT)
+        window.tf("plan", "-refresh-only", "-input=false", f"-var-file={directory / 'inputs.json'}", f"-out={directory / 'plan.tfplan'}", stdout=log, stderr=subprocess.STDOUT)
+    plan = saved_plan(directory)
+    write_new(directory / "plan.json", plan)
+    validate_refresh_plan(plan, state, inputs, actual_nic)
+    if window.sha(old / "terraform.tfstate") != window.sha(directory / "terraform.tfstate-before"):
+        raise ValueError("Retained backend changed during read-only refresh planning")
+    require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+    summary = {"schema_version": 1, "state": "REVIEWED_REFRESH_ONLY_STATE_PLAN",
+        "scope": "LOCAL_TERRAFORM_STATE_RECONCILIATION_ONLY", "refresh_id": args.refresh_id,
+        "retained_window": args.retained_window, "planned_at_utc": utcnow().isoformat(),
+        "plan_sha256": window.sha(directory / "plan.tfplan"), "plan_json_sha256": window.sha(directory / "plan.json"),
+        "retained_state_path": str(old / "terraform.tfstate"), "retained_state_sha256": window.sha(directory / "terraform.tfstate-before"),
+        "inputs_sha256": window.sha(directory / "inputs.json"), "outputs_sha256": window.sha(directory / "outputs.json"),
+        "nic_readback_sha256": window.sha(directory / "nic-readback.json"),
+        "retained_vm_id": gpu["id"], "retained_vm_uuid": gpu["virtual_machine_id"],
+        "terraform_module_sha256": window.sha(window.MODULE / "main.tf"), "resume_controller_sha256": window.sha(HERE),
+        "window_controller_sha256": window.sha(HERE.with_name("azure-window.py")),
+        "resource_drift_addresses": sorted(REFRESH_ADDRESSES), "azure_resource_mutations": 0,
+        "additional_state_normalizations": {"azurerm_linux_virtual_machine.gpu.termination_notification": {"before": None, "after": []}},
+        "created_resources": 0, "deleted_resources": 0, "vm_start_requested": False}
+    write_new(directory / "summary.json", summary)
+    print(json.dumps(summary, indent=2))
+
+
+def refresh_apply(directory, supplied_hash):
+    summary = load(directory / "summary.json")
+    old = window.STATE / summary["retained_window"]
+    backend = old / "terraform.tfstate"
+    if (summary["refresh_id"] != directory.name or Path(summary["retained_state_path"]).resolve() != backend.resolve()
+            or summary["state"] != "REVIEWED_REFRESH_ONLY_STATE_PLAN" or summary["azure_resource_mutations"] != 0):
+        raise ValueError("Reviewed refresh state scope differs")
+    bindings = [(directory / "plan.tfplan", supplied_hash), (directory / "plan.tfplan", summary["plan_sha256"]),
+        (directory / "plan.json", summary["plan_json_sha256"]), (backend, summary["retained_state_sha256"]),
+        (directory / "terraform.tfstate-before", summary["retained_state_sha256"]),
+        (directory / "inputs.json", summary["inputs_sha256"]), (old / "inputs.json", summary["inputs_sha256"]),
+        (directory / "outputs.json", summary["outputs_sha256"]), (old / "outputs.json", summary["outputs_sha256"]),
+        (directory / "nic-readback.json", summary["nic_readback_sha256"]),
+        (window.MODULE / "main.tf", summary["terraform_module_sha256"]), (HERE, summary["resume_controller_sha256"]),
+        (HERE.with_name("azure-window.py"), summary["window_controller_sha256"])]
+    if any(window.sha(path) != digest for path, digest in bindings):
+        raise ValueError("Reviewed refresh plan, backend or source changed")
+    if any((directory / name).exists() for name in ("apply.log", "apply-receipt.json", "terraform.tfstate-after")):
+        raise ValueError("Refresh operation already attempted; preserve original evidence")
+    original_state, inputs = load(directory / "terraform.tfstate-before"), load(directory / "inputs.json")
+    original = state_resources(original_state)
+    plan = saved_plan(directory)
+    if plan != load(directory / "plan.json"):
+        raise ValueError("Saved refresh binary JSON differs from reviewed original")
+    expected = validate_refresh_plan(plan, original_state, inputs, load(directory / "nic-readback.json"))
+    gpu = original["azurerm_linux_virtual_machine.gpu"]
+    if gpu["id"] != summary["retained_vm_id"] or gpu["virtual_machine_id"] != summary["retained_vm_uuid"]:
+        raise ValueError("Reviewed refresh VM identity differs")
+    require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+    actual_nic = window.az_json("network", "nic", "show", "--ids", original["azurerm_network_interface.window"]["id"])
+    if validate_nic_readback(actual_nic, original) != expected["azurerm_network_interface.window"]["mac_address"]:
+        raise ValueError("Actual NIC changed since refresh planning")
+    failure, verified = None, False
+    try:
+        with (directory / "apply.log").open("x") as log:
+            window.tf("init", "-input=false", "-reconfigure", f"-backend-config=path={backend}", stdout=log, stderr=subprocess.STDOUT)
+            window.tf("apply", "-input=false", str(directory / "plan.tfplan"), stdout=log, stderr=subprocess.STDOUT)
+        copy_new(backend, directory / "terraform.tfstate-after")
+        refreshed = load(directory / "terraform.tfstate-after")
+        if (state_resources(refreshed) != expected or refreshed.get("lineage") != original_state.get("lineage")
+                or refreshed.get("serial") != original_state.get("serial", -1) + 1
+                or refreshed.get("outputs") != original_state["outputs"]):
+            raise ValueError("Actual refreshed backend differs from the validated state-only result")
+        require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+        verified = True
+    except BaseException as error:
+        failure = type(error).__name__
+        raise
+    finally:
+        write_new(directory / "apply-receipt.json", {"schema_version": 1,
+            "state": "VERIFIED_REFRESH_ONLY_STATE_RECONCILIATION" if verified else "FAILED_REFRESH_STATE_RECONCILIATION",
+            "timestamp_utc": utcnow().isoformat(), "error_type": failure, "plan_sha256": supplied_hash,
+            "before_state_sha256": summary["retained_state_sha256"], "after_state_sha256": window.sha(backend),
+            "scope": "LOCAL_TERRAFORM_STATE_RECONCILIATION_ONLY", "azure_resource_mutations": 0,
+            "vm_start_requested": False, "deallocation_verified": verified,
+            "temporary_resources_retained_for_user_decision": True})
 
 
 def require_deallocated(vm_id, uuid):
@@ -427,23 +672,33 @@ def run_campaign(directory, supplied_hash):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("plan", "run"))
+    parser.add_argument("action", choices=("plan", "run", "refresh-plan", "refresh-apply"))
     parser.add_argument("--campaign", default="fixed-work-1010a")
     parser.add_argument("--retained-window", default="work-sample-1009b")
+    parser.add_argument("--refresh-id")
     parser.add_argument("--workload-bundle", type=Path)
     parser.add_argument("--ssh-source-cidr")
     parser.add_argument("--max-window-minutes", type=int, default=MAX_MINUTES)
     parser.add_argument("--budget-forecast-usd", type=float, default=MAX_BUDGET_USD)
     parser.add_argument("--approved-plan-sha256")
     args = parser.parse_args(argv)
-    for value in (args.campaign, args.retained_window):
+    for value in (args.campaign, args.retained_window, *([args.refresh_id] if args.refresh_id else [])):
         if not re.fullmatch(r"[a-z0-9][a-z0-9-]{2,20}", value):
             parser.error("Use a lowercase campaign/window identifier")
     native, config = window.STATE / "azure-native-cli-venv/bin/az", window.STATE / "azure-native-cli-config"
     if native.is_file() and (config / "azureProfile.json").is_file():
         os.environ["PATH"] = str(native.parent) + os.pathsep + os.environ["PATH"]
         os.environ["AZURE_CONFIG_DIR"] = str(config)
-    if args.action == "plan":
+    if args.action.startswith("refresh-"):
+        if not args.refresh_id:
+            parser.error("--refresh-id required for state-only reconciliation")
+        if args.action == "refresh-plan":
+            refresh_plan(args)
+        else:
+            if not args.approved_plan_sha256:
+                parser.error("--approved-plan-sha256 required for the reviewed refresh-only plan")
+            refresh_apply(window.STATE / args.refresh_id, args.approved_plan_sha256)
+    elif args.action == "plan":
         if args.workload_bundle is None:
             parser.error("--workload-bundle required for planning")
         plan_campaign(args)

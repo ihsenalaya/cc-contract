@@ -23,6 +23,15 @@ resources and retain the same actual VM UUID and thirteen managed resources.
 No additional GPU is reserved. A startup exceeding fifteen minutes aborts;
 the workload has a 60-minute external command guard and 120 seconds per job.
 
+Creation-time computed fields require a separate refresh-only Terraform state
+reconciliation before the update-only plan. Preserve the exact old backend
+and saved refresh plan. Accept only the six observed resource normalizations
+and the VM's absent termination-notification block becoming an empty list;
+anchor the NIC MAC and attachment to a fresh Azure readback. Check all thirteen
+refreshed resource values and unchanged outputs. This operation updates local
+Terraform state, starts no VM and permits zero Azure resource mutations.
+The normal resume validator still rejects every unresolved drift entry.
+
 Before starting compute, source tests, native CPU integration on both Kind
 workers (140 × 4 each), permissions, immutable image qualifications,
 independent original-case reviews and lifecycle error paths must pass.
