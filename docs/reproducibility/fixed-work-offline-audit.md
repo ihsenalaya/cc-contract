@@ -29,3 +29,16 @@ Its JSON result, parallel receipt and worker proofs remain outside Git; publish
 reviewed summaries and hashes separately. Candidate FAILs require the registered
 fresh-process reproductions and external characterization before confirmation.
 No automatic superiority, power, whole-project or GPU-attestation claim is emitted.
+
+After the complete raw-case audit, host review and full private Azure backup are
+verified, regenerate the public tables and SVG figure with:
+
+```bash
+python3 scripts/render-fixed-work-result.py --campaign-directory /private/campaign
+```
+
+The formatter uses the completed audit and lifecycle/backup receipts, performs
+no GPU or cloud operation, and writes public summaries under `docs/environment`
+and `results/manifests`. It requires Matplotlib for the standalone SVG and records
+the plotting version. The original raw archive remains private and unchanged.
+The formatter is a presentation tool; it does not replace the semantic auditor.

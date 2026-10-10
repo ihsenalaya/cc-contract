@@ -41,5 +41,7 @@
   "superiority_established": false,
   "independent_GPU_remote_attestation_established": false,
   "offline_CPU_adapter_sha256": "aa7c656cc1c1964af88114d9c33ad39c41323b9a2b63a4e3ec99d2653856a5d3",
-  "private_Azure_originals_backup_summary_sha256": "1450222912cc598491a47af3bf8b98fa7e47a52d9c3efc442c683313c03221cc"
+  "private_Azure_originals_backup_summary_sha256": "1450222912cc598491a47af3bf8b98fa7e47a52d9c3efc442c683313c03221cc",
+  "preserved_historical_execution_checkpoint_not_latest_scientific_status": true,
+  "final_audited_result": "results/manifests/fixed-work-campaign-gpu-result.json"
 }

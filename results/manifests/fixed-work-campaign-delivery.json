@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "state": "VERIFIED_BOUNDED_FIXED_WORK_RESULT_AND_PRIVATE_BACKUPS",
+  "timestamp_utc": "2026-10-10T08:58:55.032172+00:00",
+  "campaign_id": "fixed-work-1010a",
+  "result_manifest_sha256": "e4e96afe774d24b68cd47f3dd898b8597c801c8e1d4e2d88e2ecc5e9af432fe3",
+  "original_archive_sha256": "b4e7135cf1806d577dcb40530b8aa7b6f8f5f36fba78f9b83c9dca04f0834fde",
+  "original_backup": {
+    "verified_objects": 13,
+    "verified_bytes": 2896900438,
+    "full_remote_GET_SHA256_and_length_verified": true,
+    "summary_sha256": "1450222912cc598491a47af3bf8b98fa7e47a52d9c3efc442c683313c03221cc",
+    "Azure_receipt_sha256": "a12abcbbdd7336ba27abe598f029901446ce29f96a7c6489aef3f0cf897f761a"
+  },
+  "audit_and_public_results_backup": {
+    "verified_objects": 30,
+    "verified_bytes": 712597,
+    "full_remote_GET_SHA256_and_length_verified": true,
+    "summary_sha256": "e217cb1939feea8a0f59165bd015b80996c9572ac40be8b7897e16e8baf95f6a",
+    "Azure_receipt_sha256": "3643d4f97b19e3798e0b2632c77c9d99071a8adda19b521400adee6656a08756"
+  },
+  "table_and_manifest_review_sha256": "0666564b8ee8ceb4275659f69727701783b208d27f48b6068e35b8757acd62bf",
+  "figure_visual_review_sha256": "2cef960eb6b4b04729b2b76d6b762d93f88fe1d4bc9c93d1b1d1c71d92df8f84",
+  "source_validation": {
+    "offline_auditor_qualification": "results/manifests/fixed-work-offline-audit-qualification.json",
+    "local_source_tests": 219,
+    "formatter_complete_real_GPU_input_functional_check": true,
+    "formatter_partial_or_CPU_result_rejection_checked": true,
+    "final_formatter_gate_receipt_sha256": "04785ea6a429da1cf9a2b2becd5a638a7ea299e1a324f859f635b32af4e8359a",
+    "format_correction_semantic_review_sha256": "557291716ae1fb93e9957bba9e9acbd849e763e78ad7e9d54968621a6c37a4c9"
+  },
+  "H100_deallocated_and_original_VM_disk_retained": true,
+  "further_H100_use_requires_new_explicit_user_approval": true,
+  "whole_E0_E8_complete": false,
+  "statistical_superiority_established": false,
+  "actual_billing_start_and_amount_established": false,
+  "Git_publication_checked_separately_after_push": true,
+  "corrected_public_outputs_backup": {
+    "verified_objects": 11,
+    "verified_bytes": 186454,
+    "full_remote_GET_SHA256_and_length_verified": true,
+    "summary_sha256": "401aab2968138a0e510d6116e0d5ba2f1ed0a6e0b6f5f5b54641fde754470ee8",
+    "Azure_receipt_sha256": "d154e8108918ecc187cb1b20b21fa1af287ba369a0a47a7aa148b65cf2c27566",
+    "scientific_numbers_changed": false,
+    "earlier_derived_versions_preserved": true
+  }
+}

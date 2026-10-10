@@ -12,7 +12,8 @@
         "results/manifests/first-real-gpu-qualification.json",
         "results/manifests/pilot-local-qualification.json",
         "results/manifests/cloud-pilot-local-qualification.json",
-        "results/manifests/cloud-pilot-gpu-qualification.json"
+        "results/manifests/cloud-pilot-gpu-qualification.json",
+        "results/manifests/fixed-work-campaign-gpu-result.json"
       ],
       "remaining": [
         "Independent GPU quote/remote-token verification",
@@ -29,7 +30,8 @@
         "results/manifests/initial-local-qualification.json",
         "results/manifests/first-real-gpu-qualification.json",
         "results/manifests/pilot-local-qualification.json",
-        "results/manifests/cloud-pilot-gpu-qualification.json"
+        "results/manifests/cloud-pilot-gpu-qualification.json",
+        "results/manifests/fixed-work-campaign-gpu-result.json"
       ],
       "remaining": [
         "Broader oracle calibration and independent campaign variability",
@@ -44,15 +46,17 @@
         "results/manifests/initial-local-qualification.json",
         "results/manifests/extended-local-qualification.json",
         "results/manifests/pilot-local-qualification.json",
-        "results/manifests/cloud-pilot-gpu-qualification.json"
+        "results/manifests/cloud-pilot-gpu-qualification.json",
+        "results/manifests/fixed-work-campaign-gpu-result.json"
       ],
       "remaining": [
-        "Independent reserved GPU campaign"
+        "Contracts beyond the qualified bounded T01\u2013T08 generator require a separate protocol"
       ],
       "capabilities": {
         "mapped_memory": true,
         "graphs": true
-      }
+      },
+      "reserved_fixed_work_campaign_independently_audited": true
     },
     {
       "id": "E3",
@@ -69,33 +73,37 @@
     },
     {
       "id": "E4",
-      "state": "LOCAL_VALIDATED",
-      "scope": "CPU_algorithm_and_pipeline_checks_only",
+      "state": "GPU_VALIDATED",
+      "scope": "bounded_fixed_work_v0_3_20_paired_blocks_140_successive_100_selected_case_GPU_jobs_independently_recomputed",
       "evidence": [
         "results/manifests/software-preparation.json",
         "docs/methodology/protocol-v0.2-draft.md",
-        "results/manifests/fixed-work-campaign-execution.json"
+        "results/manifests/fixed-work-campaign-execution.json",
+        "results/manifests/fixed-work-campaign-gpu-result.json"
       ],
       "remaining": [
-        "Independent raw-case audit of all 140 executed 100-selected-case GPU jobs",
-        "Broader oracle/power/evaluation criteria remain outside the bounded v0.3 campaign"
+        "Broader oracle, precision/power and evaluation claims remain outside the completed bounded v0.3 matrix"
       ],
-      "fixed_work_protocol": "docs/methodology/fixed-work-campaign-v0.3.md"
+      "fixed_work_protocol": "docs/methodology/fixed-work-campaign-v0.3.md",
+      "bounded_declared_matrix_complete": true,
+      "superiority_established": false
     },
     {
       "id": "E5",
-      "state": "LOCAL_VALIDATED",
-      "scope": "CPU_algorithm_and_pipeline_checks_only",
+      "state": "GPU_VALIDATED",
+      "scope": "bounded_fixed_work_v0_3_20_paired_blocks_140_successive_100_selected_case_GPU_jobs_independently_recomputed",
       "evidence": [
         "results/manifests/software-preparation.json",
         "docs/methodology/protocol-v0.2-draft.md",
-        "results/manifests/fixed-work-campaign-execution.json"
+        "results/manifests/fixed-work-campaign-execution.json",
+        "results/manifests/fixed-work-campaign-gpu-result.json"
       ],
       "remaining": [
-        "Independent raw-case audit of all 140 executed 100-selected-case GPU jobs",
-        "Broader oracle/power/evaluation criteria remain outside the bounded v0.3 campaign"
+        "Broader oracle, precision/power and evaluation claims remain outside the completed bounded v0.3 matrix"
       ],
-      "fixed_work_protocol": "docs/methodology/fixed-work-campaign-v0.3.md"
+      "fixed_work_protocol": "docs/methodology/fixed-work-campaign-v0.3.md",
+      "bounded_declared_matrix_complete": true,
+      "superiority_established": false
     },
     {
       "id": "E6",
@@ -103,12 +111,15 @@
       "scope": "CPU_algorithm_and_pipeline_checks_only",
       "evidence": [
         "results/manifests/software-preparation.json",
-        "docs/methodology/protocol-v0.2-draft.md"
+        "docs/methodology/protocol-v0.2-draft.md",
+        "results/manifests/fixed-work-campaign-gpu-result.json"
       ],
       "remaining": [
         "Suitable reproduced real anomaly",
         "Paired GPU reduction evaluation; otherwise conditional non-applicability"
-      ]
+      ],
+      "conditional_fixed_work_v0_3_status": "NOT_APPLICABLE_NO_REPRODUCED_REAL_ANOMALY_IN_THIS_BOUNDED_CAMPAIGN",
+      "real_GPU_reduction_or_intervention_evaluated": false
     },
     {
       "id": "E7",
@@ -130,12 +141,15 @@
       "state": "LOCAL_VALIDATED",
       "scope": "CPU_callable_harness_correctness_gate_only",
       "evidence": [
-        "results/manifests/software-preparation.json"
+        "results/manifests/software-preparation.json",
+        "results/manifests/fixed-work-campaign-gpu-result.json"
       ],
       "remaining": [
         "Technically characterized real anomaly and qualified intervention",
         "Actual paired GPU timings; otherwise conditional non-applicability"
-      ]
+      ],
+      "conditional_fixed_work_v0_3_status": "NOT_APPLICABLE_NO_REPRODUCED_REAL_ANOMALY_IN_THIS_BOUNDED_CAMPAIGN",
+      "real_GPU_reduction_or_intervention_evaluated": false
     }
   ],
   "local_preparation": {
@@ -211,7 +225,7 @@
     "selected_cases_independently_audited": 1400
   },
   "fixed_work_campaign": {
-    "state": "COMPLETED_GPU_EXECUTION_OFFLINE_AUDIT_IN_PROGRESS",
+    "state": "COMPLETED_AND_INDEPENDENTLY_AUDITED_FIXED_WORK_GPU_CAMPAIGN",
     "approval_granted": true,
     "approval_scope": "USER_EXPLICIT_140_SUCCESSIVE_JOBS_OF_100_CASES_STOP_LOCAL_FIX_AND_RESUME",
     "parallel_gpu_jobs": false,
@@ -233,13 +247,21 @@
     "actual_billing_start_and_cost_established": false,
     "full_E0_E8_complete": false,
     "blocker": null,
-    "gpu_results_claimed": false,
+    "gpu_results_claimed": true,
     "execution_evidence": "results/manifests/fixed-work-campaign-execution.json",
     "actual_start_request_to_deallocation_seconds": 3380.039786,
     "cumulative_conservative_start_request_to_deallocation_seconds": 3559.3351599999996,
-    "independent_raw_case_audit_state": "IN_PROGRESS",
-    "private_Azure_backup_state": "VERIFIED_ORIGINAL_ARCHIVE_FULL_REMOTE_GET",
+    "independent_raw_case_audit_state": "PASS_COMPLETE_FIXED_WORK_GPU_AUDIT",
+    "private_Azure_backup_state": "VERIFIED_ORIGINALS_AND_FINAL_AUDIT_FULL_REMOTE_GET",
     "further_H100_use_requires_new_explicit_user_approval": true,
-    "next_H100_window_approved": false
+    "next_H100_window_approved": false,
+    "evidence": "results/manifests/fixed-work-campaign-gpu-result.json",
+    "result": "docs/environment/fixed-work-campaign-result.md",
+    "independently_audited_selected_cases": 14000,
+    "independently_audited_candidate_draws": 164000,
+    "candidate_failures": 0,
+    "confirmed_defects": 0,
+    "statistical_superiority_established": false,
+    "case_count_scientific_adequacy_established": false
   }
 }

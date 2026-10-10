@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "state": "PASS_OFFLINE_CPU_AUDITOR_SOURCE_AND_KIND_QUALIFICATION",
+  "timestamp_utc": "2026-10-10T08:42:13.939430+00:00",
+  "scope": "LOCAL_CPU_COMPOSITION_CORRECTNESS_AND_ORIGINAL_SCIENTIFIC_RESULT_PARITY",
+  "adapter_sha256": "aa7c656cc1c1964af88114d9c33ad39c41323b9a2b63a4e3ec99d2653856a5d3",
+  "original_analyzer_sha256": "560872b8f008e40f5d7440e1cfa4a396c77d6bbd145705a0f9312d6a10eddb5f",
+  "portable_unit_tests": 12,
+  "full_local_source_tests": 219,
+  "local_full_check_log_sha256": "78656219d140184c7bb676608de0e57dcf2d67baf2339615708ff66984fa2937",
+  "source_ci": {
+    "conclusion": "success",
+    "headSha": "0f2f928bad4ac3438d0c0fd42bb0affcbfec7fdd",
+    "status": "completed",
+    "url": "https://github.com/ihsenalaya/cc-contract/actions/runs/38038544002"
+  },
+  "source_ci_receipt_sha256": "071a89d8e72aab4eb5e869466dfd9bb475c3afac21abf2556e33b25acfb23b65",
+  "kind_original_jobs_reaudited": 280,
+  "kind_original_selected_cases_reaudited": 1120,
+  "kind_original_candidate_draws_reaudited": 13120,
+  "all_scientific_result_fields_match_original_serial_auditor": true,
+  "kind_CPU_audit_seconds": [
+    103.58784009100009,
+    102.81212666200008
+  ],
+  "kind_qualification_receipt_sha256": "16d08f82c205bba7bcf5f8a265ec185846038ef568b30a306ff6262616b6809b",
+  "independent_source_review_sha256": "39bb981792c566313c4bb18afc5a7df112d3eaf3b44b757ece50f42f7f5a6e66",
+  "maximum_CPU_workers": 4,
+  "address_space_limit_per_worker_bytes": 1073741824,
+  "raw_archive_extraction_performed": false,
+  "GPU_compute_performed_by_adapter": false,
+  "GPU_live_power_readback_performed_by_adapter": false,
+  "no_GPU_scientific_result_claim_from_Kind_qualification": true
+}

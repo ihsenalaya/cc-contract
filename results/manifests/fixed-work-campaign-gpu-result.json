@@ -1,0 +1,531 @@
+{
+  "actual_total_seconds": 2848.963588962,
+  "all_case_traces_independently_recomputed": true,
+  "audited_candidate_draws": 164000,
+  "audited_jobs": 140,
+  "audited_observations": 39799,
+  "audited_raw_bytes": 6461268434,
+  "audited_selected_cases": 14000,
+  "candidate_failures": 0,
+  "case_count_scientific_adequacy_established": false,
+  "claim": "NO_AUTOMATIC_SUPERIORITY_CLAIM",
+  "cpu_qualification_archive_adapter": false,
+  "defect_analysis_state": "NO_UNRESOLVED_CANDIDATES",
+  "external_review_performed": false,
+  "external_reviews_sha256": null,
+  "full_gpu_quota_matrix": true,
+  "gpu_executed": true,
+  "harness_sha256": "f4be75fb2e74243781d8074cfc760c0c8849ee7af706ff7043fb73435f317e34",
+  "image_digest": "ghcr.io/ihsenalaya/cc-contract-ir@sha256:e09597869dab698d082cc56ceb5cbb7c6eb348760e08f617387491837ad1fc8a",
+  "independent_GPU_remote_attestation_established_by_this_analysis": false,
+  "missing_jobs": [],
+  "nondetections": "RIGHT_CENSORED_AT_ACTUAL_CAMPAIGN_END_NEVER_ZERO_TIME",
+  "oracle_version": "integer_physical_tag_v2",
+  "original_archive_sha256": "b4e7135cf1806d577dcb40530b8aa7b6f8f5f36fba78f9b83c9dca04f0834fde",
+  "original_collection_receipt_sha256": "d6fcc7c85248380ea953d259495a07a24bee1434e3dfc84b6408452cdcb01549",
+  "original_files_verified": 597,
+  "original_host_hash_manifest_verified": true,
+  "original_legacy_labels_preserved": true,
+  "partial_jobs": [],
+  "partition": "fixed_selected_case_evaluation",
+  "planned_jobs": 140,
+  "protocol_sha256": "045089e31b67e3c37d0d673af2ac0544e05364441f4d0ece272571b2cfa3e890",
+  "protocol_version": "0.3",
+  "raw_archive_extraction_performed": false,
+  "raw_files_modified": false,
+  "receipt_sha256": "6a9e2511b03ba7b2c926e4a77a60bb1bf37ea41a5ab7ce6235972f8e8e049352",
+  "reserved_schedule_sha256": "dafb88fb778b115a3a9d2dcdb4f2b498b65be83136a70001b26597ff817621c3",
+  "schema_version": 3,
+  "shared_harness_sha256": "adf1f2fed8d5db7230ce41bededfc1c74255031cb5baeacd4943e670e32ce489",
+  "source_commit": "1f62b1838196e495d715c1cf063b03ea777aaa94",
+  "spec_sha256": "087af3d2af54be0668c93f549580564815940c416e192cc8f17adefd20609603",
+  "state": "COMPLETED_AND_INDEPENDENTLY_AUDITED_FIXED_WORK_GPU_CAMPAIGN",
+  "statistical_unit": "independent_paired_campaign_block",
+  "summaries": {
+    "available": true,
+    "bootstrap": {
+      "resamples": 5000,
+      "seed": 59001
+    },
+    "by_method": {
+      "A_NO_DIVERSITY": {
+        "candidate_draws": 32000,
+        "detecting_jobs": 0,
+        "detection_probability_95_wilson": [
+          0.0,
+          0.16112515805281938
+        ],
+        "independent_blocks": 20,
+        "mean_actual_job_seconds": 31.8634721335,
+        "mean_confirmed_distinct_defects": 0.0,
+        "mean_structural_coverage": 37.0,
+        "mean_temporal_coverage": 61.0,
+        "mean_valid_selected_fraction": 1.0,
+        "selected_cases": 2000
+      },
+      "A_NO_STATE": {
+        "candidate_draws": 32000,
+        "detecting_jobs": 0,
+        "detection_probability_95_wilson": [
+          0.0,
+          0.16112515805281938
+        ],
+        "independent_blocks": 20,
+        "mean_actual_job_seconds": 9.651284671700001,
+        "mean_confirmed_distinct_defects": 0.0,
+        "mean_structural_coverage": 37.0,
+        "mean_temporal_coverage": 48.0,
+        "mean_valid_selected_fraction": 1.0,
+        "selected_cases": 2000
+      },
+      "A_NO_VALIDITY_GUIDANCE": {
+        "candidate_draws": 32000,
+        "detecting_jobs": 0,
+        "detection_probability_95_wilson": [
+          0.0,
+          0.16112515805281938
+        ],
+        "independent_blocks": 20,
+        "mean_actual_job_seconds": 29.019395382800003,
+        "mean_confirmed_distinct_defects": 0.0,
+        "mean_structural_coverage": 30.55,
+        "mean_temporal_coverage": 61.0,
+        "mean_valid_selected_fraction": 0.1105,
+        "selected_cases": 2000
+      },
+      "B1": {
+        "candidate_draws": 2000,
+        "detecting_jobs": 0,
+        "detection_probability_95_wilson": [
+          0.0,
+          0.16112515805281938
+        ],
+        "independent_blocks": 20,
+        "mean_actual_job_seconds": 2.2053119443,
+        "mean_confirmed_distinct_defects": 0.0,
+        "mean_structural_coverage": 34.95,
+        "mean_temporal_coverage": 48.0,
+        "mean_valid_selected_fraction": 0.8550000000000001,
+        "selected_cases": 2000
+      },
+      "B2": {
+        "candidate_draws": 2000,
+        "detecting_jobs": 0,
+        "detection_probability_95_wilson": [
+          0.0,
+          0.16112515805281938
+        ],
+        "independent_blocks": 20,
+        "mean_actual_job_seconds": 5.18023549275,
+        "mean_confirmed_distinct_defects": 0.0,
+        "mean_structural_coverage": 35.05,
+        "mean_temporal_coverage": 61.0,
+        "mean_valid_selected_fraction": 0.8460000000000001,
+        "selected_cases": 2000
+      },
+      "B3": {
+        "candidate_draws": 32000,
+        "detecting_jobs": 0,
+        "detection_probability_95_wilson": [
+          0.0,
+          0.16112515805281938
+        ],
+        "independent_blocks": 20,
+        "mean_actual_job_seconds": 31.779830172649998,
+        "mean_confirmed_distinct_defects": 0.0,
+        "mean_structural_coverage": 37.0,
+        "mean_temporal_coverage": 61.0,
+        "mean_valid_selected_fraction": 1.0,
+        "selected_cases": 2000
+      },
+      "B4": {
+        "candidate_draws": 32000,
+        "detecting_jobs": 0,
+        "detection_probability_95_wilson": [
+          0.0,
+          0.16112515805281938
+        ],
+        "independent_blocks": 20,
+        "mean_actual_job_seconds": 32.5663209774,
+        "mean_confirmed_distinct_defects": 0.0,
+        "mean_structural_coverage": 37.0,
+        "mean_temporal_coverage": 61.0,
+        "mean_valid_selected_fraction": 1.0,
+        "selected_cases": 2000
+      }
+    },
+    "case_count_scientific_adequacy_established": false,
+    "paired_comparisons": {
+      "A_NO_DIVERSITY": {
+        "family": "DESCRIPTIVE_ABLATION",
+        "independent_paired_blocks": 20,
+        "metrics": {
+          "confirmed_distinct_defects": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "detection_probability": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "structural_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "temporal_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "valid_selected_fraction": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "whole_job_seconds": {
+            "mean_paired_difference_B4_minus_baseline": 0.7028488438999995,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.14321910826750014,
+              1.2748907147249984
+            ]
+          }
+        },
+        "superiority_established": false
+      },
+      "A_NO_STATE": {
+        "family": "DESCRIPTIVE_ABLATION",
+        "independent_paired_blocks": 20,
+        "metrics": {
+          "confirmed_distinct_defects": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "detection_probability": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "structural_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "temporal_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 13.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              13.0,
+              13.0
+            ]
+          },
+          "valid_selected_fraction": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "whole_job_seconds": {
+            "mean_paired_difference_B4_minus_baseline": 22.9150363057,
+            "paired_block_bootstrap_95_percentile_ci": [
+              21.6444913372475,
+              24.19682872999
+            ]
+          }
+        },
+        "superiority_established": false
+      },
+      "A_NO_VALIDITY_GUIDANCE": {
+        "family": "DESCRIPTIVE_ABLATION",
+        "independent_paired_blocks": 20,
+        "metrics": {
+          "confirmed_distinct_defects": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "detection_probability": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "structural_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 6.45,
+            "paired_block_bootstrap_95_percentile_ci": [
+              5.55,
+              7.4
+            ]
+          },
+          "temporal_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "valid_selected_fraction": {
+            "mean_paired_difference_B4_minus_baseline": 0.8895,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.8805,
+              0.899
+            ]
+          },
+          "whole_job_seconds": {
+            "mean_paired_difference_B4_minus_baseline": 3.546925594599999,
+            "paired_block_bootstrap_95_percentile_ci": [
+              2.9142109678974997,
+              4.161305805072497
+            ]
+          }
+        },
+        "superiority_established": false
+      },
+      "B1": {
+        "family": "PRIMARY_B4_VS_B1_B2_B3",
+        "holm_adjusted_primary_detection_p": 1.0,
+        "independent_paired_blocks": 20,
+        "mcnemar_two_sided_p": 1.0,
+        "metrics": {
+          "confirmed_distinct_defects": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "detection_probability": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "structural_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 2.05,
+            "paired_block_bootstrap_95_percentile_ci": [
+              1.55,
+              2.55
+            ]
+          },
+          "temporal_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 13.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              13.0,
+              13.0
+            ]
+          },
+          "valid_selected_fraction": {
+            "mean_paired_difference_B4_minus_baseline": 0.14500000000000002,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.132,
+              0.15851249999999983
+            ]
+          },
+          "whole_job_seconds": {
+            "mean_paired_difference_B4_minus_baseline": 30.361009033099997,
+            "paired_block_bootstrap_95_percentile_ci": [
+              29.12084603540375,
+              31.62543836385375
+            ]
+          }
+        },
+        "superiority_established": false
+      },
+      "B2": {
+        "family": "PRIMARY_B4_VS_B1_B2_B3",
+        "holm_adjusted_primary_detection_p": 1.0,
+        "independent_paired_blocks": 20,
+        "mcnemar_two_sided_p": 1.0,
+        "metrics": {
+          "confirmed_distinct_defects": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "detection_probability": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "structural_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 1.95,
+            "paired_block_bootstrap_95_percentile_ci": [
+              1.3,
+              2.65
+            ]
+          },
+          "temporal_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "valid_selected_fraction": {
+            "mean_paired_difference_B4_minus_baseline": 0.154,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.13648749999999998,
+              0.17099999999999999
+            ]
+          },
+          "whole_job_seconds": {
+            "mean_paired_difference_B4_minus_baseline": 27.38608548465,
+            "paired_block_bootstrap_95_percentile_ci": [
+              25.875904899991248,
+              28.888117738475
+            ]
+          }
+        },
+        "superiority_established": false
+      },
+      "B3": {
+        "family": "PRIMARY_B4_VS_B1_B2_B3",
+        "holm_adjusted_primary_detection_p": 1.0,
+        "independent_paired_blocks": 20,
+        "mcnemar_two_sided_p": 1.0,
+        "metrics": {
+          "confirmed_distinct_defects": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "detection_probability": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "structural_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "temporal_coverage": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "valid_selected_fraction": {
+            "mean_paired_difference_B4_minus_baseline": 0.0,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.0,
+              0.0
+            ]
+          },
+          "whole_job_seconds": {
+            "mean_paired_difference_B4_minus_baseline": 0.7864908047500002,
+            "paired_block_bootstrap_95_percentile_ci": [
+              0.11450800944375036,
+              1.4556700983699993
+            ]
+          }
+        },
+        "superiority_established": false
+      }
+    },
+    "primary_defect_analysis_complete": true,
+    "statistical_unit": "independent_paired_campaign_block",
+    "superiority_established": false
+  },
+  "superiority_established": false,
+  "unlisted_partial_original_files": [],
+  "unresolved_candidate_failures": 0,
+  "unresolved_includes_externally_inconclusive": true,
+  "unreviewed_candidate_failures": 0,
+  "whole_E0_E8_complete": false,
+  "whole_job_seconds": 2845.317015502001,
+  "timestamp_utc": "2026-10-10T09:03:32.149577+00:00",
+  "campaign_id": "fixed-work-1010a",
+  "scope": "BOUNDED_T01_T08_EXACT_INTEGER_FIXED_WORK_V0_3",
+  "selected_cases_per_job": 100,
+  "independent_blocks": 20,
+  "parallel_gpu_jobs": false,
+  "counts": {
+    "PASS": 11623,
+    "INVALID_TEST": 2377
+  },
+  "actual_gpu_jobs_run": 140,
+  "development_pilots_pooled": false,
+  "CPU_qualification_results_pooled": false,
+  "private_raw_archive": {
+    "sha256": "b4e7135cf1806d577dcb40530b8aa7b6f8f5f36fba78f9b83c9dca04f0834fde",
+    "bytes": 2896869059,
+    "original_files_verified": 597,
+    "private_Azure_full_GET_SHA256_and_length_verified": true
+  },
+  "evidence_sha256": {
+    "collection.json": "d6fcc7c85248380ea953d259495a07a24bee1434e3dfc84b6408452cdcb01549",
+    "release.json": "a6c6bef098fe407a57beaf2ea96df0c721d7dba4541f467ae630c5fe2c6342fa",
+    "run-exit.json": "19ba26100b921727efc410287d8e0d5391b01e63de3dd64df9396b1448a5bbb5",
+    "root-independent-post-run-deallocation.json": "bfc3fc18bc693e9f5c21d860ba3ea40c34819a13245f1caa96fb60aba160c409",
+    "independent-fixed-work-audit-parallel.json": "e9cc2ce8374dfb84018e0f62522220e19a8b01219849c9e6f06ae68f2e240628",
+    "independent-fixed-work-audit-parallel-parallel-receipt.json": "5b43ab136e06c4576ec9c1df601a7fd5a23aab017092583553924cb6245bf870",
+    "independent-host-review/independent-fixed-work-host-review.json": "d42a536ca30ee28f5749156485d57b0fbc85dedc15fee651b04e650ca33632e2",
+    "private-azure-originals-backup-summary.json": "1450222912cc598491a47af3bf8b98fa7e47a52d9c3efc442c683313c03221cc"
+  },
+  "timings": {
+    "whole_gpu_job_seconds": 2845.317015502001,
+    "campaign_seconds": 2848.963588962,
+    "current_start_request_to_confirmed_deallocation_seconds": 3380.039786,
+    "prior_failed_start_request_to_deallocation_seconds": 179.295374,
+    "cumulative_conservative_start_request_to_deallocation_seconds": 3559.3351599999996,
+    "offline_CPU_audit_seconds": 1598.5056121070002,
+    "offline_CPU_host_review_seconds": 114.108759474,
+    "local_audit_time_included_in_H100_duration": false,
+    "actual_billing_start_and_cost_established": false
+  },
+  "deallocation": {
+    "power_state": "PowerState/deallocated",
+    "confirmed_utc": "2026-10-10T08:27:35.110153+00:00",
+    "independent_live_readback_verified": true,
+    "same_VM_and_disk_retained": true,
+    "managed_resources_retained": 13,
+    "resources_destroyed": 0
+  },
+  "tables": {
+    "docs/environment/fixed-work-campaign-tables/job-times.svg": "9a0515e8e1e1c5f6a1f6d7403de1c18b28a8d1c7cb18ac90a2bc953c16d58b08",
+    "docs/environment/fixed-work-campaign-tables/jobs.csv": "261ac7c83af03666441432f676ca6cf8850301ec16931edc0eb3983257dce1fb",
+    "docs/environment/fixed-work-campaign-tables/methods.csv": "45c291eab6fa10197a9a58104c032bf784cbb6e2a274c1e0ea9d12bf14c6aa47",
+    "docs/environment/fixed-work-campaign-tables/paired-comparisons.csv": "ad747f925db5a2cfed01a6b9d94af79770ba4335e8c6130af80fc37e04a8ec12"
+  },
+  "host_qualification_state": "PASS_BOUNDED_HOST_AND_IR_QUALIFICATION_REVIEW",
+  "independent_GPU_hardware_quote_verified": false,
+  "full_E0_E8_complete": false,
+  "full_E0_E8_H100_duration_established": false,
+  "plotting_library_version": "3.10.9",
+  "public_formatter_sha256": "ab67b2be5ea434337425f631536d846308ca1af50bca177129ee4ab2f89797d8"
+}

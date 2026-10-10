@@ -1,120 +1,44 @@
-# Fixed-work campaign: GPU execution finished, H100 deallocated
+# Fixed-work campaign: complete audited matrix, H100 deallocated
 
-On 10 October 2026 the qualified harness completed its 140 successive
-100-selected-case jobs with exit code zero. The verified command and harness
-completion rule support this execution count; independent recomputation of
-all original raw cases is **still in progress**. No final scientific counts
-or superiority result are published at this stage.
+All **140 successive GPU jobs × 100 selected cases** passed independent raw-case
+recomputation. This completes the bounded v0.3 E4/E5 matrix: twenty paired
+independent blocks, seven methods, 14,000 selected cases and 164,000 candidate
+draws. Invalid selected cases were rejected before CUDA. See the
+[result and method table](fixed-work-campaign-result.md) and
+[hashed result manifest](../../results/manifests/fixed-work-campaign-gpu-result.json).
 
-All 597 collected original files match their hash inventory. Azure independently
-confirms the same retained VM and OS disk, deallocated, with thirteen managed
-resources retained and zero destroyed. Request-to-confirmed-deallocation took
-3,380.039786 seconds (56 min 20 s). Including the prior failed request, the
-cumulative conservative duration is 3,559.335160 seconds (59 min 19 s).
-These durations do not establish actual billing start or charges.
+The H100 is **deallocated**. Independent Azure readback confirmed the same
+VM and attached OS disk, with thirteen managed resources retained and zero
+destroyed. Current start request to confirmed deallocation took **56 min 20 s**;
+including the earlier failed zero-work startup, **59 min 19 s**, within the
+original ninety-minute allowance. These are measured lifecycle intervals,
+not an independently established billing start or invoice amount.
 
-Independent offline host review passed the pinned kernel/driver, CC production
-and Secure Boot, CPU MAA RS256 signature/VM claims, CUDA reference and 96-case
-IR qualification. This does not independently authenticate the GPU hardware
-quote or establish full E0 completion. The original archive and twelve lifecycle/provenance objects are backed up
-to private Azure storage. All thirteen remote objects were fully read back and
-matched their local SHA-256 and length; local originals remain preserved.
+All 597 original collected files match their hash inventory. The private Azure
+archive was fully read back and matched SHA-256 and length. The independent raw
+audit, host review, worker proofs and reviewed public result files are also
+backed up with full remote readback verification. Local originals remain.
 
-See [execution receipt](../../results/manifests/fixed-work-campaign-execution.json)
-[offline audit instructions](../reproducibility/fixed-work-offline-audit.md),
-and [remaining H100 work](remaining-h100-experiments.md).
-All remaining review and publication use CPU only, after confirmed deallocation.
+Host review passed the pinned kernel/driver, CC production, Secure Boot, CPU MAA
+RS256 signature/VM claims, CUDA references and the 96-case IR qualification.
+Independent GPU hardware quote/remote-token authentication remains unverified.
+The complete E0–E8 project, broad numerical-oracle calibration and adequate
+statistical power are not established by this bounded result. Zero candidate
+failures establishes no superiority of B4 or absence of all possible defects.
 
-## Preserved preparation and earlier failed attempts
+All result review occurred on CPU after deallocation. The portable auditor and
+its scientific result parity were qualified against both original Kind archives;
+219 local source tests and published source CI passed. See
+[offline reproduction](../reproducibility/fixed-work-offline-audit.md).
 
+The earlier failed restart consumed 179.295374 seconds and executed zero jobs;
+its SSH failure cause remains unconfirmed. Its originals are preserved. The
+qualified retry added bounded Running-plus-SSH readiness and a strictly reviewed
+state-only OS disk ARM-ID casing refresh, preserving the same disk unique ID.
+The successful retry did not change the driver, kernel, CC or scientific sources.
+Earlier operational checkpoints remain in Git history and the
+[incident ledger](../incidents/incidents.jsonl).
 
-The user resumed work with « continue le travaille » on 10 October 2026.
-At that earlier checkpoint, the **140 H100 jobs had not started**. Read-only inventory at 06:27 UTC
-confirmed the original VM UUID and thirteen managed resources, with the VM
-deallocated. Keep the VM, its OS disk and restart resources. Complete the
-state reconciliation and fresh bounded plan before starting compute.
-
-Preparation is complete: the protocol, 140-job harness and analysis are
-versioned; both Kind CPU workers completed 140 successive four-case jobs
-each. Independent review recomputed all **1,120 CPU cases** from the two
-original archives. These remain CPU qualification evidence. Source commit
-`4e54a4e590b56a691ca491b158ccfeb0697be32e` is published and its
-[source CI passed](https://github.com/ihsenalaya/cc-contract/actions/runs/37997976604).
-
-Both original CPU archives, inventories, audits and qualification logs are
-backed up in private Azure storage: 70 explicitly selected files totaling
-293,762,326 bytes. Every remote object was fully read back and matched its
-local SHA-256 and length. Backup receipt SHA-256:
-`b00902832a4311ad20d61b46db0ffd95bd5b1fe3070dacae760fd2e28ab80ba2`.
-
-The first update-only resume plan was rejected before apply or VM startup:
-Terraform observed fields populated after the original resource creation
-(empty collections, the original NIC/VM and subnet/NSG attachments, MAC,
-and the original subnet in the virtual network). Independent inspection
-found thirteen update/no-op actions and zero creations, deletions or
-replacements. The rejection and original binary plan remain preserved.
-
-The **refresh-only state reconciliation is complete**. Its saved binary plan
-passed independent review. All thirteen refreshed resource values and outputs
-match the reviewed result; state lineage is unchanged and serial advanced
-from 14 to 15. Azure readback confirmed the original VM remained deallocated.
-No Azure resource was modified or started. Reconciliation receipt SHA-256:
-`b0a2ffe6d56e2560a938947c4ab16b9cf5a8fdd62e086061998c6efdf057bd68`.
-
-The state-reconciliation change passed **183 local source tests**, including
-nine new controls, and secret scanning. It was published in commit
-`a70c5909ada34e5d162d012a16771e55b2b3cb92`;
-[source CI passed](https://github.com/ihsenalaya/cc-contract/actions/runs/38031584906).
-The strict update-only guard remains intact.
-
-The first actual retained-VM resume requested startup at 06:43:56.639245 UTC.
-Azure Running was observed at 06:44:58.308515 UTC, but SSH timed out and the
-finalization connection was refused. Host qualification and campaign execution
-never began. The controller confirmed deallocation at 06:46:55.934619 UTC,
-retaining the original VM, disk and all restart resources. The conservative
-start-request-to-deallocation duration was **179.295374 seconds (2 min 59 s)**.
-This does not establish the precise billing start. Network and identity
-readbacks were coherent; the SSH failure's cause remains unconfirmed.
-
-All 28 original files and symlink entries, including the failed empty export,
-were preserved with identical hashes and targets. Preservation receipt SHA-256:
-`564acd38cbed4e1f1092fa248d8b9eebfee1c11b6a0389e5d33fc57190ee7273`.
-The local repair adds a bounded SSH readiness gate before qualification, checks
-the current retained backend's guard and SSH outputs, and preserves the original
-input/output receipts. **57 applicable local tests pass**, covering SSH readiness,
-prior-attempt integrity, cumulative budget, state reconciliation, infrastructure
-and cloud lifecycle. The actual preserved prior receipts also pass the retry
-validator. The SSH/budget repair was published in commit
-`a845e1f01fd73477f50de4c2b014acee709c2b45`;
-[source CI passed](https://github.com/ihsenalaya/cc-contract/actions/runs/38033067055).
-
-The following read-only retry plan was rejected before any apply or startup.
-Its sole drift entry changes the resource-group casing in the original OS disk
-ID, in `os_disk[0].id` and `os_managed_disk_id`. Azure VM and disk readbacks
-confirm the same actual VM UUID, attached disk and deallocated state. No other
-resource value differs. The exact rejected plan is preserved with seven
-unchanged file/symlink entries. Preservation receipt SHA-256:
-`514f62e134c067dcee7f7a39ef67ef4222dc473acd96b4ba55c758905efbfca6`.
-The earlier six-field normalization is not applicable to this separate drift.
-A strictly bounded refresh-only state correction passed **70 applicable local
-tests** (57 existing controls and 13 new disk-case controls). Independent source
-review rejected 19 forbidden mutations. The disk's unique ID is rechecked
-between planning and apply, along with its original VM attachment. The actual
-refresh plan still requires independent review and verified state-only apply;
-the regular resume validator continues to reject every unresolved drift entry.
-
-The small original failure/repair proofs are backed up in private Azure storage:
-30 explicitly selected originals, 318,767 bytes, and six provenance objects.
-All 36 objects were fully read back and matched local SHA-256 and size; all
-originals remain preserved. Final backup receipt SHA-256:
-`e9840ecc40f6a819a71d18034d89abf67f5280674bd3231f73035c467b83b718`.
-
-The requested scope remains 140 successive 100-selected-case jobs, immediate
-deallocation on completion or failure, and resources retained. The retry must
-count the first attempt against the original **USD 15 forecast / ninety-minute
-VM allowance**. Its new bounded interval is at most **87 minutes**; local repair
-while deallocated does not add H100 use. At that earlier checkpoint, no GPU result was claimed.
-
-Protected originals, qualification receipts and the timestamped pause
-handoff and explicit resume inventory are outside Git in the project state
-directory. No GPU result was claimed at that preparation checkpoint.
+**Any further H100 allocation or restart requires the user's new explicit
+approval.** Continue offline preparation only until then. See
+[remaining H100 work and blockers](remaining-h100-experiments.md).
