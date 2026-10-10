@@ -1,0 +1,402 @@
+[
+  {
+    "run_id": 0,
+    "block": 0,
+    "seed": 71000,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 1,
+    "block": 0,
+    "seed": 71000,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 2,
+    "block": 0,
+    "seed": 71000,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 3,
+    "block": 0,
+    "seed": 71000,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 4,
+    "block": 0,
+    "seed": 71000,
+    "group": "HEALTHY",
+    "fault": "L1",
+    "active": false
+  },
+  {
+    "run_id": 5,
+    "block": 1,
+    "seed": 71001,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 6,
+    "block": 1,
+    "seed": 71001,
+    "group": "HEALTHY",
+    "fault": "L2",
+    "active": false
+  },
+  {
+    "run_id": 7,
+    "block": 1,
+    "seed": 71001,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 8,
+    "block": 1,
+    "seed": 71001,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 9,
+    "block": 1,
+    "seed": 71001,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 10,
+    "block": 2,
+    "seed": 71002,
+    "group": "HEALTHY",
+    "fault": "C1",
+    "active": false
+  },
+  {
+    "run_id": 11,
+    "block": 2,
+    "seed": 71002,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 12,
+    "block": 2,
+    "seed": 71002,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 13,
+    "block": 2,
+    "seed": 71002,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 14,
+    "block": 2,
+    "seed": 71002,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 15,
+    "block": 3,
+    "seed": 71003,
+    "group": "HEALTHY",
+    "fault": "C2",
+    "active": false
+  },
+  {
+    "run_id": 16,
+    "block": 3,
+    "seed": 71003,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 17,
+    "block": 3,
+    "seed": 71003,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 18,
+    "block": 3,
+    "seed": 71003,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 19,
+    "block": 3,
+    "seed": 71003,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 20,
+    "block": 4,
+    "seed": 71004,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 21,
+    "block": 4,
+    "seed": 71004,
+    "group": "HEALTHY",
+    "fault": "L1",
+    "active": false
+  },
+  {
+    "run_id": 22,
+    "block": 4,
+    "seed": 71004,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 23,
+    "block": 4,
+    "seed": 71004,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 24,
+    "block": 4,
+    "seed": 71004,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 25,
+    "block": 5,
+    "seed": 71005,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 26,
+    "block": 5,
+    "seed": 71005,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 27,
+    "block": 5,
+    "seed": 71005,
+    "group": "HEALTHY",
+    "fault": "L2",
+    "active": false
+  },
+  {
+    "run_id": 28,
+    "block": 5,
+    "seed": 71005,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 29,
+    "block": 5,
+    "seed": 71005,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 30,
+    "block": 6,
+    "seed": 71006,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 31,
+    "block": 6,
+    "seed": 71006,
+    "group": "HEALTHY",
+    "fault": "C1",
+    "active": false
+  },
+  {
+    "run_id": 32,
+    "block": 6,
+    "seed": 71006,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 33,
+    "block": 6,
+    "seed": 71006,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 34,
+    "block": 6,
+    "seed": 71006,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 35,
+    "block": 7,
+    "seed": 71007,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 36,
+    "block": 7,
+    "seed": 71007,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 37,
+    "block": 7,
+    "seed": 71007,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 38,
+    "block": 7,
+    "seed": 71007,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 39,
+    "block": 7,
+    "seed": 71007,
+    "group": "HEALTHY",
+    "fault": "C2",
+    "active": false
+  },
+  {
+    "run_id": 40,
+    "block": 8,
+    "seed": 71008,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 41,
+    "block": 8,
+    "seed": 71008,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 42,
+    "block": 8,
+    "seed": 71008,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 43,
+    "block": 8,
+    "seed": 71008,
+    "group": "HEALTHY",
+    "fault": "L1",
+    "active": false
+  },
+  {
+    "run_id": 44,
+    "block": 8,
+    "seed": 71008,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 45,
+    "block": 9,
+    "seed": 71009,
+    "group": "C1",
+    "fault": "C1",
+    "active": true
+  },
+  {
+    "run_id": 46,
+    "block": 9,
+    "seed": 71009,
+    "group": "L1",
+    "fault": "L1",
+    "active": true
+  },
+  {
+    "run_id": 47,
+    "block": 9,
+    "seed": 71009,
+    "group": "C2",
+    "fault": "C2",
+    "active": true
+  },
+  {
+    "run_id": 48,
+    "block": 9,
+    "seed": 71009,
+    "group": "L2",
+    "fault": "L2",
+    "active": true
+  },
+  {
+    "run_id": 49,
+    "block": 9,
+    "seed": 71009,
+    "group": "HEALTHY",
+    "fault": "L2",
+    "active": false
+  }
+]
