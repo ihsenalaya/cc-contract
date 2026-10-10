@@ -1,0 +1,93 @@
+{
+  "state": "PASS_LOCAL_QUALIFICATION",
+  "scope": "CPU_ONLY_CORRECTION_AND_IMAGE_PROVENANCE_NO_NEW_GPU_VALIDATION",
+  "source_commit": "a33714f68b3764bff30a008e86cda8114d8e1bc2",
+  "source_CI": "https://github.com/ihsenalaya/cc-contract/actions/runs/38080136525",
+  "CI_conclusion": "success",
+  "unit_tests": 276,
+  "images": {
+    "core": "ghcr.io/ihsenalaya/cc-contract-hdsc@sha256:6598ec487e92e40ac43c5a89c7c5c0f9d4cfa3c699739fa98a3136d6dd92164d",
+    "ai": "ghcr.io/ihsenalaya/cc-contract-hdsc-ai@sha256:55ee511446f8600f319ee09643c5cfa5d487b0397aab7949332f04c369ab778d"
+  },
+  "registry_config_digests": {
+    "core": "sha256:eaa91c7429c32b97c4443cf5fab3fa514c4fd368d06dcccfd2f27ce1c43ccec8",
+    "ai": "sha256:031279879798dde8d422ccc64179ca76f856ac3770e0310203d21a7e2dd3c36e"
+  },
+  "kind_receipts": {
+    "core": {
+      "state": "PASS_KIND_CPU_ONLY",
+      "utc": "2026-10-10T19:32:23.087609+00:00",
+      "image": "ghcr.io/ihsenalaya/cc-contract-hdsc:hdsc-a33714f68b37",
+      "local_image_id": "sha256:6598ec487e92e40ac43c5a89c7c5c0f9d4cfa3c699739fa98a3136d6dd92164d",
+      "receipts": [
+        {
+          "node": "cc-contract-worker",
+          "log_sha256": "9906fca9c4b03b91f098d4863bcc483c5b7610018e295c816058d59f400779bc",
+          "image_id": "sha256:eaa91c7429c32b97c4443cf5fab3fa514c4fd368d06dcccfd2f27ce1c43ccec8",
+          "result": {
+            "scope": "CPU_ONLY",
+            "runs": 48,
+            "dynamic_sequences": 5,
+            "cuda": "UNSUPPORTED",
+            "sanitizer_version": "NVIDIA (R) Compute Sanitizer\nCopyright (c) 2020-2025 NVIDIA Corporation\nVersion 2025.1.0.0 (build 35583870) (public-release)\n"
+          }
+        },
+        {
+          "node": "cc-contract-worker2",
+          "log_sha256": "9906fca9c4b03b91f098d4863bcc483c5b7610018e295c816058d59f400779bc",
+          "image_id": "sha256:eaa91c7429c32b97c4443cf5fab3fa514c4fd368d06dcccfd2f27ce1c43ccec8",
+          "result": {
+            "scope": "CPU_ONLY",
+            "runs": 48,
+            "dynamic_sequences": 5,
+            "cuda": "UNSUPPORTED",
+            "sanitizer_version": "NVIDIA (R) Compute Sanitizer\nCopyright (c) 2020-2025 NVIDIA Corporation\nVersion 2025.1.0.0 (build 35583870) (public-release)\n"
+          }
+        }
+      ],
+      "rbac_secrets_denied": true,
+      "GPU_executed": false
+    },
+    "ai": {
+      "state": "PASS_KIND_CPU_ONLY",
+      "utc": "2026-10-10T19:38:57.409072+00:00",
+      "image": "ghcr.io/ihsenalaya/cc-contract-hdsc-ai:hdsc-a33714f68b37",
+      "local_image_id": "sha256:55ee511446f8600f319ee09643c5cfa5d487b0397aab7949332f04c369ab778d",
+      "receipts": [
+        {
+          "node": "cc-contract-worker",
+          "log_sha256": "aa8689369507dc98802420f99d4fc6ff341e934cb3a3c37b8e6a4450c7818865",
+          "image_id": "sha256:031279879798dde8d422ccc64179ca76f856ac3770e0310203d21a7e2dd3c36e",
+          "result": {
+            "scope": "CPU_ONLY",
+            "AI_pairs": 4,
+            "trained_model": true,
+            "cuda": "UNSUPPORTED",
+            "torch": "2.8.0+cu128"
+          }
+        }
+      ],
+      "rbac_secrets_denied": true,
+      "GPU_executed": false
+    }
+  },
+  "observed_diagnostic_regression_rows": 41,
+  "original_GPU_attempt": "results/manifests/hdsc-interrupted-window.json",
+  "backup_files": [
+    {
+      "blob": "8e6f75cfe10070eb3593cd49868f56f5f4238cd842f2d4daa8f2ef9975ed7e34/correction-evidence.tar.gz",
+      "sha256": "8e6f75cfe10070eb3593cd49868f56f5f4238cd842f2d4daa8f2ef9975ed7e34",
+      "bytes": 18203,
+      "remote_bytes_verified": true
+    },
+    {
+      "blob": "9ee077d96a870612fa5dbdf70d8b86a6e7e64abfcc7ec487f1c6c36ad291ead2/correction-evidence-index.json",
+      "sha256": "9ee077d96a870612fa5dbdf70d8b86a6e7e64abfcc7ec487f1c6c36ad291ead2",
+      "bytes": 2306,
+      "remote_bytes_verified": true
+    }
+  ],
+  "new_H100_authorized": false,
+  "new_executable_plan_frozen": false,
+  "completed_utc": "2026-10-10T19:39:29.592132+00:00"
+}

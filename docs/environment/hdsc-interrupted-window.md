@@ -75,7 +75,11 @@ GET/SHA-256. SSH keepalives also bound detection of a disconnected guest.
 
 The prior plan and published images remain historical artifacts. The corrected
 sources change their hashes and cannot execute under the old plan or approval.
-Replacement image qualification, a new frozen plan and fresh owner approval are
-required for another window. At the next approved access, recover the complete
+Both replacement images have now passed local Kind qualification and been
+published, with registry digests/configurations matched to the tested images.
+The [correction receipt](../../results/manifests/hdsc-correction-local-qualification.json)
+links their exact source CI and remotely verified qualification evidence.
+A new reviewed resumption plan and fresh owner approval are required for another
+window, including recovery of old evidence and a retained-container preflight. At the next approved access, recover the complete
 interrupted evidence before deciding how to handle the remaining reserved jobs.
 Do not rerun unsupported sanitizer jobs or claim they missed semantic faults.

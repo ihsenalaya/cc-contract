@@ -68,3 +68,12 @@ self-referential Git SHA.
 - Corrections: exact diagnostic recognition, fail-closed unknown disable messages, healthy-control gate, independent report rejection, bounded SSH connection-loss detection. All 276 local unit tests passed; all 41 captured disabled-tool outputs are correctly rejected by the independent audit and classified unsupported by the corrected parser. Secret scan passed. Captured originals were backed up with full remote GET/SHA-256 verification. Replacement images are not yet requalified.
 - Prior results and frozen plan remain immutable historical evidence. Reserved inputs have now been exposed; future work must explicitly disclose this interrupted attempt.
 - H100: **DEALLOCATED**, VM and disk retained, zero deletions. No new restart approved.
+
+## 2026-10-10T19:40:11.402556+00:00 — correction qualified and published; H100 stays off
+
+- Corrected source: `a33714f68b3764bff30a008e86cda8114d8e1bc2`; [CI 38080136525](https://github.com/ihsenalaya/cc-contract/actions/runs/38080136525) passed all 276 tests.
+- Core image passed on two Kind CPU workers; Transformer image passed on one. Both also passed the exact observed diagnostic regression in their built containers. Image publication followed successful local qualification and source CI.
+- Registry manifest and configuration hashes match every Kind receipt: core `ghcr.io/ihsenalaya/cc-contract-hdsc@sha256:6598ec487e92e40ac43c5a89c7c5c0f9d4cfa3c699739fa98a3136d6dd92164d`; AI `ghcr.io/ihsenalaya/cc-contract-hdsc-ai@sha256:55ee511446f8600f319ee09643c5cfa5d487b0397aab7949332f04c369ab778d`.
+- Qualification originals, CI logs and final retained inventory are backed up privately, verified by full remote GET/SHA-256. Receipt: `results/manifests/hdsc-correction-local-qualification.json`.
+- The independent final readback confirms the same VM/disk identities, seven retained ARM resources and **DEALLOCATED**. No further GPU run or restart.
+- Remaining: prepare a fresh resumption plan with interrupted-evidence recovery and retained-container preflight; obtain fresh approval. Unsupported sanitizer jobs cannot support a detection comparison. No new executable plan or authorization has been created.

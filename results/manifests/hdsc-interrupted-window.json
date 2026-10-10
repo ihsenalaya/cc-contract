@@ -48,12 +48,11 @@
   "reserved_inputs_exposed": true,
   "prior_original_results_unchanged": true,
   "backup_state": "CAPTURED_ORIGINALS_VERIFIED_BY_FULL_REMOTE_GET_SHA256",
-  "correction_state": "PASS_276_LOCAL_TESTS_AND_41_ORIGINAL_DIAGNOSTIC_REGRESSIONS_IMAGES_NOT_REQUALIFIED",
+  "correction_state": "PASS_LOCAL_TESTS_KIND_REGISTRY_PROVENANCE_AND_VERIFIED_BACKUP",
   "next_steps": [
-    "Preserve and remotely verify captured original evidence",
-    "Validate corrected parser, healthy capability gate and independent rejection audit",
-    "Requalify replacement images and freeze a new costed plan before requesting another restart",
-    "Recover full interrupted guest evidence at the next explicitly approved access; never silently pool or overwrite attempts"
+    "Prepare a fresh reviewed resumption plan including recovery of complete interrupted evidence, retained-container preflight and explicit unsupported-tool handling",
+    "Obtain fresh explicit owner approval before another H100 restart",
+    "Never pool or overwrite the interrupted attempt with future completed evaluation"
   ],
   "backup_files": [
     {
@@ -76,5 +75,7 @@
     "GPU_used": false
   },
   "local_unit_tests_passed": 276,
-  "secret_scan": "PASS_NO_FINDINGS"
+  "secret_scan": "PASS_NO_FINDINGS",
+  "correction_qualification": "results/manifests/hdsc-correction-local-qualification.json",
+  "correction_qualification_sha256": "cc034359301ec60f5f692e99f20bb7207e4e96cbc20c722abcd5101e89b09814"
 }
