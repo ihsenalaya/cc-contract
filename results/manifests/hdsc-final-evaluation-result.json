@@ -1,0 +1,773 @@
+{
+  "state": "AUDITED_COMPLETE_SUPPORTED_HDSC_V1_MATRIX",
+  "window": "hdsc-ai-1010d",
+  "scientific_scope": "Controlled variants; ten blocks; no general superiority or new real defect claim",
+  "counts": {
+    "planned_jobs": 1153,
+    "recorded_jobs": 1153,
+    "missing_jobs": 0,
+    "executed_jobs": 433,
+    "unsupported_not_executed_jobs": 720,
+    "independently_verified_development_graph_controls": 2
+  },
+  "latest_window": {
+    "start_request_utc": "2026-10-10T20:56:28.019552+00:00",
+    "deallocation_utc": "2026-10-10T21:03:30.503676+00:00",
+    "duration_seconds": 422.484124,
+    "reserved_AI_jobs": 70,
+    "development_GPU_controls": 2,
+    "AI_section_wall_seconds": 120.52363347400001,
+    "power_state": "PowerState/deallocated",
+    "disk_retained": true,
+    "resources_destroyed": 0
+  },
+  "post_release_inventory": {
+    "checked_utc": "2026-10-10T21:06:41.144769+00:00",
+    "retained_resources": 7,
+    "mutations": 0,
+    "sha256": "e9b3c9c9da0f521be680448505f4892ea4dc023fe74ef0061b9af197056edf5f"
+  },
+  "section_provenance": {
+    "core": {
+      "window": "hdsc-eval-1010b",
+      "source_commit": "df88b4cf8a67d1c51751a9131b465b7b2e72156f",
+      "application_source_commit": "a33714f68b3764bff30a008e86cda8114d8e1bc2",
+      "plan_sha256": "28e07560b63ecd77b86d6953413ce64d989eaee679e9e21efc31f6d601f59ff2",
+      "image": "ghcr.io/ihsenalaya/cc-contract-hdsc@sha256:6598ec487e92e40ac43c5a89c7c5c0f9d4cfa3c699739fa98a3136d6dd92164d",
+      "jobs_sha256": "38ea1e78ffbbe40cf68cd7987bcdcfda0039f72e52bae0d648b7957eeb3a2b2e",
+      "recovered_archive_sha256": "98b549529412c9c0e009625f1ae81cd98548f8f3528a7d5bc503835c6d758921"
+    },
+    "ai": {
+      "window": "hdsc-ai-1010d",
+      "source_commit": "7a90394807436945c419fd0271410ddecd413844",
+      "prestart_commit": "8f480610bfa3c0684fca1852c2beca539a533260",
+      "plan_sha256": "fc992fd61490766db9a7c5abd516f715dc8f5726468f397df6b1314f0bed887b",
+      "image": "ghcr.io/ihsenalaya/cc-contract-hdsc-ai@sha256:a77efb0fe7a0422f5c32e361d7cd7a62a04eda295f8c0ec0b45b9e8c11be9b3a",
+      "original_archive_sha256": "7f8b7dc44186b8f8a33558f36cdcdda01c0a920dc630df77f3a7eb891aeb8427",
+      "original_archive_bytes": 449235501,
+      "development_files_sha256": {
+        "OFF": "414319427c1eacc62240df390f71212ae679bac32755bf5d598a80d5caf75b5b",
+        "ON": "3bf0d254d7824309705471eb7f8cd712cb738cfdfc9b88e12dbdaf240dcf7e83"
+      }
+    }
+  },
+  "pooling": "Disjoint completed native and AI sections only; 1010a excluded; 1010b failed AI excluded; historical RQ1/140-job results not pooled",
+  "audit": {
+    "public_file": "results/manifests/hdsc-final-evaluation-analysis.json",
+    "sha256": "f5764f4617e39480d4e849c60f53cff23887a1a3d04538be9b191195e0c537cd",
+    "originals_backup": "VERIFIED_FULL_REMOTE_GET_SHA256",
+    "originals_backup_receipt_sha256": "acec7c00c25c5574431ef097c8716d50c22aaa9ed07c7da15aa049ffb24105d5",
+    "analysis_backup_receipt_sha256": "c5a1338f5821c42abc29541e1d84a1474023d1316c8a86d5e2cb38701411abc6"
+  },
+  "AI_faults": {
+    "L1": {
+      "pairs": 10,
+      "injected_requests_with_alerts": 10,
+      "healthy_requests_with_alerts": 0,
+      "changed_token_sequences": 10,
+      "step_2_logit_Linf_range": [
+        11.53053092956543,
+        18.648300170898438
+      ]
+    },
+    "L2": {
+      "pairs": 10,
+      "injected_requests_with_alerts": 10,
+      "healthy_requests_with_alerts": 0,
+      "changed_token_sequences": 10,
+      "step_2_logit_Linf_range": [
+        11.53053092956543,
+        18.648300170898438
+      ]
+    },
+    "C1": {
+      "pairs": 10,
+      "injected_requests_with_alerts": 10,
+      "healthy_requests_with_alerts": 0,
+      "changed_token_sequences": 10,
+      "step_2_logit_Linf_range": [
+        11.53053092956543,
+        18.648300170898438
+      ]
+    },
+    "C2": {
+      "pairs": 10,
+      "injected_requests_with_alerts": 10,
+      "healthy_requests_with_alerts": 0,
+      "changed_token_sequences": 10,
+      "step_2_logit_Linf_range": [
+        16.44518804550171,
+        24.99488878250122
+      ]
+    }
+  },
+  "healthy_reserved": {
+    "runs": 80,
+    "runs_with_alerts": 0
+  },
+  "RQ4": {
+    "valid_paired_blocks": 10,
+    "invalid_blocks": [],
+    "warmup_requests": 60,
+    "measured_requests": 200,
+    "metrics": {
+      "latency_p50_ms": {
+        "mean_OFF": 26.96301845,
+        "mean_ON": 27.530160300000002,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": 0.5671418500000008,
+          "relative_difference_percent": 2.1034063788210657,
+          "absolute_difference_bootstrap_95": [
+            0.4667866487500007,
+            0.68034
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": 2.3139197870789103
+          },
+          {
+            "block": 1,
+            "percent": 1.6861026194545243
+          },
+          {
+            "block": 2,
+            "percent": 2.332432302329236
+          },
+          {
+            "block": 3,
+            "percent": 1.9921720561475316
+          },
+          {
+            "block": 4,
+            "percent": 1.7350551533344105
+          },
+          {
+            "block": 5,
+            "percent": 2.5297914957018115
+          },
+          {
+            "block": 6,
+            "percent": 2.7354979218969384
+          },
+          {
+            "block": 7,
+            "percent": 2.908796404540172
+          },
+          {
+            "block": 8,
+            "percent": 1.5960694745444797
+          },
+          {
+            "block": 9,
+            "percent": 1.7299999217035913
+          }
+        ],
+        "mean_per_block_relative_percent": 2.1559837136731606
+      },
+      "latency_p95_ms": {
+        "mean_OFF": 27.112717965,
+        "mean_ON": 27.64868281,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": 0.5359648449999999,
+          "relative_difference_percent": 1.9768023467506308,
+          "absolute_difference_bootstrap_95": [
+            0.48919905224999777,
+            0.5930213296250005
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": 2.6977427958659046
+          },
+          {
+            "block": 1,
+            "percent": 2.0138086650305542
+          },
+          {
+            "block": 2,
+            "percent": 2.2201098332668505
+          },
+          {
+            "block": 3,
+            "percent": 2.273953351192295
+          },
+          {
+            "block": 4,
+            "percent": 1.627916046373411
+          },
+          {
+            "block": 5,
+            "percent": 3.0315748196158245
+          },
+          {
+            "block": 6,
+            "percent": 2.8911268473134095
+          },
+          {
+            "block": 7,
+            "percent": 1.7245571760903904
+          },
+          {
+            "block": 8,
+            "percent": 0.961901110291016
+          },
+          {
+            "block": 9,
+            "percent": 1.9825582409811826
+          }
+        ],
+        "mean_per_block_relative_percent": 2.142524888602084
+      },
+      "throughput_requests_per_s": {
+        "mean_OFF": 40.34376057886648,
+        "mean_ON": 39.473173805419904,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": -0.8705867734465759,
+          "relative_difference_percent": -2.1579217230994097,
+          "absolute_difference_bootstrap_95": [
+            -1.0850799729799538,
+            -0.6771243943734544
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": -2.242855991807292
+          },
+          {
+            "block": 1,
+            "percent": -1.7301984803706179
+          },
+          {
+            "block": 2,
+            "percent": -2.2294529543118045
+          },
+          {
+            "block": 3,
+            "percent": -2.0095238624065943
+          },
+          {
+            "block": 4,
+            "percent": -1.6196760088888418
+          },
+          {
+            "block": 5,
+            "percent": -2.6299792392735273
+          },
+          {
+            "block": 6,
+            "percent": -2.704877180163701
+          },
+          {
+            "block": 7,
+            "percent": -2.6492625715376583
+          },
+          {
+            "block": 8,
+            "percent": -1.4127540142200727
+          },
+          {
+            "block": 9,
+            "percent": -1.768900921156701
+          }
+        ],
+        "mean_per_block_relative_percent": -2.099748122413681
+      },
+      "tokens_per_s": {
+        "mean_OFF": 207.066151816854,
+        "mean_ON": 202.55936396951404,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": -4.506787847339931,
+          "relative_difference_percent": -2.176496645055778,
+          "absolute_difference_bootstrap_95": [
+            -5.720810258559775,
+            -3.4709847811409245
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": -2.242855991807292
+          },
+          {
+            "block": 1,
+            "percent": -1.7301984803706179
+          },
+          {
+            "block": 2,
+            "percent": -2.2294529543117974
+          },
+          {
+            "block": 3,
+            "percent": -2.009523862406588
+          },
+          {
+            "block": 4,
+            "percent": -1.6196760088888296
+          },
+          {
+            "block": 5,
+            "percent": -2.6299792392735113
+          },
+          {
+            "block": 6,
+            "percent": -2.7048771801637077
+          },
+          {
+            "block": 7,
+            "percent": -2.6492625715376583
+          },
+          {
+            "block": 8,
+            "percent": -1.4127540142200727
+          },
+          {
+            "block": 9,
+            "percent": -1.768900921156701
+          }
+        ],
+        "mean_per_block_relative_percent": -2.0997481224136774
+      },
+      "TTFT_p50_ms": {
+        "mean_OFF": 1.95916305,
+        "mean_ON": 2.0119945,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": 0.05283145000000007,
+          "relative_difference_percent": 2.696633646699292,
+          "absolute_difference_bootstrap_95": [
+            0.04670569750000009,
+            0.06012185375000013
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": 10.33515678105218
+          },
+          {
+            "block": 1,
+            "percent": 7.89667539534459
+          },
+          {
+            "block": 2,
+            "percent": 7.180257926888404
+          },
+          {
+            "block": 3,
+            "percent": 1.070975550700656
+          },
+          {
+            "block": 4,
+            "percent": 0.7441914874809332
+          },
+          {
+            "block": 5,
+            "percent": 7.651575853673919
+          },
+          {
+            "block": 6,
+            "percent": 6.591675278253076
+          },
+          {
+            "block": 7,
+            "percent": 5.987619920505892
+          },
+          {
+            "block": 8,
+            "percent": 7.801889617162437
+          },
+          {
+            "block": 9,
+            "percent": 7.662106346062305
+          }
+        ],
+        "mean_per_block_relative_percent": 6.29221241571244
+      },
+      "GPU_stream_interval_p50_ms": {
+        "mean_OFF": 26.908303928375243,
+        "mean_ON": 27.476249408721923,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": 0.5679454803466797,
+          "relative_difference_percent": 2.110669932443315,
+          "absolute_difference_bootstrap_95": [
+            0.4686513137817383,
+            0.6809404230117797
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": 2.319525466926199
+          },
+          {
+            "block": 1,
+            "percent": 1.691970449584579
+          },
+          {
+            "block": 2,
+            "percent": 2.317665115417731
+          },
+          {
+            "block": 3,
+            "percent": 2.00356121058428
+          },
+          {
+            "block": 4,
+            "percent": 1.7454959192634465
+          },
+          {
+            "block": 5,
+            "percent": 2.5335395675009584
+          },
+          {
+            "block": 6,
+            "percent": 2.7244343602367658
+          },
+          {
+            "block": 7,
+            "percent": 2.9255687625279636
+          },
+          {
+            "block": 8,
+            "percent": 1.599653237626476
+          },
+          {
+            "block": 9,
+            "percent": 1.7746035695169926
+          }
+        ],
+        "mean_per_block_relative_percent": 2.163601765918539
+      },
+      "CPU_verifier_p50_ms": {
+        "mean_OFF": 0.0,
+        "mean_ON": 0.2547676,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": 0.2547676,
+          "relative_difference_percent": null,
+          "absolute_difference_bootstrap_95": [
+            0.21501117625,
+            0.30277794249999995
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": null
+          },
+          {
+            "block": 1,
+            "percent": null
+          },
+          {
+            "block": 2,
+            "percent": null
+          },
+          {
+            "block": 3,
+            "percent": null
+          },
+          {
+            "block": 4,
+            "percent": null
+          },
+          {
+            "block": 5,
+            "percent": null
+          },
+          {
+            "block": 6,
+            "percent": null
+          },
+          {
+            "block": 7,
+            "percent": null
+          },
+          {
+            "block": 8,
+            "percent": null
+          },
+          {
+            "block": 9,
+            "percent": null
+          }
+        ],
+        "mean_per_block_relative_percent": null
+      },
+      "GPU_max_allocated_bytes": {
+        "mean_OFF": 604555417.6,
+        "mean_ON": 597847040,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": -6708377.6,
+          "relative_difference_percent": -1.1096381580089574,
+          "absolute_difference_bootstrap_95": [
+            -16774656.0,
+            2508.8
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": -9.151160111437727
+          },
+          {
+            "block": 1,
+            "percent": -5.577832688001076
+          },
+          {
+            "block": 2,
+            "percent": 0.0004031013001629335
+          },
+          {
+            "block": 3,
+            "percent": 0.0004031013001629335
+          },
+          {
+            "block": 4,
+            "percent": 0.0004031013001629335
+          },
+          {
+            "block": 5,
+            "percent": 0.0004031013001629335
+          },
+          {
+            "block": 6,
+            "percent": 0.00032412284255732923
+          },
+          {
+            "block": 7,
+            "percent": 0.0004031013001629335
+          },
+          {
+            "block": 8,
+            "percent": 0.0004031013001629335
+          },
+          {
+            "block": 9,
+            "percent": 0.0004031013001629335
+          }
+        ],
+        "mean_per_block_relative_percent": -1.4725846967495104
+      },
+      "persistent_input_bytes": {
+        "mean_OFF": 384,
+        "mean_ON": 456,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": 72,
+          "relative_difference_percent": 18.75,
+          "absolute_difference_bootstrap_95": [
+            72.0,
+            72.0
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": 18.75
+          },
+          {
+            "block": 1,
+            "percent": 18.75
+          },
+          {
+            "block": 2,
+            "percent": 18.75
+          },
+          {
+            "block": 3,
+            "percent": 18.75
+          },
+          {
+            "block": 4,
+            "percent": 18.75
+          },
+          {
+            "block": 5,
+            "percent": 18.75
+          },
+          {
+            "block": 6,
+            "percent": 18.75
+          },
+          {
+            "block": 7,
+            "percent": 18.75
+          },
+          {
+            "block": 8,
+            "percent": 18.75
+          },
+          {
+            "block": 9,
+            "percent": 18.75
+          }
+        ],
+        "mean_per_block_relative_percent": 18.75
+      },
+      "extra_copies_per_request": {
+        "mean_OFF": 0,
+        "mean_ON": 10.8,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": 10.8,
+          "relative_difference_percent": null,
+          "absolute_difference_bootstrap_95": [
+            9.2,
+            12.8
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": null
+          },
+          {
+            "block": 1,
+            "percent": null
+          },
+          {
+            "block": 2,
+            "percent": null
+          },
+          {
+            "block": 3,
+            "percent": null
+          },
+          {
+            "block": 4,
+            "percent": null
+          },
+          {
+            "block": 5,
+            "percent": null
+          },
+          {
+            "block": 6,
+            "percent": null
+          },
+          {
+            "block": 7,
+            "percent": null
+          },
+          {
+            "block": 8,
+            "percent": null
+          },
+          {
+            "block": 9,
+            "percent": null
+          }
+        ],
+        "mean_per_block_relative_percent": null
+      },
+      "witness_sync_points_per_request": {
+        "mean_OFF": 0,
+        "mean_ON": 5.4,
+        "paired_absolute_effect": {
+          "independent_blocks": 10,
+          "absolute_difference": 5.4,
+          "relative_difference_percent": null,
+          "absolute_difference_bootstrap_95": [
+            4.6,
+            6.4
+          ],
+          "bootstrap_seed": 20261010,
+          "bootstrap_draws": 2000,
+          "zero_denominator_policy": "relative effect undefined, never infinity"
+        },
+        "per_block_relative_effects": [
+          {
+            "block": 0,
+            "percent": null
+          },
+          {
+            "block": 1,
+            "percent": null
+          },
+          {
+            "block": 2,
+            "percent": null
+          },
+          {
+            "block": 3,
+            "percent": null
+          },
+          {
+            "block": 4,
+            "percent": null
+          },
+          {
+            "block": 5,
+            "percent": null
+          },
+          {
+            "block": 6,
+            "percent": null
+          },
+          {
+            "block": 7,
+            "percent": null
+          },
+          {
+            "block": 8,
+            "percent": null
+          },
+          {
+            "block": 9,
+            "percent": null
+          }
+        ],
+        "mean_per_block_relative_percent": null
+      }
+    },
+    "relative_estimands": "Both mean per-block (ON-OFF)/OFF and ratio of block means are retained and explicitly distinguished; absolute bootstrap uses ten paired blocks",
+    "memory_interpretation": "Peak allocated bytes vary by block and process history; interval spans zero, so no memory saving or isolated incremental monitor-memory claim"
+  },
+  "remaining_unavailable": [
+    "B2 comparison: three Compute Sanitizer tools explicitly disabled in tested CC configuration; 720 rows not executed",
+    "General novelty over LGT4CG is not established",
+    "Production model generalization, independent host replication and actual billing not established"
+  ],
+  "future_H100_restart_authorized": false
+}

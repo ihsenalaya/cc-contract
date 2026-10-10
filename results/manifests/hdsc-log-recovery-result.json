@@ -20,5 +20,6 @@
   "failure_phase": "First model construction, before any completed reserved AI request",
   "original_stderr_sha256": "a90fe44c69009712f5460183a4fcabd37db4feeeb42bd9991ce8c587de401601",
   "H100_restart_authorized": false,
-  "correction_status": "LOCAL_IN_PROGRESS_NOT_GPU_VALIDATED"
+  "correction_status": "GPU_EQUIVALENCE_VALIDATED_70_AI_JOBS_INDEPENDENTLY_AUDITED",
+  "correction_follow_up": "results/manifests/hdsc-final-evaluation-result.json"
 }

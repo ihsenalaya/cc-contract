@@ -9,7 +9,9 @@ Q1 is a publication ambition, not a demonstrated quality or acceptance claim.
    incrementally. It does not take a complete permitted trace or fault label.
 3. **C3 — Confidential-H100 evaluation.** Existing bounded feasibility evidence plus
    separately reserved detection, dynamic workload and real-AI overhead evaluations.
-   Only the first part is currently measured on H100.
+   The [supported bounded RQ2–RQ4 matrix](../environment/hdsc-final-evaluation-result.md)
+   is now measured and independently audited. Compute Sanitizer comparison is
+   unavailable on the tested CC host; this limits the comparative claim.
 
 The gap is **partially supported, not an established novelty theorem**. CUDA status
 and the documented sanitizer checks are not application identity/version contracts.

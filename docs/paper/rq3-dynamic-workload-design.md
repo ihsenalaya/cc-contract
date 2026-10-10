@@ -1,5 +1,10 @@
 # RQ3 — online, data-dependent execution
 
+Post-execution status: [audited results](../environment/hdsc-final-evaluation-result.md).
+All 50 native dynamic runs and the separate 80-run healthy corpus completed.
+The protocol below is preserved; the interrupted attempt exposed some reserved
+inputs, so the final corpus is not claimed to be an untouched holdout.
+
 The native persistent worker allocates three packets and two streams once, then
 accepts one request after its previous response. Host dispatch selects logical
 buffer, sum or xor consumer, and graph/direct path using the preceding actual

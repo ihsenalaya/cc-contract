@@ -1,5 +1,10 @@
 # RQ2 — detection value, v1
 
+Post-execution status: [audited results](../environment/hdsc-final-evaluation-result.md).
+The protocol below records the planned comparison. Direct runs completed;
+three tool capability controls rejected the tested CC environment, leaving
+720 tool runs explicitly unsupported and no measured B2 detection comparison.
+
 Use `experiments/hdsc-fault-benchmark-v1.json`. Four cause classes have three
 predeclared state/output variants: changed final sum, equal payload with changed
 identity/version, and different payload with the same modulo-2^32 sum. These are

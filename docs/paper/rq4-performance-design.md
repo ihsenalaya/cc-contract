@@ -1,5 +1,11 @@
 # RQ4 — application overhead protocol
 
+Post-execution status: [audited results and per-block metrics](../environment/hdsc-final-evaluation-result.md).
+All ten ON/OFF blocks completed with equal paired token outputs. The original
+protocol below is preserved. Reports distinguish mean per-block relative change
+from relative change of block means; uncertainty uses paired absolute effects.
+Peak memory is retained with its limitations, including an interval spanning zero.
+
 Use the trained `roneneldan/TinyStories-1M` checkpoint at revision
 `77f1b168e219585646439073245fe87e56b3023e`, PyTorch 2.8 / Transformers 4.57.1,
 16-token persistent input buffers, batch 1, FP32, eager attention, TF32 disabled.

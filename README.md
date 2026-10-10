@@ -3,8 +3,11 @@
 Experimental software for **Runtime Semantic State-Continuity Verification for Confidential GPU Execution**. Historical stateful-testing campaigns remain separately documented.
 
 This repository implements and records experiments; it is not a paper manuscript.
-Latest checkpoint: the [140-job H100 campaign](docs/environment/fixed-work-campaign-result.md)
-is independently audited and published. Its retained VM is deallocated.
+Latest checkpoint: the [supported HDSC evaluation](docs/environment/hdsc-final-evaluation-result.md)
+is independently audited: 433 executed jobs and two additional GPU development
+controls; 720 sanitizer-dependent jobs remain explicitly unsupported.
+The retained VM is deallocated. The earlier
+[140-job H100 campaign](docs/environment/fixed-work-campaign-result.md) remains separate.
 The separate [state-continuity pilot](docs/environment/state-continuity-pilot-result.md)
 completed 50 real H100 runs: 40/40 injected divergences detected with CUDA
 success and 0/10 healthy alerts. Its complete VM window was 4 min 16 s;
@@ -39,10 +42,17 @@ These are controlled benchmark results, not evidence of discovered real bugs.
 Compute Sanitizer rejected the CC configuration; 720 dependent records were
 explicitly skipped and cannot support a sanitizer comparison.
 
-The recovered Transformer traceback identifies a mask tensor allocation forbidden
-during CUDA Graph capture. Zero AI jobs completed. **70 AI jobs remain unvalidated**,
-including the overhead experiment. The VM is **deallocated**, with disk retained;
-the complete start-to-release interval was **13 min 12 s**. The earlier
+The recovered Transformer capture failure was corrected by preparing the same
+mask constant before capture, preserving attention arithmetic and weights.
+After local qualification and two exact GPU equivalence controls, **70/70 AI jobs
+completed and passed independent evidence audit**. All 40 injected AI requests
+were detected, with no alerts on their healthy pairs or ten additional healthy
+requests. Ten valid ON/OFF performance pairs show +0.567 ms mean p50 latency
+difference (95% block-bootstrap interval [0.467, 0.680] ms), or +2.16% averaged
+over per-block ratios. These are bounded TinyStories results.
+See the [final results, provenance and limitations](docs/environment/hdsc-final-evaluation-result.md).
+The VM is **deallocated**, with disk retained; the latest AI window took
+**7 min 02 s** from start request to confirmed release. The earlier
 [interrupted attempt](docs/environment/hdsc-interrupted-window.md) was recovered
 and excluded as a whole; exposed inputs must not be called an unseen holdout.
 Follow the [checkpoint journal](docs/research/hourly-progress.md). Any further
