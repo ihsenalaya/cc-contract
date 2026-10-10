@@ -1,0 +1,49 @@
+{
+  "state": "PASS_CPU_DEVELOPMENT_NOT_FROZEN_GPU",
+  "created_utc": "2026-10-10T18:06:53.665681+00:00",
+  "GPU_executed": false,
+  "reserved_evaluation_executed": false,
+  "RQ2": {
+    "runs": 48,
+    "injected": 24,
+    "healthy": 24,
+    "CC_detected": 24,
+    "healthy_alerts": 0,
+    "output_only_detected": 8,
+    "CUDA_status": "UNSUPPORTED_CPU_MODEL"
+  },
+  "dynamic": {
+    "sequences": 47,
+    "steps": 310,
+    "minimum_steps": 4,
+    "maximum_steps": 12
+  },
+  "AI": {
+    "trained_model": "roneneldan/TinyStories-1M",
+    "healthy_injected_pairs": 4,
+    "CPU_only": true
+  },
+  "performance": {
+    "state": "CPU_HARNESS_CHECK_ONLY",
+    "ON_OFF_outputs_match": true,
+    "H100_overhead": null
+  },
+  "Kind": {
+    "core_workers": 2,
+    "AI_workers": 1,
+    "scope": "CPU_ONLY_DEVELOPMENT_IMAGES_PRECEDE_FINAL_SOURCE"
+  },
+  "audits": {
+    "independent-development-audit-final.json": "9029f058f82e57ad35499c5f2ca3cbde0a5fd0a7554c4016f3ad15e4ea89056f",
+    "qualified-development-final/rq2-audit.json": "98971e529f7f41ab71ede6a11514dd507acf6675b4166acf90fc81eab52514df",
+    "kind-core-development/receipt.json": "b424e9b9b156dc258d1ed663cd0acc0d18080929d8f7f4189253d8f82c18886e",
+    "kind-ai-development/receipt.json": "348c3eb1bc2eaa221212915891f6e2e7e9bf5ee01dbc1ed7b4f641b04dbd75d0",
+    "hdsc-controller-check.log": "4faf6453c9a914078d0a91160a769b0f7c0f5a4122f8ca235af79cfd6afd3dce"
+  },
+  "limitations": [
+    "No GPU or sanitizer execution result inferred from CPU checks",
+    "No reserved execution",
+    "Novelty versus LGT4CG provisional",
+    "Final images, CI and protocol freeze still pending"
+  ]
+}

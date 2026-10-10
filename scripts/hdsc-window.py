@@ -31,6 +31,7 @@ def source_files():
         *ROOT.glob('experiments/hdsc-*.json'),*ROOT.glob('docs/paper/*.md'),
         ROOT/'scripts/hdsc-window.py',ROOT/'scripts/continuity-window.py',ROOT/'scripts/run-hdsc-host.sh',
         ROOT/'scripts/run-hdsc-section.py',ROOT/'results/manifests/hdsc-model-assets.json',
+        ROOT/'scripts/analyze-hdsc-evaluation.py',ROOT/'scripts/audit-hdsc-rq2.py',ROOT/'scripts/audit-hdsc-development.py',
         ROOT/'infrastructure/hdsc/Dockerfile',ROOT/'infrastructure/hdsc/Dockerfile.ai'])
 
 

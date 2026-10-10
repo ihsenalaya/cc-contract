@@ -88,7 +88,7 @@ def main():
     args.output.mkdir(parents=True,exist_ok=False)
     rows=[r for r in schedule() if r['section']==args.section]
     signal.signal(signal.SIGALRM,job_timeout)
-    unsupported=set();completed=0;start=time.monotonic()
+    unsupported=set();completed=0;start=time.monotonic();performance_pairs={}
     try:
         with (args.output/'jobs.jsonl').open('x') as out:
             for row in rows:
@@ -99,6 +99,12 @@ def main():
                     result={'classification':'UNSUPPORTED','reason':'capability_rejected_environment','executed':False}
                 else:result=run_job(row,args.model,args.output/f"job-{row['job_id']}")
                 signal.alarm(0)
+                if row['kind']=='performance':
+                    pair=performance_pairs.setdefault(row['block'],{})
+                    pair[row['enabled']]=[sample['tokens'] for sample in result['samples']]
+                    if len(pair)==2 and pair[False]!=pair[True]:
+                        result['classification']='INVALID_TEST'
+                        result['reason']='ON/OFF tokens and therefore dynamic workload paths differ'
                 out.write(json.dumps({'job':row,'result':result,'job_wall_seconds':time.monotonic()-job_start},sort_keys=True)+'\n');out.flush()
                 if row['kind']=='capability' and result['B2_sanitizer']['classification']=='UNSUPPORTED' and result['B2_sanitizer'].get('reason')!='no_cuda_device':unsupported.add(row['tool'])
                 elif technical_failure(result):raise RuntimeError('Technical failure: stop and deallocate before diagnosis')
