@@ -1,7 +1,34 @@
-# Fixed-work campaign: startup failed, local repair before retained-VM retry
+# Fixed-work campaign: GPU execution finished, H100 deallocated
+
+On 10 October 2026 the qualified harness completed its 140 successive
+100-selected-case jobs with exit code zero. The verified command and harness
+completion rule support this execution count; independent recomputation of
+all original raw cases is **still in progress**. No final scientific counts
+or superiority result are published at this stage.
+
+All 597 collected original files match their hash inventory. Azure independently
+confirms the same retained VM and OS disk, deallocated, with thirteen managed
+resources retained and zero destroyed. Request-to-confirmed-deallocation took
+3,380.039786 seconds (56 min 20 s). Including the prior failed request, the
+cumulative conservative duration is 3,559.335160 seconds (59 min 19 s).
+These durations do not establish actual billing start or charges.
+
+Independent offline host review passed the pinned kernel/driver, CC production
+and Secure Boot, CPU MAA RS256 signature/VM claims, CUDA reference and 96-case
+IR qualification. This does not independently authenticate the GPU hardware
+quote or establish full E0 completion. The original archive and twelve lifecycle/provenance objects are backed up
+to private Azure storage. All thirteen remote objects were fully read back and
+matched their local SHA-256 and length; local originals remain preserved.
+
+See [execution receipt](../../results/manifests/fixed-work-campaign-execution.json)
+and [remaining H100 work](remaining-h100-experiments.md).
+All remaining review and publication use CPU only, after confirmed deallocation.
+
+## Preserved preparation and earlier failed attempts
+
 
 The user resumed work with « continue le travaille » on 10 October 2026.
-The **140 H100 jobs have not started**. Read-only inventory at 06:27 UTC
+At that earlier checkpoint, the **140 H100 jobs had not started**. Read-only inventory at 06:27 UTC
 confirmed the original VM UUID and thirteen managed resources, with the VM
 deallocated. Keep the VM, its OS disk and restart resources. Complete the
 state reconciliation and fresh bounded plan before starting compute.
@@ -85,8 +112,8 @@ The requested scope remains 140 successive 100-selected-case jobs, immediate
 deallocation on completion or failure, and resources retained. The retry must
 count the first attempt against the original **USD 15 forecast / ninety-minute
 VM allowance**. Its new bounded interval is at most **87 minutes**; local repair
-while deallocated does not add H100 use. No GPU result is claimed yet.
+while deallocated does not add H100 use. At that earlier checkpoint, no GPU result was claimed.
 
 Protected originals, qualification receipts and the timestamped pause
 handoff and explicit resume inventory are outside Git in the project state
-directory. No GPU campaign result is claimed at this preparation stage.
+directory. No GPU result was claimed at that preparation checkpoint.

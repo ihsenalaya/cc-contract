@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-10T08:31:51.307002+00:00",
+  "state": "GPU_EXECUTION_FINISHED_OFFLINE_RAW_CASE_AUDIT_IN_PROGRESS",
+  "campaign_id": "fixed-work-1010a",
+  "scope": "BOUNDED_T01_T08_EXACT_INTEGER_FIXED_WORK_V0_3",
+  "execution_reported_jobs": 140,
+  "execution_job_count_basis": "HASH_VERIFIED_MAIN_HARNESS_ZERO_EXIT_REQUIRES_140_COMPLETE_QUOTAS",
+  "selected_cases_per_job": 100,
+  "execution_reported_selected_cases": 14000,
+  "parallel_gpu_jobs": false,
+  "independent_raw_case_audit_finished": false,
+  "scientific_results_verified": false,
+  "raw_candidate_or_PASS_counts_published": false,
+  "host_review_state": "PASS_BOUNDED_HOST_AND_IR_QUALIFICATION_REVIEW",
+  "host_review_sha256": "d42a536ca30ee28f5749156485d57b0fbc85dedc15fee651b04e650ca33632e2",
+  "collection": {
+    "archive_sha256": "b4e7135cf1806d577dcb40530b8aa7b6f8f5f36fba78f9b83c9dca04f0834fde",
+    "archive_bytes": 2896869059,
+    "files_verified": 597,
+    "receipt_sha256": "d6fcc7c85248380ea953d259495a07a24bee1434e3dfc84b6408452cdcb01549"
+  },
+  "deallocation": {
+    "power_state": "PowerState/deallocated",
+    "confirmed_utc": "2026-10-10T08:27:35.110153+00:00",
+    "same_VM_and_disk_independently_read_back": true,
+    "managed_resources_retained": 13,
+    "resources_destroyed": 0,
+    "receipt_sha256": "a6c6bef098fe407a57beaf2ea96df0c721d7dba4541f467ae630c5fe2c6342fa",
+    "independent_live_readback_sha256": "bfc3fc18bc693e9f5c21d860ba3ea40c34819a13245f1caa96fb60aba160c409"
+  },
+  "timings": {
+    "current_start_request_to_confirmed_deallocation_seconds": 3380.039786,
+    "prior_failed_start_request_to_deallocation_seconds": 179.295374,
+    "cumulative_conservative_start_request_to_deallocation_seconds": 3559.3351599999996
+  },
+  "actual_billing_start_and_cost_established": false,
+  "private_Azure_backup_state": "VERIFIED_ORIGINAL_ARCHIVE_FULL_REMOTE_GET",
+  "whole_E0_E8_complete": false,
+  "case_count_scientific_adequacy_established": false,
+  "superiority_established": false,
+  "independent_GPU_remote_attestation_established": false,
+  "offline_CPU_adapter_sha256": "aa7c656cc1c1964af88114d9c33ad39c41323b9a2b63a4e3ec99d2653856a5d3",
+  "private_Azure_originals_backup_summary_sha256": "1450222912cc598491a47af3bf8b98fa7e47a52d9c3efc442c683313c03221cc"
+}

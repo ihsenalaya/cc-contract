@@ -73,11 +73,11 @@
       "scope": "CPU_algorithm_and_pipeline_checks_only",
       "evidence": [
         "results/manifests/software-preparation.json",
-        "docs/methodology/protocol-v0.2-draft.md"
+        "docs/methodology/protocol-v0.2-draft.md",
+        "results/manifests/fixed-work-campaign-execution.json"
       ],
       "remaining": [
-        "Retained host requalification for the declared exact-integer fixed-work scope",
-        "Actual 140 successive GPU jobs and independent raw-case review",
+        "Independent raw-case audit of all 140 executed 100-selected-case GPU jobs",
         "Broader oracle/power/evaluation criteria remain outside the bounded v0.3 campaign"
       ],
       "fixed_work_protocol": "docs/methodology/fixed-work-campaign-v0.3.md"
@@ -88,11 +88,11 @@
       "scope": "CPU_algorithm_and_pipeline_checks_only",
       "evidence": [
         "results/manifests/software-preparation.json",
-        "docs/methodology/protocol-v0.2-draft.md"
+        "docs/methodology/protocol-v0.2-draft.md",
+        "results/manifests/fixed-work-campaign-execution.json"
       ],
       "remaining": [
-        "Retained host requalification for the declared exact-integer fixed-work scope",
-        "Actual 140 successive GPU jobs and independent raw-case review",
+        "Independent raw-case audit of all 140 executed 100-selected-case GPU jobs",
         "Broader oracle/power/evaluation criteria remain outside the bounded v0.3 campaign"
       ],
       "fixed_work_protocol": "docs/methodology/fixed-work-campaign-v0.3.md"
@@ -211,13 +211,13 @@
     "selected_cases_independently_audited": 1400
   },
   "fixed_work_campaign": {
-    "state": "PREPARING_RETAINED_VM_RETRY",
+    "state": "COMPLETED_GPU_EXECUTION_OFFLINE_AUDIT_IN_PROGRESS",
     "approval_granted": true,
     "approval_scope": "USER_EXPLICIT_140_SUCCESSIVE_JOBS_OF_100_CASES_STOP_LOCAL_FIX_AND_RESUME",
     "parallel_gpu_jobs": false,
     "planned_jobs": 140,
     "selected_cases_per_job": 100,
-    "actual_gpu_campaign_jobs_run": 0,
+    "actual_gpu_campaign_jobs_run": 140,
     "protocol_version": "fixed-work-v0.3",
     "protocol": "docs/methodology/fixed-work-campaign-v0.3.md",
     "proposal": "docs/environment/fixed-work-campaign-window.md",
@@ -232,7 +232,12 @@
     "total_forecast_budget_usd": 15,
     "actual_billing_start_and_cost_established": false,
     "full_E0_E8_complete": false,
-    "blocker": "STRICT_TERRAFORM_OS_DISK_ARM_ID_CASE_REFRESH_LOCAL_QUALIFICATION",
-    "gpu_results_claimed": false
+    "blocker": null,
+    "gpu_results_claimed": false,
+    "execution_evidence": "results/manifests/fixed-work-campaign-execution.json",
+    "actual_start_request_to_deallocation_seconds": 3380.039786,
+    "cumulative_conservative_start_request_to_deallocation_seconds": 3559.3351599999996,
+    "independent_raw_case_audit_state": "IN_PROGRESS",
+    "private_Azure_backup_state": "VERIFIED_ORIGINAL_ARCHIVE_FULL_REMOTE_GET"
   }
 }
