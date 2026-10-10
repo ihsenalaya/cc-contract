@@ -1,0 +1,13 @@
+{
+  "plan": "results/manifests/hdsc-final-h100-plan.json",
+  "sha256": "9cbdc48695ecc666f66b9cc26aa5f08948c7bfb25b94cc0c6a0f631d94710ec5",
+  "approved": false,
+  "H100_state": "DEALLOCATED",
+  "reviewed_utc": "2026-10-10T18:27:40.238512+00:00",
+  "source_commit": "4e3b3a296a97b5a0c1f173c034c6028bbbbefb70",
+  "maximum_minutes": 90,
+  "budget_usd": 12,
+  "scheduled_jobs": 1153,
+  "workload_requests": 1433,
+  "additional_AI_setup_forwards": 840
+}

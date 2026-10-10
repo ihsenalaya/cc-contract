@@ -1,0 +1,178 @@
+{
+  "state": "PASS_LOCAL_QUALIFICATION",
+  "scope": "CPU_DEVELOPMENT_CONTAINER_BUILD_LIFECYCLE_AND_REPORTING_ONLY",
+  "utc": "2026-10-10T18:26:03.446967+00:00",
+  "source_commit": "4e3b3a296a97b5a0c1f173c034c6028bbbbefb70",
+  "CI_conclusion": "success",
+  "CI_tests": 273,
+  "source_CI": "https://github.com/ihsenalaya/cc-contract/actions/runs/38075175310",
+  "image_source_commit": "f2f8cdac76e197065c5da00429b4975070985e5f",
+  "image_source_CI": "https://github.com/ihsenalaya/cc-contract/actions/runs/38074379549",
+  "image_application_source_identical_to_frozen_source": true,
+  "images": {
+    "core": "ghcr.io/ihsenalaya/cc-contract-hdsc@sha256:17d85c8d3baddbd1c2793732a69fdc6a8db6e2350d61f0d00a4f4fd63c5de863",
+    "ai": "ghcr.io/ihsenalaya/cc-contract-hdsc-ai@sha256:f0e487f2b3245c7652559a3cea47361920a5cce46b8f02d93ee69cc108be130b"
+  },
+  "Kind": {
+    "core": {
+      "receipt_sha256": "e88860e58d1f12cf5534050ef94773272b8c6d446031ef3409148397fdabe808",
+      "workers": 2,
+      "configuration_digest": "sha256:8bdfb3c8b9424d4f1729d953f13bc277fed65b61c7019ee8f32c5e0ccf426244",
+      "registry_matches_tested_configuration": true
+    },
+    "ai": {
+      "receipt_sha256": "6ee17adee6b2c6c1e680faad27569eadeb83326e656af40efea6f3b1b8816745",
+      "workers": 1,
+      "configuration_digest": "sha256:f824ce9c9fcb95e9cf13fbc1654d0da69ea25aa6c968ba18f9ce96f547282504",
+      "registry_matches_tested_configuration": true
+    }
+  },
+  "source_freeze_sha256": "1d32a0746ac322b1732e29651eec0f5670cfcd9bf1ecac0e39aa02896b612cb4",
+  "development_qualification_sha256": "66060069f7647b8c9562111d572a8b3614ff1a236e4b8f606a620123d83b9b14",
+  "independent_development_audit_sha256": "9029f058f82e57ad35499c5f2ca3cbde0a5fd0a7554c4016f3ad15e4ea89056f",
+  "sanitizer": {
+    "version": "2025.1.0.0",
+    "binary_and_parser_qualified": true,
+    "GPU_instrumentation_validated": false,
+    "CPU_without_driver_instrumentation_status": "INFRA_FAILURE",
+    "cause": "libcuda absent; injected process SIGSEGV; exact internal crash mechanism unconfirmed",
+    "command_forwarding_verified_with_strace": true,
+    "diagnostic_sha256": "3debaf0d585ff2592ab7ea96fbba813af650df8d54a6aea0ebac752ed661cd64",
+    "capabilities_to_test_on_approved_H100": [
+      "memcheck",
+      "initcheck",
+      "synccheck"
+    ],
+    "racecheck": "UNSUPPORTED_CC_DOCUMENTED"
+  },
+  "backups": {
+    "model": {
+      "receipt_sha256": "7375bae69c477fe0e0364f4c7a1b1496c5d5608ecd8d5a6c10368263f1335c28",
+      "account": "cccontractd6cc603f1e9f",
+      "container": "models",
+      "verification": "full_remote_GET_SHA256",
+      "files": [
+        {
+          "blob": "b3152ad5e2abf51c56c160babdec8ecec0f227ef56b6abf5a47b01d3f2b43020/artifact-manifest.json",
+          "sha256": "b3152ad5e2abf51c56c160babdec8ecec0f227ef56b6abf5a47b01d3f2b43020",
+          "bytes": 1107,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "ff74c30d5ebb5ab1da0f2ea479adf7197c504b42b5522a858c334ab91ed4958c/config.json",
+          "sha256": "ff74c30d5ebb5ab1da0f2ea479adf7197c504b42b5522a858c334ab91ed4958c",
+          "bytes": 1021,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5/merges.txt",
+          "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5",
+          "bytes": 456318,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "07f9609ea882b8163ff3b23d40e2b82cb715d409631beb15c84b164f3877dae7/pytorch_model.bin",
+          "sha256": "07f9609ea882b8163ff3b23d40e2b82cb715d409631beb15c84b164f3877dae7",
+          "bytes": 48578813,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "98412137ae43c77f8af52eb51b19c3536d3242cb55339167d841005fa94a23b7/special_tokens_map.json",
+          "sha256": "98412137ae43c77f8af52eb51b19c3536d3242cb55339167d841005fa94a23b7",
+          "bytes": 438,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "f6ed3d307010c244c22aeffbde05f419cf277c23e64cf98b673cac5449cfeff5/tokenizer.json",
+          "sha256": "f6ed3d307010c244c22aeffbde05f419cf277c23e64cf98b673cac5449cfeff5",
+          "bytes": 2107652,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "3d76da0fd37493fbfcd3f0fa9757753d31f92e1779ebd9130809b45546a60261/tokenizer_config.json",
+          "sha256": "3d76da0fd37493fbfcd3f0fa9757753d31f92e1779ebd9130809b45546a60261",
+          "bytes": 722,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "3ba3c3109ff33976c4bd966589c11ee14fcaa1f4c9e5e154c2ed7f99d80709e7/vocab.json",
+          "sha256": "3ba3c3109ff33976c4bd966589c11ee14fcaa1f4c9e5e154c2ed7f99d80709e7",
+          "bytes": 798156,
+          "remote_bytes_verified": true
+        }
+      ]
+    },
+    "development": {
+      "receipt_sha256": "99d5850002bac01170b529f553edd11468f5318f6b66b05e7c685526ccf8cfcf",
+      "account": "cccontractd6cc603f1e9f",
+      "container": "evidence",
+      "verification": "full_remote_GET_SHA256",
+      "files": [
+        {
+          "blob": "4ea3383325348558dd6668f986f8f744b411c2948b3c5c2e8bb6272b709bc8f3/development-evidence.tar.gz",
+          "sha256": "4ea3383325348558dd6668f986f8f744b411c2948b3c5c2e8bb6272b709bc8f3",
+          "bytes": 16465292,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "75c6ac0dbf8a9bee0720f9f89ad417b32ef5171b4a5ca50155ffefa359b176b7/development-evidence-index.json",
+          "sha256": "75c6ac0dbf8a9bee0720f9f89ad417b32ef5171b4a5ca50155ffefa359b176b7",
+          "bytes": 5791,
+          "remote_bytes_verified": true
+        }
+      ]
+    },
+    "final_local": {
+      "receipt_sha256": "c4d54cd46f525fd8de5092a7f73b0cf9c4d8fe278d0690af7936e9a3e642002f",
+      "account": "cccontractd6cc603f1e9f",
+      "container": "evidence",
+      "verification": "full_remote_GET_SHA256",
+      "files": [
+        {
+          "blob": "b5ae16158975a1bd7c5db56a54e4edfc513d1ed867c6e4dfc56564c0e477461f/final-local-provenance.tar.gz",
+          "sha256": "b5ae16158975a1bd7c5db56a54e4edfc513d1ed867c6e4dfc56564c0e477461f",
+          "bytes": 17793,
+          "remote_bytes_verified": true
+        },
+        {
+          "blob": "f89f2c99a2bfcc597a0bf795216153b7e574ff8a8dfed969603e47bdf487ac75/final-local-provenance-index.json",
+          "sha256": "f89f2c99a2bfcc597a0bf795216153b7e574ff8a8dfed969603e47bdf487ac75",
+          "bytes": 3053,
+          "remote_bytes_verified": true
+        }
+      ]
+    }
+  },
+  "pricing": {
+    "query_checked_utc": "2026-10-10T17:54:34.657739+00:00",
+    "source": "https://prices.azure.com/api/retail/prices?%24filter=armRegionName+eq+%27eastus2%27+and+armSkuName+eq+%27Standard_NCC40ads_H100_v5%27+and+priceType+eq+%27Consumption%27",
+    "selected_Linux_meter": {
+      "currencyCode": "USD",
+      "tierMinimumUnits": 0.0,
+      "retailPrice": 6.98,
+      "unitPrice": 6.98,
+      "armRegionName": "eastus2",
+      "location": "US East 2",
+      "effectiveStartDate": "2024-12-01T00:00:00Z",
+      "meterId": "a408be5f-3cf0-55d7-a531-cc1d6e670706",
+      "meterName": "NCC40adsH100v5",
+      "productId": "DZH318Z0FNJV",
+      "skuId": "DZH318Z0FNJV/000C",
+      "productName": "Virtual Machines NCCadsv5 Srs",
+      "skuName": "NCC40adsH100v5",
+      "serviceName": "Virtual Machines",
+      "serviceId": "DZH313Z7MMC8",
+      "serviceFamily": "Compute",
+      "unitOfMeasure": "1 Hour",
+      "type": "Consumption",
+      "isPrimaryMeterRegion": true,
+      "armSkuName": "Standard_NCC40ads_H100_v5"
+    }
+  },
+  "H100_state": "DEALLOCATED",
+  "inventory_sha256": "62bc2fbde0c7a31f42e1d6171a52124d6bac9d13560b09bc308fbdb7c47be78f",
+  "GPU_executed": false,
+  "reserved_evaluation_executed": false,
+  "new_H100_authorized": false,
+  "scientific_gap": "PROVISIONAL_LGT4CG_OVERLAP_REQUIRES_FURTHER_PRIMARY_REVIEW"
+}

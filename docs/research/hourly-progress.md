@@ -39,7 +39,7 @@ self-referential Git SHA.
 
 ## 2026-10-10T18:17:09.461593+00:00 — protocol and controller freeze
 
-- Commit SHA: recorded in the following public qualification manifest and journal update.
+- Commit SHA: `4e3b3a296a97b5a0c1f173c034c6028bbbbefb70`; [CI 38075175310](https://github.com/ihsenalaya/cc-contract/actions/runs/38075175310) passed all 273 tests.
 - Completed: final core and trained-AI Kind checks; identical qualified image configurations will be checked against registry manifests; frozen inventory and costed 90-minute/12-USD plan.
 - Tests: 28 current HDSC tests passed, including altered archive-hash rejection; prior full 270-test suite and 272-test checkpoint CI passed. Full frozen-source CI follows push.
 - Backups: model and development originals verified by complete Azure GET/SHA-256.
@@ -47,3 +47,14 @@ self-referential Git SHA.
 - Decisions: 1,153 scheduled jobs, 1,433 requests plus 840 setup forwards; unsupported sanitizer jobs remain explicit; time estimate unmeasured.
 - Next: publish provenance, verify exact plan, STOP for owner decision.
 - H100 state: **DEALLOCATED**.
+
+## 2026-10-10T18:27:40.246907+00:00 — ready for owner review; STOP
+
+- Frozen source commit: `4e3b3a296a97b5a0c1f173c034c6028bbbbefb70`; image source `f2f8cdac76e197065c5da00429b4975070985e5f` has identical application/CUDA sources.
+- Completed: 273-test green source CI; native Kind checks on two workers; trained-AI Kind checks on one; both immutable images published and registry config digests matched to Kind receipts; full remote verification of model, development and final-local evidence.
+- Plan: `results/manifests/hdsc-final-h100-plan.json`; SHA-256 `9cbdc48695ecc666f66b9cc26aa5f08948c7bfb25b94cc0c6a0f631d94710ec5`. Inventory: 1,153 jobs, 1,433 requests, 840 additional setup forwards. Proposed ceiling: 90 minutes, 12 USD incremental budget; completion time remains unmeasured.
+- Incidents: INC-0120 preserves driverless sanitizer launch failure (INFRA_FAILURE, not a clean GPU result); strace confirms target argument forwarding and missing libcuda before SIGSEGV. Exact internal crash mechanism unconfirmed. INC-0121 records reuse of an existing registry layer instead of redundant PC upload.
+- Scientific decisions: no reserved outcomes read, no thresholds tuned, no historical evidence changed. LGT4CG novelty remains provisional. Racecheck has no launches; Random/B3/B4 search deferred.
+- Remaining hardware uncertainty: sanitizer/CC capability, dynamic CUDA and real application overhead require the proposed approved window. The three capability gates precede reserved testing; unexplained failure stops the VM.
+- Next task: **STOP. Await fresh explicit owner approval of this exact plan.** No approval receipt or execution-attempt file exists for this window.
+- H100 state: **DEALLOCATED**; retained VM/disk and guard verified read-only.
