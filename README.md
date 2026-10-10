@@ -3,15 +3,20 @@
 Experimental software for **Stateful Contract-Guided Testing of Host–Device Data Paths for Confidential GPU Inference**.
 
 This repository implements and records experiments; it is not a paper manuscript.
-Current scope: an initial **CPU simulation**, a conservative sequence validator,
-exact integer/metadata oracles, a 24 legal / 24 controlled mutant / 12 invalid
-development corpus, local Kubernetes qualification infrastructure, a compiled native CUDA E0 probe,
-and a temporary Azure lifecycle with independent expiry.
+Latest checkpoint: the [140-job H100 campaign](docs/environment/fixed-work-campaign-result.md)
+is independently audited and published. Its retained VM is deallocated.
+The separate [state-continuity pilot](docs/environment/state-continuity-pilot-window.md)
+has passed CPU/Kind qualification and local CUDA compilation; its proposed
+50 real GPU runs require fresh user approval and have not started.
+The implementation includes a CPU model, conservative sequence validator,
+integer/metadata oracles, CUDA adapters and local Kubernetes qualification.
 No CPU result establishes CUDA correctness, GPU attestation or method superiority.
-The first approved real H100 window completed 54 bounded CUDA observations with
+Historically, the first approved real H100 window completed 54 bounded CUDA observations with
 independently checked integer arrays, CPU token signature review and local GPU
 hardware-verifier receipts. All 13 temporary resources were destroyed. E0 remains
-partial; PyTorch/inference, expiry deallocation and recreation need qualification.
+partial. Later inference and campaign results are tracked in
+[experiment status](experiments/status.json); actual independent expiry and
+full recreation claims remain unvalidated.
 
 ## Reproduce the initial checks
 
@@ -40,7 +45,6 @@ See [verified local checkpoint](docs/environment/local-checkpoint.md),
 [experiment status](experiments/status.json), and
 [incident history](docs/incidents/incidents.jsonl).
 
-Infrastructure automation is being qualified. One real create/qualify/collect/
-deallocate/destroy cycle has evidence; actual H100 recreation, independent expiry
-deallocation and comparative campaigns still require their own evidence.
-No project GPU or temporary Azure resource remains after the first window.
+Infrastructure automation has both initial create/qualify/collect/release evidence
+and retained-VM campaign evidence. The current VM, disk and restart resources
+are preserved; no restart or further H100 use is authorized by a completed window.

@@ -1,0 +1,147 @@
+{
+  "protocol": "state-continuity-pilot-v0.1",
+  "state": "LOCAL_QUALIFIED_WAITING_FRESH_USER_H100_APPROVAL",
+  "source_commit": "ddff8775705a85c278d208b1ba504d18226b7551",
+  "source_ci": "https://github.com/ihsenalaya/cc-contract/actions/runs/38068355607",
+  "image": "ghcr.io/ihsenalaya/cc-contract-continuity@sha256:fd60712704b01ca33988aa2734fc0da8cc7c0041eb57669c9237be87df9cc068",
+  "image_config_digest": "sha256:42f70f4870dc4c2b8815b26bca3b7d3a5a981616342473d58566427a7b40cd92",
+  "image_source_commit_matches": true,
+  "targeted_unit_tests": 25,
+  "local_full_suite_tests_before_lifecycle_addition": 236,
+  "source_ci_passed": true,
+  "cpu_model_metrics": [
+    {
+      "fault": "HEALTHY",
+      "runs": 10,
+      "activated": 0,
+      "cuda_success": 0,
+      "model_success": 10,
+      "detected": 0,
+      "missed": 0,
+      "not_activated": 0,
+      "false_positives": 0,
+      "classifications": {
+        "PASS": 10
+      }
+    },
+    {
+      "fault": "L1",
+      "runs": 10,
+      "activated": 10,
+      "cuda_success": 0,
+      "model_success": 10,
+      "detected": 10,
+      "missed": 0,
+      "not_activated": 0,
+      "false_positives": null,
+      "classifications": {
+        "STATE_CONTINUITY_VIOLATION": 10
+      }
+    },
+    {
+      "fault": "L2",
+      "runs": 10,
+      "activated": 10,
+      "cuda_success": 0,
+      "model_success": 10,
+      "detected": 10,
+      "missed": 0,
+      "not_activated": 0,
+      "false_positives": null,
+      "classifications": {
+        "STATE_CONTINUITY_VIOLATION": 10
+      }
+    },
+    {
+      "fault": "C1",
+      "runs": 10,
+      "activated": 10,
+      "cuda_success": 0,
+      "model_success": 10,
+      "detected": 10,
+      "missed": 0,
+      "not_activated": 0,
+      "false_positives": null,
+      "classifications": {
+        "STATE_CONTINUITY_VIOLATION": 10
+      }
+    },
+    {
+      "fault": "C2",
+      "runs": 10,
+      "activated": 10,
+      "cuda_success": 0,
+      "model_success": 10,
+      "detected": 10,
+      "missed": 0,
+      "not_activated": 0,
+      "false_positives": null,
+      "classifications": {
+        "STATE_CONTINUITY_VIOLATION": 10
+      }
+    }
+  ],
+  "cpu_model_wall_seconds": 0.010096168996824417,
+  "mean_cpu_detector_ns": 17221.78,
+  "cpu_and_kind_independent_audits": 3,
+  "kind": {
+    "completed_utc": "2026-10-10T16:37:25.259468+00:00",
+    "state": "PASS_KIND_CPU_ONLY",
+    "image": "ghcr.io/ihsenalaya/cc-contract-continuity:ddff8775705a85c278d208b1ba504d18226b7551",
+    "local_image_id": "sha256:fd60712704b01ca33988aa2734fc0da8cc7c0041eb57669c9237be87df9cc068",
+    "receipts": [
+      {
+        "node": "cc-contract-worker",
+        "log_sha256": "772179621f8b83abc18513fc52a0a5ba2b0b33dcefde907e1e83d6a54ddad9ff",
+        "actual_runs": 50,
+        "cuda": "UNSUPPORTED",
+        "image_id": "sha256:42f70f4870dc4c2b8815b26bca3b7d3a5a981616342473d58566427a7b40cd92"
+      },
+      {
+        "node": "cc-contract-worker2",
+        "log_sha256": "321771b2bd7cb25ea6c430712bc48d0ce88c7b480b5eab9fe0c487c20a2476b9",
+        "actual_runs": 50,
+        "cuda": "UNSUPPORTED",
+        "image_id": "sha256:42f70f4870dc4c2b8815b26bca3b7d3a5a981616342473d58566427a7b40cd92"
+      }
+    ],
+    "rbac_secrets_denied": true,
+    "real_cuda_validated": false
+  },
+  "local_real_cuda_available": false,
+  "cuda_compiled_locally": true,
+  "cuda_no_device_handling_verified": true,
+  "real_cuda_validated": false,
+  "real_H100_runs": 0,
+  "h100_start_authorized": false,
+  "new_Azure_compute_mutations": 0,
+  "VM_power_state": "PowerState/deallocated",
+  "VM_checked_utc": "2026-10-10T16:38:53.410782+00:00",
+  "guard_read_and_permissions_verified": true,
+  "guard_actual_expiry_on_allocated_VM_tested": false,
+  "forecast_total_budget_usd": 5,
+  "maximum_window_minutes": 30,
+  "plan_sha256": "71030df624b9329b79f9ba6e3a92ce778a8b29825f8d725e57861b5d3ef89df9",
+  "historical_140_jobs_unchanged": true,
+  "total_GPU_instrumentation_overhead_measured": false,
+  "private_evidence_hashes": {
+    "cpu-final/runs.jsonl": "9a9d24dd6aa926f66348c23f8ef29b56f3165d3ef5a20421317d50defd7a1384",
+    "cpu-final/summary.json": "f34a175cf840a7e5c5f9e040d17f17fc31ee60b42d8a5f2aa8b88ab219ca10b9",
+    "cpu-final-audit.json": "7c83cf3b2fd16aae627da924b6ab24ec89b26b90b5d9cb2255388e832dbd937d",
+    "kind-final/receipt.json": "fdb5e78c902d935607ff6a43c9a3469ac01253f82b46de96462b0c8d9c8d1511",
+    "kind-final/audit-0.json": "9de54780847532ad96009481d1a6acd5817e1c8a8245c437380521c3ef2f300b",
+    "kind-final/audit-1.json": "8d176a2398fc9a7fc88dc68a136e8e437152e81762eea99bf750881934273649",
+    "continuity-tests-final.log": "6e9990d06e78557ad5c21bbe1b2753af7da5983bfb583b409348793a20453ef7",
+    "quick-check.log": "5f6152e197a5ba844e8251974de28c3d7cf98c08d25ef02277eec3f8c964f1d0",
+    "docker-build-final.log": "8996dae78e3e8fa278f734b5396bc13a0c5104ba8a201316e4f354ddbd2e9daa",
+    "sources/receipt.json": "e800181ead07ee8072e584e065b2da4a123a60a805307c6537c8440abb6a3140",
+    "retail-prices.json": "3efd7ecc83411d17d1658079c07cdeb0a968200fcac11423a29271e8d8ef4b5e",
+    "guard-and-inventory-verified.json": "68180eff72811bfe90e6bf68a0a35d156ee976608262357fbeeb383129e27a0e"
+  },
+  "source_ci_unit_tests": 244,
+  "private_Azure_backup": {
+    "full_remote_bytes_verified": true,
+    "archive_sha256": "fc4b00cc3381f1e24fa170035e8db533574733ed3742ccd13739594d67446e1e",
+    "archive_bytes": 1574510
+  }
+}

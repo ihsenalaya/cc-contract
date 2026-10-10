@@ -1,0 +1,13 @@
+{
+  "protocol": "state-continuity-pilot-v0.1",
+  "state": "LOCAL_QUALIFIED_WAITING_FRESH_USER_H100_APPROVAL",
+  "source_commit": "ddff8775705a85c278d208b1ba504d18226b7551",
+  "proposal": "docs/environment/state-continuity-pilot-window.md",
+  "evidence": "results/manifests/state-continuity-local-qualification.json",
+  "maximum_gpu_runs": 50,
+  "actual_gpu_runs": 0,
+  "local_model_qualified": true,
+  "H100_approval_granted": false,
+  "retained_VM_deallocated": true,
+  "historical_E4_E5_results_modified": false
+}
