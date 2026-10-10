@@ -68,6 +68,8 @@ def technical_failure(value):
 
 def capability_rejected(result):
     finding=result['B2_sanitizer']
+    if result.get('observation',{}).get('execution_status')=='CUDA_ERROR':
+        raise RuntimeError('CUDA failed during the healthy capability control; stop')
     if finding['classification']=='UNSUPPORTED' and finding.get('reason')!='no_cuda_device':
         return True
     # This job is a known healthy development control. An alert cannot qualify
@@ -120,7 +122,10 @@ def main():
                         result['reason']='ON/OFF tokens and therefore dynamic workload paths differ'
                 out.write(json.dumps({'job':row,'result':result,'job_wall_seconds':time.monotonic()-job_start},sort_keys=True)+'\n');out.flush()
                 if row['kind']=='capability':
-                    if capability_rejected(result):unsupported.add(row['tool'])
+                    rejected=capability_rejected(result)
+                    if row['tool'] in plan.get('resumption',{}).get('expected_unsupported_tools',[]) and not rejected:
+                        raise RuntimeError('Capability differs from reduced resumption plan; stop for local review')
+                    if rejected:unsupported.add(row['tool'])
                 elif technical_failure(result):raise RuntimeError('Technical failure: stop and deallocate before diagnosis')
                 completed+=1;print(json.dumps({'job_id':row['job_id'],'kind':row['kind'],'completed':completed}),flush=True)
                 if row['section']=='ai':

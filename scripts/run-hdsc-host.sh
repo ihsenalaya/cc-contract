@@ -4,9 +4,10 @@ set -euo pipefail
 work="${1:?private prepared directory required}"
 [[ "$work" =~ ^/home/cccontract/cc-hdsc-[a-z0-9-]+$ ]]
 output="$work/evidence"
+container_prefix="cc-hdsc-${work##*/}"
 mkdir "$output"
 cleanup() {
-  sudo -n docker stop --time 3 cc-hdsc-core cc-hdsc-ai >/dev/null 2>&1 || true
+  sudo -n docker stop --time 3 "$container_prefix-core" "$container_prefix-ai" >/dev/null 2>&1 || true
   sudo -n rm -rf /run/cc-hdsc-registry
   sudo -n chown -R "$(id -u):$(id -g)" "$output"
 }
@@ -40,7 +41,7 @@ for section in core ai; do
   [[ "$remaining" -gt 0 ]]
   date --utc --iso-8601=ns > "$output/$section-start.txt"
   timeout --signal=TERM --kill-after=10s "$remaining" sudo -n docker run --rm \
-    --name "cc-hdsc-$section" --runtime=nvidia --gpus all --ulimit memlock=-1:-1 \
+    --name "$container_prefix-$section" --runtime=nvidia --gpus all --ulimit memlock=-1:-1 \
     --network none --read-only --cap-drop ALL --security-opt no-new-privileges \
     --tmpfs /tmp:rw,nosuid,nodev,size=256m --shm-size=256m --memory 8g --cpus 4 \
     --mount "type=bind,src=$output/data,dst=/evidence" \

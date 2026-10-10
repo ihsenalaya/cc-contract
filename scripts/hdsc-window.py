@@ -23,6 +23,13 @@ spec=importlib.util.spec_from_file_location('retained',ROOT/'scripts/continuity-
 retained=importlib.util.module_from_spec(spec);spec.loader.exec_module(retained)
 STATE=retained.STATE
 sha,write,az=retained.sha,retained.write,retained.az
+RESUME = dict(version='hdsc-resume-v1', previous_window='hdsc-eval-1010a',
+    previous_plan_sha256='9cbdc48695ecc666f66b9cc26aa5f08948c7bfb25b94cc0c6a0f631d94710ec5',
+    captured_prefix_rows=52,
+    captured_prefix_sha256='154cd2618584149720acdcd89311f7ba602e69e527f8f7f12749c4b8f3bfddc0',
+    pooling='NONE_REPLACEMENT_MATRIX_DISCLOSE_PREVIOUS_EXPOSURE',
+    expected_unsupported_tools=['memcheck','initcheck','synccheck'],
+    expected_executed_jobs=433, expected_skipped_jobs=720)
 
 
 def source_files():
@@ -33,6 +40,7 @@ def source_files():
         ROOT/'scripts/run-hdsc-section.py',ROOT/'results/manifests/hdsc-model-assets.json',
         ROOT/'scripts/analyze-hdsc-evaluation.py',ROOT/'scripts/audit-hdsc-rq2.py',ROOT/'scripts/audit-hdsc-development.py',
         ROOT/'docs/environment/final-h100-evaluation-plan.md',
+        ROOT/'docs/environment/hdsc-resumption-plan.md',ROOT/'scripts/hdsc-recovery.py',
         ROOT/'infrastructure/hdsc/Dockerfile',ROOT/'infrastructure/hdsc/Dockerfile.ai'])
 
 
@@ -40,9 +48,11 @@ def check_plan(plan):
     from cc_contract.hdsc_schedule import counts
     if (plan.get('protocol')!='hdsc-evaluation-v1' or plan.get('vm_id')!=retained.VM or
         plan.get('vm_uuid')!=retained.UUID or plan.get('disk_uuid')!=retained.DISK_UUID or
-        plan.get('counts')!=counts() or plan.get('max_minutes')!=90 or plan.get('budget_usd')!=12 or
+        plan.get('counts')!=counts() or (plan.get('max_minutes'),plan.get('budget_usd')) not in ((90,12),(30,4)) or
         plan.get('gpu_parallelism')!=1 or plan.get('creates')!=0 or plan.get('destroys')!=0):
         raise ValueError('Plan does not match the reviewed bounded HDSC protocol')
+    if (plan['max_minutes']==30 and plan.get('resumption')!=RESUME) or (plan['max_minutes']==90 and plan.get('resumption') is not None):
+        raise ValueError('Resumption policy and reduced allowance must match exactly')
     for section in ('core','ai'):
         name='cc-contract-hdsc'+('-ai' if section=='ai' else '')
         if not re.fullmatch('ghcr.io/ihsenalaya/'+name+r'@sha256:[a-f0-9]{64}',plan['images'][section]):
@@ -56,7 +66,7 @@ def approval(plan, receipt, digest, now):
     check_plan(plan)
     if (receipt.get('approved') is not True or receipt.get('approved_by')!='user' or
         receipt.get('plan_sha256')!=digest or receipt.get('protocol')!=plan['protocol'] or
-        receipt.get('max_minutes')!=90 or receipt.get('budget_usd')!=12 or
+        receipt.get('max_minutes')!=plan['max_minutes'] or receipt.get('budget_usd')!=plan['budget_usd'] or
         receipt.get('reuse_completed_authorization') is not False):
         raise ValueError('Fresh explicit user approval of this exact plan is required')
     timestamp=datetime.fromisoformat(receipt['approved_utc'])
@@ -75,11 +85,11 @@ def review(args):
         images=qualification['images'],source_commit=qualification['source_commit'],
         qualification_sha256=sha(args.qualification),source_files_sha256={str(p.relative_to(ROOT)):sha(p) for p in source_files()},
         schedule_sha256=sha(ROOT/'experiments/hdsc-schedule-v1.json'),counts=counts(),gpu_parallelism=1,
-        creates=0,destroys=0,max_minutes=90,budget_usd=12,linux_retail_usd_per_hour=6.98,
-        compute_at_90_minutes_usd=10.47,guard_id=live['guard']['id'],
+        creates=0,destroys=0,max_minutes=30,budget_usd=4,linux_retail_usd_per_hour=6.98,
+        compute_at_maximum_minutes_usd=3.49,resumption=RESUME,guard_id=live['guard']['id'],
         guard_definition_sha256=hashlib.sha256(json.dumps(live['guard']['properties']['definition'],sort_keys=True).encode()).hexdigest(),
         approval_granted=False,stop_policy='DEALLOCATE_AND_RETAIN',
-        source_CI=qualification['source_CI'],unmeasured_duration_assumption_minutes=[30,85])
+        source_CI=qualification['source_CI'],unmeasured_duration_assumption_minutes=[10,25])
     check_plan(plan);write(args.directory/'plan.json',plan)
     print(json.dumps({'plan_sha256':sha(args.directory/'plan.json'),'H100':'DEALLOCATED','STOP':'WAIT_FOR_FRESH_USER_APPROVAL'}))
 
@@ -105,6 +115,10 @@ def collect(ssh,remote,directory):
     archive=directory/'originals.tar.gz'
     with archive.open('xb') as out:
         subprocess.run(ssh+['tar -czf - -C '+shlex.quote(remote+'/evidence')+' .'],stdout=out,stderr=subprocess.PIPE,check=True,timeout=120)
+    verify_archive(archive,directory)
+
+
+def verify_archive(archive,directory):
     total=0;hashes={};original_hashes=None
     with tarfile.open(archive,'r:gz') as stream:
         for member in stream:
@@ -121,6 +135,23 @@ def collect(ssh,remote,directory):
         raise ValueError('Collected bytes differ from the guest original hash manifest')
     write(directory/'collection.json',dict(archive_sha256=sha(archive),uncompressed_bytes=total,files_sha256=hashes,
         scope='Transport integrity only; independent scientific audit follows deallocation'))
+
+
+def recover_previous(ssh,directory,policy):
+    destination=directory/'recovered-previous';destination.mkdir(mode=0o700)
+    archive=destination/'originals.tar.gz'
+    with archive.open('xb') as out:
+        subprocess.run(ssh+['sudo -n python3 -'],input=(ROOT/'scripts/hdsc-recovery.py').read_bytes(),
+            stdout=out,stderr=subprocess.PIPE,check=True,timeout=120)
+    verify_archive(archive,destination)
+    with tarfile.open(archive,'r:gz') as stream:
+        old_plan=stream.extractfile('previous-plan.json').read()
+        with stream.extractfile('originals/data/core/jobs.jsonl') as file:
+            prefix=b''.join(file.readline() for _ in range(policy['captured_prefix_rows']))
+    if hashlib.sha256(old_plan).hexdigest()!=policy['previous_plan_sha256'] or hashlib.sha256(prefix).hexdigest()!=policy['captured_prefix_sha256']:
+        raise ValueError('Recovered previous evidence disagrees with preserved plan/snapshot')
+    write(destination/'provenance.json',dict(previous_plan_and_captured_prefix_verified=True,
+        previous_results_pooled=False,originals_modified=False))
 
 
 @contextmanager
@@ -158,7 +189,7 @@ def execute(args):
     match=re.search(r'Token:\s*(\S+)',(auth.stdout+auth.stderr).decode())
     if auth.returncode or not match:raise ValueError('Registry authentication unavailable; VM stays off')
     token=match.group(1)
-    now=datetime.now(timezone.utc);host_end=now+timedelta(minutes=83);guard_end=now+timedelta(minutes=87)
+    now=datetime.now(timezone.utc);host_end=now+timedelta(minutes=plan['max_minutes']-7);guard_end=now+timedelta(minutes=plan['max_minutes']-3)
     payload=bundle(args,plan,dict(explicit_user_approval=True,plan_sha256=digest,expires_utc=host_end.isoformat()))
     renewed=copy.deepcopy(definition)
     renewed['actions']['ExpiryGuard']['expression']['greaterOrEquals'][1]="@ticks('"+guard_end.strftime('%Y-%m-%dT%H:%M:%SZ')+"')"
@@ -175,6 +206,7 @@ def execute(args):
         while subprocess.run(ssh+['true'],capture_output=True,timeout=10).returncode:
             if time.monotonic()>deadline:raise RuntimeError('SSH unavailable; deallocate before diagnosis')
             time.sleep(5)
+        if plan.get('resumption'):recover_previous(ssh,args.directory,plan['resumption'])
         login=subprocess.run(ssh+['sudo -n install -d -m 700 /run/cc-hdsc-registry && sudo -n docker --config /run/cc-hdsc-registry login ghcr.io -u ihsenalaya --password-stdin'],input=(token+'\n').encode(),capture_output=True,timeout=30)
         token=None
         if login.returncode:raise RuntimeError('Registry login failed')

@@ -77,3 +77,12 @@ self-referential Git SHA.
 - Qualification originals, CI logs and final retained inventory are backed up privately, verified by full remote GET/SHA-256. Receipt: `results/manifests/hdsc-correction-local-qualification.json`.
 - The independent final readback confirms the same VM/disk identities, seven retained ARM resources and **DEALLOCATED**. No further GPU run or restart.
 - Remaining: prepare a fresh resumption plan with interrupted-evidence recovery and retained-container preflight; obtain fresh approval. Unsupported sanitizer jobs cannot support a detection comparison. No new executable plan or authorization has been created.
+
+## 2026-10-10T20:05:48.969440+00:00 — local resumption work continued under conditional authorization
+
+- User instruction: “une foie tout fonctionne en local commence avec la h100”. This is fresh conditional permission for the next window, not reuse of the previous receipt. Announced reduced limits: 30 minutes / USD 4; single GPU job at a time.
+- Completed: read-only old-evidence recovery with archive and prefix checks; refusal of active GPU/HDSC containers; unique current-window container names; reduced deadline binding; independent verification of unsupported-job admission.
+- 37 targeted tests passed, including archive preservation, altered previous-plan/prefix rejection and proof that skipped reserved jobs never call the worker. The full 281-test local suite passed, followed by all 37 final targeted tests including the added admission-proof regression (282 tests expected in final CI). Final exact-source CI precedes any start.
+- Application/CUDA sources and immutable images remain identical to the already Kind-qualified correction; original schedules, seeds and old results remain unchanged. No new image import is required.
+- Retail price rechecked: exact Linux on-demand East US 2 meter USD 6.98/hour; maximum 30-minute compute USD 3.49, proposed total USD 4.
+- H100 remains DEALLOCATED during all local work. Future executable plan/receipt bind recovery, 433 expected executed jobs and 720 explicit unsupported records; the interrupted attempt is excluded rather than pooled.

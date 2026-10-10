@@ -108,6 +108,9 @@ class HDSCWindowTest(unittest.TestCase):
         self.assertFalse(runner.capability_rejected(row))
         row['B2_sanitizer']={'classification':'UNSUPPORTED','reason':'tool_rejected_environment'}
         self.assertTrue(runner.capability_rejected(row))
+        row['observation']['execution_status']='CUDA_ERROR'
+        with self.assertRaisesRegex(RuntimeError,'CUDA failed'):runner.capability_rejected(row)
+        row['observation']['execution_status']='CUDA_SUCCESS'
         row['B2_sanitizer']['reason']='no_cuda_device'
         with self.assertRaises(RuntimeError):runner.capability_rejected(row)
 

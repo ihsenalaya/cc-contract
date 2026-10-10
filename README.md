@@ -36,7 +36,10 @@ after a sanitizer capability-classification error. The H100 is **deallocated**;
 its VM and disk are retained. Reserved inputs were exposed in this interrupted
 attempt; no completed comparison is claimed. Follow the
 [checkpoint journal](docs/research/hourly-progress.md). A new frozen plan and fresh
-explicit approval are required before another restart.
+explicit approval are required before another restart. The
+[reduced resumption plan](docs/environment/hdsc-resumption-plan.md) is being
+qualified locally under the owner’s fresh conditional start instruction; the
+H100 remains off until all qualification gates pass.
 
 Reproduce CPU-only native development checks without model downloads:
 

@@ -61,6 +61,20 @@ def request_audit(request,check):
             if max(range(len(logits)),key=logits.__getitem__)!=step['next_token']:raise ValueError('Model argmax disagrees')
 
 
+def audit_admission(jobs):
+    rejected=set()
+    for row in jobs:
+        job,result=row['job'],row['result']
+        if job['kind']=='capability':
+            sanitizer_audit(result)
+            if result['B2_sanitizer']['classification']=='UNSUPPORTED':rejected.add(job['tool'])
+        elif result.get('executed') is False:
+            if (job['kind']!='rq2' or job['tool'] not in rejected or
+                result.get('classification')!='UNSUPPORTED' or result.get('reason')!='capability_rejected_environment'):
+                raise ValueError('Skipped job lacks a preceding verified unsupported capability')
+    return sorted(rejected)
+
+
 def perf_metrics(result):
     samples=result['samples'];durations=[r['wall_ns']/1e9 for r in samples]
     if not durations or any(x<=0 or not math.isfinite(x) for x in durations):raise ValueError('Invalid timing')
@@ -86,6 +100,7 @@ def analyze(directory,plan_path,schedule_path):
         if len(actual)>len(scheduled) or any(a['job']!=b for a,b in zip(actual,scheduled)):
             raise ValueError('Actual execution is not a prefix of the exact section schedule')
         jobs.extend(actual)
+    unsupported_tools=audit_admission(jobs)
     rq2=[j['result'] for j in jobs if j['job']['kind']=='rq2' and j['result'].get('executed',True)]
     independent=auditor('audit-hdsc-rq2');check=auditor('audit-hdsc-development')
     with tempfile.TemporaryDirectory() as temporary:
@@ -164,6 +179,9 @@ def analyze(directory,plan_path,schedule_path):
     healthy_rates=[(0,statistics.mean(r['alerts']>0 for r in records)) for records in healthy_blocks.values() if len(records)==8]
     return dict(state='AUDITED_COMPLETE_SCHEDULE' if len(jobs)==len(expected) else 'AUDITED_PARTIAL_SCHEDULE',
         planned_jobs=len(expected),recorded_jobs=len(jobs),missing_jobs=len(expected)-len(jobs),
+        executed_jobs=sum(j['result'].get('executed',True) for j in jobs),
+        unsupported_not_executed_jobs=sum(j['result'].get('executed') is False for j in jobs),
+        independently_verified_unsupported_tools=unsupported_tools,
         plan_sha256=hashlib.sha256(plan_path.read_bytes()).hexdigest(),RQ2_independent_audit=native_audit,
         RQ2_counts=baseline_counts,RQ2_paired_effects=comparisons,RQ3_runs=dynamic,AI_fault_pairs=ai,
         RQ3_healthy_vs_injected_alert_difference=effect(dynamic_pairs),
