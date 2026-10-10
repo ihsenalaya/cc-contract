@@ -107,5 +107,22 @@ class HDSCWindowTest(unittest.TestCase):
         row['raw_worker']['returncode']=86
         with self.assertRaises(ValueError):analyzer.sanitizer_audit(row)
 
+    def test_collected_archive_must_match_original_guest_hashes(self):
+        import io,tarfile
+        controller=module('hdsc-window')
+        for tampered in (False,True):
+            raw=io.BytesIO();data=b'original observation'
+            hashes={'data/result.json':hashlib.sha256(data).hexdigest() if not tampered else '0'*64}
+            with tarfile.open(fileobj=raw,mode='w:gz') as archive:
+                for name,body in [('data/result.json',data),('hashes.json',json.dumps(hashes).encode())]:
+                    info=tarfile.TarInfo(name);info.size=len(body);archive.addfile(info,io.BytesIO(body))
+            def transport(*args,**kwargs):kwargs['stdout'].write(raw.getvalue())
+            with tempfile.TemporaryDirectory() as temporary,patch.object(controller.subprocess,'run',side_effect=transport):
+                if tampered:
+                    with self.assertRaisesRegex(ValueError,'guest original'):controller.collect(['ssh'],'/remote',Path(temporary))
+                else:
+                    controller.collect(['ssh'],'/remote',Path(temporary))
+                    self.assertTrue((Path(temporary)/'collection.json').exists())
+
 
 if __name__=='__main__':unittest.main()

@@ -29,10 +29,21 @@ self-referential Git SHA.
 
 ## 2026-10-10T18:10:00.449639+00:00 — lifecycle and reporting checkpoint
 
-- Commit SHA: recorded in the following qualification checkpoint.
+- Commit SHA: `37dcb8c9b9a0cc0d6893cde33326f41ac91f3208`; [CI 38074712829](https://github.com/ihsenalaya/cc-contract/actions/runs/38074712829) passed.
 - Completed: fail-closed approval, retained-resource lifecycle, offline report with partial-run and invalid-pair handling.
 - Tests: 270-test full suite; 27 current targeted tests; release guard; shell syntax and compile checks; Trivy before push.
 - Blockers: final Kind image receipts, image publication, archive backup and plan freeze.
 - Decision: no reserved outcomes generated; 90-minute/12-USD proposal remains unapproved.
 - Next: finish immutable image qualification and freeze the plan.
+- H100 state: **DEALLOCATED**.
+
+## 2026-10-10T18:17:09.461593+00:00 — protocol and controller freeze
+
+- Commit SHA: recorded in the following public qualification manifest and journal update.
+- Completed: final core and trained-AI Kind checks; identical qualified image configurations will be checked against registry manifests; frozen inventory and costed 90-minute/12-USD plan.
+- Tests: 28 current HDSC tests passed, including altered archive-hash rejection; prior full 270-test suite and 272-test checkpoint CI passed. Full frozen-source CI follows push.
+- Backups: model and development originals verified by complete Azure GET/SHA-256.
+- Blockers: final registry receipt, frozen-source CI and executable plan SHA. No new GPU authorization.
+- Decisions: 1,153 scheduled jobs, 1,433 requests plus 840 setup forwards; unsupported sanitizer jobs remain explicit; time estimate unmeasured.
+- Next: publish provenance, verify exact plan, STOP for owner decision.
 - H100 state: **DEALLOCATED**.

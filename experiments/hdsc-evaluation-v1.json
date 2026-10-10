@@ -87,6 +87,7 @@
     "runs": 0,
     "state": "DEFERRED_SECONDARY_QUESTION"
   },
-  "state": "DRAFT_LOCAL_QUALIFICATION",
-  "version": "hdsc-evaluation-v1"
+  "state": "LOCAL_QUALIFIED_PROTOCOL_FROZEN_PENDING_NEW_USER_APPROVAL",
+  "version": "hdsc-evaluation-v1",
+  "reserved_evaluation_executed": false
 }

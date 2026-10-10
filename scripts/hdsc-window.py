@@ -32,6 +32,7 @@ def source_files():
         ROOT/'scripts/hdsc-window.py',ROOT/'scripts/continuity-window.py',ROOT/'scripts/run-hdsc-host.sh',
         ROOT/'scripts/run-hdsc-section.py',ROOT/'results/manifests/hdsc-model-assets.json',
         ROOT/'scripts/analyze-hdsc-evaluation.py',ROOT/'scripts/audit-hdsc-rq2.py',ROOT/'scripts/audit-hdsc-development.py',
+        ROOT/'docs/environment/final-h100-evaluation-plan.md',
         ROOT/'infrastructure/hdsc/Dockerfile',ROOT/'infrastructure/hdsc/Dockerfile.ai'])
 
 
@@ -104,7 +105,7 @@ def collect(ssh,remote,directory):
     archive=directory/'originals.tar.gz'
     with archive.open('xb') as out:
         subprocess.run(ssh+['tar -czf - -C '+shlex.quote(remote+'/evidence')+' .'],stdout=out,stderr=subprocess.PIPE,check=True,timeout=120)
-    total=0;hashes={}
+    total=0;hashes={};original_hashes=None
     with tarfile.open(archive,'r:gz') as stream:
         for member in stream:
             if member.isdir():continue
@@ -115,6 +116,9 @@ def collect(ssh,remote,directory):
             with stream.extractfile(member) as file:
                 for part in iter(lambda:file.read(1024**2),b''):digest.update(part)
             hashes[name]=digest.hexdigest()
+            if name=='hashes.json':original_hashes=json.load(stream.extractfile(member))
+    if original_hashes!={name:value for name,value in hashes.items() if name!='hashes.json'}:
+        raise ValueError('Collected bytes differ from the guest original hash manifest')
     write(directory/'collection.json',dict(archive_sha256=sha(archive),uncompressed_bytes=total,files_sha256=hashes,
         scope='Transport integrity only; independent scientific audit follows deallocation'))
 
@@ -178,6 +182,7 @@ def execute(args):
         limit=max(1,int((host_end-datetime.now(timezone.utc)).total_seconds()))
         with (args.directory/'host.stdout').open('xb') as out,(args.directory/'host.stderr').open('xb') as err:
             result=subprocess.run(ssh+['bash '+shlex.quote(remote+'/run-hdsc-host.sh')+' '+shlex.quote(remote)],stdout=out,stderr=err,timeout=limit+20)
+        write(args.directory/'guest-exit.json',{'returncode':result.returncode,'utc':datetime.now(timezone.utc).isoformat()})
         # Technical failure: release immediately; partial evidence remains on retained disk.
         if result.returncode:raise RuntimeError('Guest failure: stop now; originals retained on VM disk for approved recovery')
         collect(ssh,remote,args.directory)

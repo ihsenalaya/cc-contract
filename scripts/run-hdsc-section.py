@@ -92,6 +92,8 @@ def main():
     try:
         with (args.output/'jobs.jsonl').open('x') as out:
             for row in rows:
+                if sum(p.stat().st_size for p in args.output.parent.rglob('*') if p.is_file())>2*1024**3:
+                    raise RuntimeError('Original evidence exceeds predeclared 2 GiB limit; stop and retain')
                 if (expiry-datetime.now(timezone.utc)).total_seconds()<row['maximum_seconds']+120:
                     raise TimeoutError('Insufficient allowance before release deadline')
                 signal.alarm(row['maximum_seconds']);job_start=time.monotonic()

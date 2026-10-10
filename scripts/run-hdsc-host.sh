@@ -32,6 +32,10 @@ for section in core ai; do
   [[ "$image" =~ ^ghcr.io/ihsenalaya/cc-contract-hdsc(-ai)?@sha256:[a-f0-9]{64}$ ]]
   timeout 240 sudo -n docker --config /run/cc-hdsc-registry pull "$image" > "$output/pull-$section.log" 2>&1
   sudo -n docker image inspect "$image" > "$output/image-$section.json"
+  if [[ "$section" == core ]]; then
+    sudo -n docker run --rm --network none --read-only --entrypoint compute-sanitizer "$image" --version > "$output/sanitizer-version.txt"
+    sudo -n docker run --rm --network none --read-only --entrypoint compute-sanitizer "$image" --help > "$output/sanitizer-help.txt"
+  fi
   remaining=$(python3 -c 'import datetime,json,sys; print(int((datetime.datetime.fromisoformat(json.load(open(sys.argv[1]))["expires_utc"])-datetime.datetime.now(datetime.timezone.utc)).total_seconds())-120)' "$work/approval.json")
   [[ "$remaining" -gt 0 ]]
   date --utc --iso-8601=ns > "$output/$section-start.txt"
@@ -49,3 +53,14 @@ for section in core ai; do
     > "$output/$section.stdout" 2> "$output/$section.stderr"
   date --utc --iso-8601=ns > "$output/$section-end.txt"
 done
+python3 - "$output" <<'PY'
+import hashlib,json,pathlib,sys
+root=pathlib.Path(sys.argv[1]);hashes={}
+for path in sorted(root.rglob('*')):
+    if path.is_file():
+        digest=hashlib.sha256()
+        with path.open('rb') as file:
+            for part in iter(lambda:file.read(1024**2),b''):digest.update(part)
+        hashes[str(path.relative_to(root))]=digest.hexdigest()
+(root/'hashes.json').write_text(json.dumps(hashes,indent=2)+'\n')
+PY

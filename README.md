@@ -1,6 +1,6 @@
 # CC-Contract
 
-Experimental software for **Stateful Contract-Guided Testing of Host–Device Data Paths for Confidential GPU Inference**.
+Experimental software for **Runtime Semantic State-Continuity Verification for Confidential GPU Execution**. Historical stateful-testing campaigns remain separately documented.
 
 This repository implements and records experiments; it is not a paper manuscript.
 Latest checkpoint: the [140-job H100 campaign](docs/environment/fixed-work-campaign-result.md)
@@ -18,6 +18,35 @@ hardware-verifier receipts. All 13 temporary resources were destroyed. E0 remain
 partial. Later inference and campaign results are tracked in
 [experiment status](experiments/status.json); actual independent expiry and
 full recreation claims remain unvalidated.
+
+## Runtime semantic state-continuity study (HDSC v1)
+
+The new study is scoped in [three scientific contributions](docs/paper/scientific-contribution.md)
+and the [related-work matrix](docs/paper/related-work-matrix.md). Its CPU development
+checks are [independently audited](results/manifests/hdsc-development-qualification.json):
+24/24 injected state violations detected, 0/24 healthy alerts, 47 dynamic sequences,
+and four fault pairs on a real pretrained TinyStories Transformer. These are not
+RQ2–RQ4 GPU results or evidence of general superiority. Historical GPU campaigns
+are preserved separately.
+
+The [new H100 plan](docs/environment/final-h100-evaluation-plan.md) schedules 1,153
+serial jobs / 1,433 workload requests, plus declared graph-setup forwards. It is
+**unapproved**; the retained H100 remains deallocated. Follow the
+[checkpoint journal](docs/research/hourly-progress.md). Reserved inputs must not be
+executed before freeze and new explicit approval.
+
+Reproduce CPU-only native development checks without model downloads:
+
+```sh
+PYTHONPATH=src python3 scripts/qualify-hdsc-local.py --output PRIVATE_NEW_DIRECTORY
+```
+
+For trained-model checks, download the seven pinned, hash-verified files with
+`scripts/prepare-hdsc-model.py --output PRIVATE_MODEL_DIRECTORY`, then use
+`qualify-hdsc-local.py --model PRIVATE_MODEL_DIRECTORY` in the qualified AI image
+or an isolated PyTorch 2.8 / Transformers 4.57.1 environment. No raw logits or
+model weights belong in Git. The immutable images and final qualification receipt
+are recorded with the frozen plan.
 
 ## Reproduce the initial checks
 
