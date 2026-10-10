@@ -5,6 +5,7 @@ workload and bounded budget. All execution paths retain resources and stop the V
 """
 import argparse
 import copy
+import hashlib
 from datetime import datetime, timedelta, timezone
 import importlib.util
 import ipaddress
@@ -24,6 +25,7 @@ MAX_MINUTES = 90
 MAX_BUDGET_USD = 15
 MIN_START_MINUTES = 75
 START_TIMEOUT_SECONDS = 15 * 60
+SSH_ATTEMPT_SECONDS = 15
 ADDRESSES = frozenset({
     "azurerm_resource_group.window", "azurerm_virtual_network.window",
     "azurerm_subnet.window", "azurerm_network_security_group.window",
@@ -416,6 +418,155 @@ def verify_outputs(inputs, outputs, original):
         raise ValueError("Retained output/state VM IDs differ")
 
 
+def operational_inputs(original_inputs, state):
+    """Read the current guard/tags from the backend; preserve original receipts."""
+    resources = state_resources(state)
+    gpu = resources["azurerm_linux_virtual_machine.gpu"]
+    tags = gpu.get("tags", {})
+    if (set(tags) != {"project", "window", "expires_at", "workload_sha256", "host_script_sha256"}
+            or tags.get("project") != "cc-contract" or tags.get("window") != original_inputs["window_id"]
+            or any(resources[address].get("tags") != tags for address in TAGGED)):
+        raise ValueError("Current retained workload/expiry tags disagree")
+    expires = tags["expires_at"]
+    expiry_time(expires)
+    if any(not re.fullmatch(r"[a-f0-9]{64}", str(tags[key]))
+           for key in ("workload_sha256", "host_script_sha256")):
+        raise ValueError("Current retained source tags malformed")
+    guard = json.loads(resources["azurerm_logic_app_action_custom.expiry"]["body"])
+    if guard.get("expression", {}).get("greaterOrEquals") != ["@ticks(utcNow())", "@ticks('" + expires + "')"]:
+        raise ValueError("Current retained guard/tags expiry disagree")
+    rules = resources["azurerm_network_security_group.window"].get("security_rule", [])
+    if len(rules) != 1:
+        raise ValueError("Current retained SSH rule inventory differs")
+    current = dict(original_inputs, expires_at_utc=expires,
+                   workload_sha256=tags["workload_sha256"], host_script_sha256=tags["host_script_sha256"],
+                   ssh_source_cidr=single_ip(rules[0]["source_address_prefix"]))
+    outputs = state.get("outputs", {})
+    if (set(outputs) != {"expiry", "resource_group", "ssh_address", "vm_id"}
+            or outputs["expiry"]["value"] != expires):
+        raise ValueError("Current retained backend outputs/expiry disagree")
+    verify_outputs(current, outputs, resources)
+    if outputs["ssh_address"]["value"] != resources["azurerm_public_ip.window"].get("ip_address"):
+        raise ValueError("Current retained SSH output differs from original public IP")
+    return current, copy.deepcopy(outputs)
+
+
+def prior_attempt_budget(paths, campaign, retained_window, gpu, bundle, budget_usd):
+    """Carry conservative VM time from preserved, zero-work SSH failures only."""
+    if not paths:
+        return None
+    if len(paths) > 10:
+        raise ValueError("Too many prior attempts")
+    directories, receipts, used, previous_release = [], [], 0.0, None
+    mandatory = ("summary.json", "approved-workload-plan.json", "user-approval.json", "plan.tfplan",
+                 "workload-bundle.json", "run-start.json", "start-request.json", "release.json", "run-exit.json",
+                 "vm-identity.json", "renewed-guard-readback.json", "run-controller.stderr", "run-phases.jsonl")
+    scientific = ("transport", "campaign_id", "images", "planned_jobs", "selected_cases_per_job", "gpu_jobs_parallel",
+                  "campaign_spec_sha256", "campaign_harness_sha256", "helper_harness_sha256", "protocol_sha256",
+                  "reserved_schedule_sha256")
+    for raw_path in paths:
+        directory = Path(raw_path)
+        if (directory.is_symlink() or not directory.is_dir() or directory.resolve().parent != window.STATE.resolve()
+                or str(directory.resolve()) in directories):
+            raise ValueError("Distinct preserved prior attempt directories required")
+        directory = directory.resolve()
+        files = {}
+        for name in mandatory:
+            path = directory / name
+            if not path.is_file() or path.is_symlink() or path.stat().st_size > 8 * 1024 ** 2:
+                raise ValueError("Missing or oversized original prior receipt: " + name)
+            files[name] = window.sha(path)
+        if any((directory / name).exists() for name in ("qualification-session.log", "qualification-session.json", "qualification-exit.json", "collection.json", "startup-ready.json")):
+            raise ValueError("A partial scientific or qualified attempt may not reuse this campaign identity")
+        if any(path.stat().st_size for path in directory.glob("guest-evidence-*.tar.gz")):
+            raise ValueError("Prior attempt contains collected evidence")
+        summary, old_bundle = load(directory / "summary.json"), load(directory / "workload-bundle.json")
+        previous_allowance = summary.get("cumulative_vm_allowance")
+        if (not receipts and summary["max_window_minutes"] != MAX_MINUTES
+                or receipts and (not isinstance(previous_allowance, dict)
+                    or previous_allowance.get("attempts") != receipts
+                    or previous_allowance.get("prior_conservatively_charged_vm_seconds") != used
+                    or previous_allowance.get("authorized_total_vm_minutes") != MAX_MINUTES
+                    or previous_allowance.get("budget_forecast_total_usd") != budget_usd
+                    or summary["max_window_minutes"] > int((MAX_MINUTES * 60 - used) // 60))):
+            raise ValueError("Prior cumulative allowance does not preserve the original 90-minute authorization")
+        if (summary["campaign_id"] != campaign or summary["retained_window"] != retained_window
+                or summary["retained_vm_id"] != gpu["id"] or summary["retained_vm_uuid"] != gpu["virtual_machine_id"]
+                or summary["budget_forecast_usd"] != budget_usd or not 0 < summary["max_window_minutes"] <= MAX_MINUTES
+                or summary.get("prior_attempt_directories", []) != directories
+                or summary != load(directory / "approved-workload-plan.json")
+                or summary["plan_sha256"] != files["plan.tfplan"]
+                or summary["workload_bundle_sha256"] != files["workload-bundle.json"]
+                or any(old_bundle.get(key) != bundle.get(key) for key in scientific)
+                or old_bundle.get("planned_jobs") != 140 or old_bundle.get("selected_cases_per_job") != 100
+                or old_bundle.get("gpu_jobs_parallel") is not False):
+            raise ValueError("Prior attempt identity, authorization or frozen 140-job scope differs")
+        validate_approval(load(directory / "user-approval.json"), summary, utcnow())
+        qualification = Path(old_bundle["local_qualification_path"])
+        if not qualification.is_file() or qualification.is_symlink() or window.sha(qualification) != old_bundle["local_qualification_sha256"]:
+            raise ValueError("Original prior source qualification changed")
+        qualified = load(qualification)
+        for field, filename in (("resume_controller_sha256", "azure-resume-campaign.py"),
+                                ("cloud_controller_sha256", "azure-window.py"), ("host_script_sha256", "qualify-host.sh")):
+            summary_field = "window_controller_sha256" if field == "cloud_controller_sha256" else field
+            if qualified[field] != summary[summary_field]:
+                raise ValueError("Prior qualified source differs from its original plan")
+            original_source = subprocess.check_output(["git", "-C", str(window.ROOT), "show",
+                                  qualified["git_source_commit"] + ":scripts/" + filename], timeout=30)
+            if hashlib.sha256(original_source).hexdigest() != qualified[field]:
+                raise ValueError("Original published source bytes differ from prior qualification")
+        files["original-local-qualification"] = window.sha(qualification)
+        identity_rows = load(directory / "vm-identity.json")
+        if (not isinstance(identity_rows, list) or len(identity_rows) != 1
+                or identity_rows[0].get("type") != "azurerm_linux_virtual_machine"
+                or identity_rows[0].get("name") != "gpu" or len(identity_rows[0].get("instances", [])) != 1):
+            raise ValueError("Original prior VM identity resource shape differs")
+        identity = identity_rows[0]["instances"][0]["attributes"]
+        guard = load(directory / "renewed-guard-readback.json")
+        if (str(identity.get("id", "")).lower() != gpu["id"].lower()
+                or str(identity.get("virtual_machine_id", "")).lower() != gpu["virtual_machine_id"].lower()
+                or guard.get("vm_uuid") != gpu["virtual_machine_id"] or guard.get("power_state") != "PowerState/deallocated"):
+            raise ValueError("Original prior VM/pre-start deallocation proof differs")
+        run, start, release, exit_receipt = (load(directory / name) for name in
+                    ("run-start.json", "start-request.json", "release.json", "run-exit.json"))
+        def timestamp(value):
+            result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            if result.tzinfo is None:
+                raise ValueError("Original prior absolute UTC timestamp missing")
+            return result
+        begin, end = timestamp(start["timestamp_utc"]), timestamp(release["timestamp_utc"])
+        if (release.get("power_state") != "PowerState/deallocated" or release.get("retained_os_disk") is not True
+                or exit_receipt.get("deallocation_verified") is not True or exit_receipt.get("release_error_type") is not None
+                or exit_receipt.get("resources_destroyed_automatically") is not False
+                or exit_receipt.get("error_type") != "CalledProcessError"
+                or run.get("retained_vm_uuid") != gpu["virtual_machine_id"] or run.get("plan_sha256") != summary["plan_sha256"]
+                or not timestamp(run["timestamp_utc"]) <= begin < end <= timestamp(exit_receipt["timestamp_utc"]) <= utcnow()
+                or previous_release is not None and begin < previous_release):
+            raise ValueError("Prior allocation/confirmed-stop interval or retention proof invalid")
+        phases = [json.loads(row) for row in (directory / "run-phases.jsonl").read_text().splitlines()]
+        errors = (directory / "run-controller.stderr").read_text()
+        if (not any(row.get("phase") == "qualify_collect_release" and row.get("state") == "FAILED"
+                    and row.get("error_type") == "CalledProcessError" for row in phases)
+                or not ("Connection timed out" in errors or "Connection refused" in errors)):
+            raise ValueError("Zero-work first SSH transport failure proof missing")
+        elapsed = (end - begin).total_seconds()
+        if exit_receipt.get("elapsed_seconds", 0) < elapsed:
+            raise ValueError("Prior enclosing interval contradicts VM-time charge")
+        used += elapsed
+        directories.append(str(directory))
+        previous_release = end
+        receipts.append({"directory": str(directory), "receipt_sha256": files, "charged_vm_seconds": elapsed,
+                         "start_request_utc": start["timestamp_utc"], "confirmed_deallocated_utc": release["timestamp_utc"],
+                         "gpu_jobs_started": 0, "zero_work_basis": "FIRST_SSH_TRANSPORT_FAILURE_WITH_NO_SESSION_OR_COLLECTION"})
+    remaining_minutes = int((MAX_MINUTES * 60 - used) // 60)
+    if remaining_minutes < MIN_START_MINUTES:
+        raise ValueError("Insufficient cumulative VM allowance for the qualified campaign")
+    return {"schema_version": 1, "scope": "SAME_140_JOB_CAMPAIGN_CUMULATIVE_VM_ALLOWANCE",
+            "authorized_total_vm_minutes": MAX_MINUTES, "budget_forecast_total_usd": budget_usd,
+            "prior_conservatively_charged_vm_seconds": used, "new_plan_maximum_minutes": remaining_minutes,
+            "billing_start_established": False, "attempts": receipts}
+
+
 def validate_approval(approval, summary, now):
     expected = {"schema_version": 1, "campaign_id": summary["campaign_id"],
                 "retained_window": summary["retained_window"], "approved": True,
@@ -480,22 +631,37 @@ def plan_campaign(args):
     old, directory = window.STATE / args.retained_window, window.STATE / args.campaign
     if old == directory or directory.exists():
         raise ValueError("A fresh campaign directory is required")
-    old_inputs, outputs = load(old / "inputs.json"), load(old / "outputs.json")
-    if old_inputs["window_id"] != args.retained_window:
+    original_inputs = load(old / "inputs.json")
+    if original_inputs["window_id"] != args.retained_window:
         raise ValueError("Retained window identity differs")
-    original = state_resources(load(old / "terraform.tfstate"))
+    current_state = load(old / "terraform.tfstate")
+    old_inputs, outputs = operational_inputs(original_inputs, current_state)
+    original = state_resources(current_state)
     gpu = original["azurerm_linux_virtual_machine.gpu"]
     verify_outputs(old_inputs, outputs, original)
     require_deallocated(gpu["id"], gpu["virtual_machine_id"])
     bundle = window.verify_bundle(args.workload_bundle)
     if bundle.get("transport") != "FIXED_WORK_IR_CAMPAIGN":
         raise ValueError("Only the reviewed fixed-work campaign may resume this VM")
+    prior_paths = getattr(args, "prior_attempt", None) or []
+    allowance = prior_attempt_budget(prior_paths, args.campaign, args.retained_window, gpu, bundle, args.budget_forecast_usd)
+    plan_budget_started = utcnow()
+    effective_minutes = min(args.max_window_minutes, allowance["new_plan_maximum_minutes"]) if allowance else args.max_window_minutes
     directory.mkdir(mode=0o700)
     (directory / "workload-bundle.json").write_bytes(args.workload_bundle.read_bytes())
     inputs = dict(old_inputs)
-    inputs.update(expires_at_utc=(utcnow() + timedelta(minutes=args.max_window_minutes)).strftime("%Y-%m-%dT%H:%M:%SZ"),
+    explicit_expiry = getattr(args, "expires_at_utc", None)
+    retry = old_inputs["expires_at_utc"] != original_inputs["expires_at_utc"]
+    planned_expiry = explicit_expiry or (old_inputs["expires_at_utc"] if retry and not allowance else
+        (plan_budget_started + timedelta(minutes=effective_minutes)).strftime("%Y-%m-%dT%H:%M:%SZ"))
+    if retry and not allowance and expiry_time(planned_expiry) > expiry_time(old_inputs["expires_at_utc"]):
+        raise ValueError("A retry may not extend the original authorized absolute deadline")
+    if (expiry_time(planned_expiry) - plan_budget_started).total_seconds() > effective_minutes * 60:
+        raise ValueError("Planned expiry exceeds the approved window")
+    inputs.update(expires_at_utc=planned_expiry,
                   workload_sha256=window.sha(directory / "workload-bundle.json"),
                   host_script_sha256=window.sha(window.ROOT / "scripts/qualify-host.sh"))
+    check_expiry(inputs, utcnow())
     if args.ssh_source_cidr:
         inputs["ssh_source_cidr"] = single_ip(args.ssh_source_cidr)
     write_new(directory / "inputs.json", inputs)
@@ -511,11 +677,17 @@ def plan_campaign(args):
     write_new(directory / "plan.json", plan)
     summary = {"schema_version": 1, "campaign_id": args.campaign, "retained_window": args.retained_window,
                "planned_at_utc": utcnow().isoformat(), "plan_sha256": window.sha(directory / "plan.tfplan"),
-               "expires_at_utc": inputs["expires_at_utc"], "max_window_minutes": args.max_window_minutes,
+               "expires_at_utc": inputs["expires_at_utc"], "max_window_minutes": effective_minutes,
+               "budget_planning_started_at_utc": plan_budget_started.isoformat(),
+               "prior_attempt_directories": [row["directory"] for row in allowance["attempts"]] if allowance else [],
+               "cumulative_vm_allowance": allowance,
                "budget_forecast_usd": args.budget_forecast_usd, "workload_bundle_sha256": inputs["workload_sha256"],
                "host_script_sha256": inputs["host_script_sha256"], "retained_state_path": str(old / "terraform.tfstate"),
                "retained_state_sha256": window.sha(old / "terraform.tfstate"), "retained_vm_id": gpu["id"],
                "retained_vm_uuid": gpu["virtual_machine_id"], "old_inputs": old_inputs,
+               "retained_original_inputs_sha256": window.sha(old / "inputs.json"),
+               "retained_original_outputs_sha256": window.sha(old / "outputs.json"),
+               "retry_preserves_absolute_deadline": retry and not allowance,
                "terraform_module_sha256": window.sha(window.MODULE / "main.tf"),
                "resume_controller_sha256": window.sha(HERE),
                "window_controller_sha256": window.sha(HERE.with_name("azure-window.py")),
@@ -536,6 +708,10 @@ def verify_run(directory, supplied_hash):
     expected_state = window.STATE / summary["retained_window"] / "terraform.tfstate"
     if state_path.resolve() != expected_state.resolve() or window.sha(state_path) != summary["retained_state_sha256"]:
         raise ValueError("Original retained backend changed since planning")
+    retained = expected_state.parent
+    if (window.sha(retained / "inputs.json") != summary["retained_original_inputs_sha256"]
+            or window.sha(retained / "outputs.json") != summary["retained_original_outputs_sha256"]):
+        raise ValueError("Original retained input/output receipts changed")
     if summary["campaign_id"] != directory.name or inputs["window_id"] != summary["retained_window"]:
         raise ValueError("Campaign/retained window binding differs")
     if summary["resume_controller_sha256"] != window.sha(HERE) or summary["terraform_module_sha256"] != window.sha(window.MODULE / "main.tf"):
@@ -546,14 +722,32 @@ def verify_run(directory, supplied_hash):
         raise ValueError("Planned workload bundle or host script changed")
     if inputs["workload_sha256"] != summary["workload_bundle_sha256"] or inputs["host_script_sha256"] != summary["host_script_sha256"] or inputs["expires_at_utc"] != summary["expires_at_utc"]:
         raise ValueError("Planned workload/expiry inputs changed")
-    if window.verify_bundle(directory / "workload-bundle.json").get("transport") != "FIXED_WORK_IR_CAMPAIGN":
+    bundle = window.verify_bundle(directory / "workload-bundle.json")
+    if bundle.get("transport") != "FIXED_WORK_IR_CAMPAIGN":
         raise ValueError("Reviewed fixed-work campaign required")
-    original = state_resources(load(state_path))
+    current_state = load(state_path)
+    old_inputs, current_outputs = operational_inputs(load(retained / "inputs.json"), current_state)
+    if old_inputs != summary["old_inputs"]:
+        raise ValueError("Current backend operational inputs differ from the reviewed plan")
+    if load(directory / "outputs.json") != current_outputs:
+        raise ValueError("Campaign SSH outputs differ from the reviewed retained backend")
+    original = state_resources(current_state)
     plan = saved_plan(directory)
     validate_plan(plan, original, inputs, summary["old_inputs"])
     gpu = original["azurerm_linux_virtual_machine.gpu"]
     if summary["retained_vm_uuid"] != gpu["virtual_machine_id"] or summary["retained_vm_id"] != gpu["id"]:
         raise ValueError("Planned retained VM identity changed")
+    allowance = prior_attempt_budget(summary.get("prior_attempt_directories", []), summary["campaign_id"],
+                    summary["retained_window"], gpu, bundle, summary["budget_forecast_usd"])
+    if allowance != summary.get("cumulative_vm_allowance"):
+        raise ValueError("Prior attempt budget or original receipt hashes changed")
+    if allowance:
+        budget_started = datetime.fromisoformat(summary["budget_planning_started_at_utc"].replace("Z", "+00:00"))
+        bounded_seconds = (expiry_time(inputs["expires_at_utc"]) - budget_started).total_seconds()
+        if (budget_started.tzinfo is None or bounded_seconds <= 0
+                or bounded_seconds > allowance["new_plan_maximum_minutes"] * 60
+                or allowance["prior_conservatively_charged_vm_seconds"] + bounded_seconds > MAX_MINUTES * 60):
+            raise ValueError("Cumulative prior and new VM allowance exceeds the original authorization")
     verify_outputs(inputs, load(directory / "outputs.json"), original)
     key = directory / "id_ed25519"
     expected_key = window.STATE / summary["retained_window"] / "id_ed25519"
@@ -576,27 +770,87 @@ def bounded_az_json(args, deadline):
     return json.loads(decoded)
 
 
+def append_startup_observation(directory, name, value):
+    with (directory / name).open('a') as output:
+        output.write(json.dumps(value) + '\n')
+        output.flush()
+        os.fsync(output.fileno())
+
+
+def ssh_probe(directory, outputs, deadline):
+    """Only test readiness; never run a GPU command or write guest evidence."""
+    remaining = deadline - time.monotonic()
+    if remaining <= 0:
+        raise TimeoutError("Retained VM startup exceeded 15 minutes")
+    started = time.monotonic()
+    result, classification = None, None
+    try:
+        result = subprocess.run(window.ssh_args(directory, outputs) + ["true"],
+                                stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                                timeout=min(SSH_ATTEMPT_SECONDS, remaining), check=False)
+        message = result.stderr.decode('utf-8', errors='replace').lower()
+        if result.returncode == 0:
+            classification = 'READY'
+        elif 'host key verification failed' in message or 'remote host identification has changed' in message:
+            classification = 'HOST_KEY_FAILURE'
+        elif 'permission denied' in message or 'no such identity' in message or 'load key' in message:
+            classification = 'AUTHENTICATION_FAILURE'
+        elif 'connection refused' in message:
+            classification = 'CONNECTION_REFUSED'
+        elif 'connection timed out' in message:
+            classification = 'CONNECT_TIMEOUT'
+        else:
+            classification = 'SSH_TRANSPORT_FAILURE'
+    except subprocess.TimeoutExpired:
+        classification = 'PROBE_DEADLINE'
+    except BaseException as error:
+        classification = type(error).__name__
+        raise
+    finally:
+        append_startup_observation(directory, 'ssh-readiness.jsonl', {
+            'timestamp_utc': utcnow().isoformat(), 'monotonic_ns': time.monotonic_ns(),
+            'elapsed_seconds': time.monotonic() - started, 'classification': classification,
+            'returncode': result.returncode if result is not None else None,
+            'guest_command': 'true', 'gpu_command_executed': False})
+    if classification in ('HOST_KEY_FAILURE', 'AUTHENTICATION_FAILURE'):
+        raise ValueError("Retained SSH readiness failed: " + classification)
+    return classification == 'READY'
+
+
 def start_and_wait(vm_id, uuid, directory=None):
+    if directory is None:
+        raise ValueError("Private campaign directory required for bounded SSH readiness proof")
+    outputs = load(directory / "outputs.json")
+    if outputs["vm_id"]["value"].lower() != vm_id.lower():
+        raise ValueError("SSH readiness output belongs to another VM")
     deadline = time.monotonic() + START_TIMEOUT_SECONDS
-    if directory is not None:
-        write_new(directory / 'start-request.json',{'timestamp_utc':utcnow().isoformat(),
+    write_new(directory / 'start-request.json',{'timestamp_utc':utcnow().isoformat(),
                   'monotonic_ns':time.monotonic_ns(),'scope':'AZURE_START_REQUEST_BEFORE_CONFIRMED_RUNNING',
                   'billing_start_established':False})
     window.command(["az", "vm", "start", "--ids", vm_id, "--no-wait", "--only-show-errors"], timeout=180)
     while time.monotonic() < deadline:
         view = bounded_az_json(["vm", "get-instance-view", "--ids", vm_id], deadline)
         codes = [row["code"] for row in view["instanceView"]["statuses"]]
-        if directory is not None:
-            with (directory / 'power-states.jsonl').open('a') as output:
-                output.write(json.dumps({'timestamp_utc':utcnow().isoformat(),
+        append_startup_observation(directory, 'power-states.jsonl', {'timestamp_utc':utcnow().isoformat(),
                     'monotonic_ns':time.monotonic_ns(),'status_codes':codes,
-                    'billing_start_established':False})+'\n')
-                output.flush();os.fsync(output.fileno())
+                    'billing_start_established':False})
         if "PowerState/running" in codes:
             actual = bounded_az_json(["vm", "show", "--ids", vm_id], deadline)
             if str(actual.get("vmId", "")).lower() != uuid.lower():
                 raise ValueError("Actual VM UUID changed during startup")
-            return
+            if ssh_probe(directory, outputs, deadline):
+                # A successful probe does not replace the actual retained identity check.
+                actual = bounded_az_json(["vm", "show", "--ids", vm_id], deadline)
+                view = bounded_az_json(["vm", "get-instance-view", "--ids", vm_id], deadline)
+                if str(actual.get("vmId", "")).lower() != uuid.lower():
+                    raise ValueError("Actual VM UUID changed during SSH readiness")
+                if "PowerState/running" in [row["code"] for row in view["instanceView"]["statuses"]]:
+                    write_new(directory / 'startup-ready.json', {'timestamp_utc': utcnow().isoformat(),
+                        'monotonic_ns': time.monotonic_ns(), 'retained_vm_uuid': uuid,
+                        'power_state': 'PowerState/running', 'ssh_true_succeeded': True,
+                        'total_startup_timeout_seconds': START_TIMEOUT_SECONDS,
+                        'billing_start_established': False})
+                    return
         remaining = deadline - time.monotonic()
         if remaining > 0:
             time.sleep(min(10, remaining))
@@ -678,6 +932,8 @@ def main(argv=None):
     parser.add_argument("--refresh-id")
     parser.add_argument("--workload-bundle", type=Path)
     parser.add_argument("--ssh-source-cidr")
+    parser.add_argument("--expires-at-utc", help="Preserve an explicit absolute deadline; retries may never extend it")
+    parser.add_argument("--prior-attempt", type=Path, action="append", help="Preserved zero-work SSH failure; carry its VM time within the same 90-minute/15-USD campaign")
     parser.add_argument("--max-window-minutes", type=int, default=MAX_MINUTES)
     parser.add_argument("--budget-forecast-usd", type=float, default=MAX_BUDGET_USD)
     parser.add_argument("--approved-plan-sha256")

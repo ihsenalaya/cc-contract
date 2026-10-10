@@ -16,11 +16,27 @@ separately. These are estimates, not guaranteed completion times.
 
 Campaign identity: `fixed-work-1010a`. Retained VM/window:
 `work-sample-1009b`. The authorized ceiling remains **USD 15 forecast and
-90 minutes from planning**, with an independent minute Azure expiry guard.
+90 minutes of cumulative bounded VM use**, with an independent minute Azure
+expiry guard. The first plan bounded its expiry to ninety minutes from planning.
+After a failed startup, local repair is performed with the VM deallocated.
+A retry must bind the preserved prior start-request, confirmed deallocation,
+plan and authorization receipts; subtract its conservative request-to-release
+duration from the original ninety-minute allowance. Its new planning-to-expiry
+interval cannot exceed the remaining allowance. This does not authorize a fresh
+ninety minutes or a higher total USD 15 forecast. With the first failed attempt
+of 179.295374 seconds, the retry is limited to **87 minutes**, rounded down.
+The Azure retail API was checked again on 10 October 2026: the exact East US 2
+Linux consumption product remains USD 6.98/hour, or USD 10.47 for ninety minutes
+of compute, leaving USD 4.53 within the total forecast for other charges.
+These are forecasts; the precise billing start and actual charges remain unknown.
 The update-only Terraform plan may renew expiry/workload tags and the
 single approved SSH source IP; it must create, destroy and replace zero
 resources and retain the same actual VM UUID and thirteen managed resources.
-No additional GPU is reserved. A startup exceeding fifteen minutes aborts;
+No additional GPU is reserved. Startup requires both the original VM identity
+in Azure Running state and a successful bounded SSH `true` probe. Running alone
+is insufficient. Power-state waiting and SSH retries share the same fifteen
+minutes; authentication or changed-host-key errors abort immediately. A startup
+exceeding fifteen minutes aborts;
 the workload has a 60-minute external command guard and 120 seconds per job.
 
 Creation-time computed fields require a separate refresh-only Terraform state

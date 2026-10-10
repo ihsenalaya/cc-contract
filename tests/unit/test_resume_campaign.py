@@ -57,6 +57,7 @@ class ResumeCampaignTests(unittest.TestCase):
             self.original[address]["tags"] = self.tags(self.old_inputs)
         self.original["azurerm_network_security_group.window"]["security_rule"] = [{"name": "approved-ssh",
             "source_address_prefix": self.old_inputs["ssh_source_cidr"], "destination_port_range": "22"}]
+        self.original["azurerm_public_ip.window"]["ip_address"] = "192.0.2.2"
         self.guard = {"type": "If", "expression": {"greaterOrEquals": ["@ticks(utcNow())", "@ticks('" + self.old_inputs["expires_at_utc"] + "')"]},
                       "actions": {"GetState": {"inputs": {"uri": self.vm_id + "/instanceView"}},
                                   "Deallocate": {"inputs": {"uri": self.vm_id + "/deallocate", "method": "POST"}}}}
@@ -76,10 +77,11 @@ class ResumeCampaignTests(unittest.TestCase):
             self.plan["resource_changes"].append({"address": address, "change": {
                 "actions": ["update"] if after != before else ["no-op"], "before": before,
                 "after": after, "after_unknown": {}}})
-        self.json(self.old / "terraform.tfstate", self.state_data)
         self.json(self.old / "inputs.json", self.old_inputs)
         self.outputs = {"vm_id": {"value": self.vm_id}, "resource_group": {"value": "cc-contract-" + self.old.name},
                         "ssh_address": {"value": "192.0.2.2"}, "expiry": {"value": self.old_inputs["expires_at_utc"]}}
+        self.state_data["outputs"] = copy.deepcopy(self.outputs)
+        self.json(self.old / "terraform.tfstate", self.state_data)
         self.json(self.old / "outputs.json", self.outputs)
         self.json(self.new / "outputs.json", self.outputs)
         self.json(self.new / "inputs.json", self.inputs)
@@ -93,6 +95,8 @@ class ResumeCampaignTests(unittest.TestCase):
             "workload_bundle_sha256": self.inputs["workload_sha256"], "host_script_sha256": self.inputs["host_script_sha256"],
             "retained_state_path": str(self.old / "terraform.tfstate"),
             "retained_state_sha256": resume.window.sha(self.old / "terraform.tfstate"),
+            "retained_original_inputs_sha256": resume.window.sha(self.old / "inputs.json"),
+            "retained_original_outputs_sha256": resume.window.sha(self.old / "outputs.json"),
             "retained_vm_id": self.vm_id, "retained_vm_uuid": self.uuid, "old_inputs": self.old_inputs,
             "terraform_module_sha256": resume.window.sha(self.module / "main.tf"),
             "resume_controller_sha256": resume.window.sha(resume.HERE),
@@ -213,6 +217,7 @@ class ResumeCampaignTests(unittest.TestCase):
     def test_startup_failure_and_apply_failure_always_release_before_exit_receipt(self):
         for phase in ("apply", "start", "guard"):
             with self.subTest(phase=phase):
+                self.json(self.new / "outputs.json", self.outputs)
                 for name in ("run-start.json", "run-exit.json", "apply.log", "tfstate-after-apply.json", "vm-identity.json"):
                     (self.new / name).unlink(missing_ok=True)
                 events = []
@@ -268,7 +273,8 @@ class ResumeCampaignTests(unittest.TestCase):
     def test_start_request_and_power_observations_are_saved_without_billing_claim(self):
         running={'instanceView':{'statuses':[{'code':'PowerState/running'}]}}
         with patch.object(resume.window,'command'), \
-             patch.object(resume,'bounded_az_json',side_effect=[running,{'vmId':self.uuid}]):
+             patch.object(resume,'ssh_probe',return_value=True), \
+             patch.object(resume,'bounded_az_json',side_effect=[running,{'vmId':self.uuid},{'vmId':self.uuid},running]):
             resume.start_and_wait(self.vm_id,self.uuid,self.new)
         request=resume.load(self.new/'start-request.json')
         observations=[json.loads(row) for row in (self.new/'power-states.jsonl').read_text().splitlines()]
@@ -285,7 +291,7 @@ class ResumeCampaignTests(unittest.TestCase):
              patch.object(resume.time, "monotonic", side_effect=[0, resume.START_TIMEOUT_SECONDS + 1]), \
              patch.object(resume.window, "az_json") as cloud:
             with self.assertRaises(TimeoutError):
-                resume.start_and_wait(self.vm_id, self.uuid)
+                resume.start_and_wait(self.vm_id, self.uuid, self.new)
             self.assertIn("--no-wait", command.call_args.args[0])
             cloud.assert_not_called()
         with patch.object(resume.time, "monotonic", return_value=10), \

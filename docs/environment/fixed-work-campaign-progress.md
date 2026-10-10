@@ -1,4 +1,4 @@
-# Fixed-work campaign: resumed, preparing retained-VM execution
+# Fixed-work campaign: startup failed, local repair before retained-VM retry
 
 The user resumed work with « continue le travaille » on 10 October 2026.
 The **140 H100 jobs have not started**. Read-only inventory at 06:27 UTC
@@ -33,14 +33,36 @@ from 14 to 15. Azure readback confirmed the original VM remained deallocated.
 No Azure resource was modified or started. Reconciliation receipt SHA-256:
 `b0a2ffe6d56e2560a938947c4ab16b9cf5a8fdd62e086061998c6efdf057bd68`.
 
-The operational correctif passed **183 local source tests**, including nine
-new state-reconciliation controls, and secret scanning. The strict update-only
-guard remains intact. Next, publish the verified source and make a fresh plan
-with a renewed expiry; the expired rejected plan cannot be executed. Recheck
-local/source bindings and real deallocation before starting the retained VM.
-The requested scope remains 140 successive
-100-selected-case jobs, with the USD 15 forecast/90-minute window bound,
-immediate deallocation on completion or failure, and resources retained.
+The state-reconciliation change passed **183 local source tests**, including
+nine new controls, and secret scanning. It was published in commit
+`a70c5909ada34e5d162d012a16771e55b2b3cb92`;
+[source CI passed](https://github.com/ihsenalaya/cc-contract/actions/runs/38031584906).
+The strict update-only guard remains intact.
+
+The first actual retained-VM resume requested startup at 06:43:56.639245 UTC.
+Azure Running was observed at 06:44:58.308515 UTC, but SSH timed out and the
+finalization connection was refused. Host qualification and campaign execution
+never began. The controller confirmed deallocation at 06:46:55.934619 UTC,
+retaining the original VM, disk and all restart resources. The conservative
+start-request-to-deallocation duration was **179.295374 seconds (2 min 59 s)**.
+This does not establish the precise billing start. Network and identity
+readbacks were coherent; the SSH failure's cause remains unconfirmed.
+
+All 28 original files and symlink entries, including the failed empty export,
+were preserved with identical hashes and targets. Preservation receipt SHA-256:
+`564acd38cbed4e1f1092fa248d8b9eebfee1c11b6a0389e5d33fc57190ee7273`.
+The local repair adds a bounded SSH readiness gate before qualification, checks
+the current retained backend's guard and SSH outputs, and preserves the original
+input/output receipts. **57 applicable local tests pass**, covering SSH readiness,
+prior-attempt integrity, cumulative budget, state reconciliation, infrastructure
+and cloud lifecycle. The actual preserved prior receipts also pass the retry
+validator. Source CI must pass for the published repair before another start.
+
+The requested scope remains 140 successive 100-selected-case jobs, immediate
+deallocation on completion or failure, and resources retained. The retry must
+count the first attempt against the original **USD 15 forecast / ninety-minute
+VM allowance**. Its new bounded interval is at most **87 minutes**; local repair
+while deallocated does not add H100 use. No GPU result is claimed yet.
 
 Protected originals, qualification receipts and the timestamped pause
 handoff and explicit resume inventory are outside Git in the project state
