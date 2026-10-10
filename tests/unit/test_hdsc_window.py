@@ -99,6 +99,29 @@ class HDSCWindowTest(unittest.TestCase):
             (path/'core/jobs.jsonl').write_text(json.dumps({'job':schedule()[1],'result':{}})+'\n')
             with self.assertRaisesRegex(ValueError,'prefix'):analyzer.analyze(path,path/'plan.json',path/'schedule.json')
 
+    def test_healthy_capability_alert_blocks_reserved_jobs(self):
+        runner=module('run-hdsc-section')
+        row={'B2_sanitizer':{'classification':'ALERT'},'B3_CC_Contract':{'classification':'PASS'},
+             'observation':{'execution_status':'CUDA_SUCCESS'}}
+        with self.assertRaisesRegex(RuntimeError,'before reserved'):runner.capability_rejected(row)
+        row['B2_sanitizer']={'classification':'PASS'}
+        self.assertFalse(runner.capability_rejected(row))
+        row['B2_sanitizer']={'classification':'UNSUPPORTED','reason':'tool_rejected_environment'}
+        self.assertTrue(runner.capability_rejected(row))
+        row['B2_sanitizer']['reason']='no_cuda_device'
+        with self.assertRaises(RuntimeError):runner.capability_rejected(row)
+
+    def test_offline_audit_rejects_disabled_tool_even_with_error_summary(self):
+        analyzer=module('analyze-hdsc-evaluation')
+        row={'tool':'memcheck','B2_sanitizer':{'classification':'ALERT'},'observation':{'execution_status':'CUDA_SUCCESS'},
+             'raw_worker':{'stdout':'Error: Confidential compute mode detected. compute-sanitizer will be disabled.\nERROR SUMMARY: 1 error',
+                           'stderr':'','returncode':86}}
+        for classification in ('ALERT','PASS'):
+            row['B2_sanitizer']['classification']=classification
+            with self.assertRaisesRegex(ValueError,'Disabled instrumentation'):analyzer.sanitizer_audit(row)
+        row['B2_sanitizer']['classification']='UNSUPPORTED'
+        analyzer.sanitizer_audit(row)
+
     def test_offline_sanitizer_audit_rejects_fake_clean_status(self):
         analyzer=module('analyze-hdsc-evaluation')
         row={'tool':'memcheck','B2_sanitizer':{'classification':'PASS'},'observation':{'execution_status':'CUDA_SUCCESS'},

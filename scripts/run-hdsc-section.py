@@ -66,6 +66,17 @@ def technical_failure(value):
     return False
 
 
+def capability_rejected(result):
+    finding=result['B2_sanitizer']
+    if finding['classification']=='UNSUPPORTED' and finding.get('reason')!='no_cuda_device':
+        return True
+    # This job is a known healthy development control. An alert cannot qualify
+    # instrumentation; stop before exposing any reserved inputs.
+    if finding['classification']!='PASS' or technical_failure(result) or result['B3_CC_Contract']['classification']!='PASS':
+        raise RuntimeError('Healthy sanitizer capability control failed; stop before reserved evaluation')
+    return False
+
+
 def validate_inputs(plan_bytes, approval, now):
     plan=json.loads(plan_bytes)
     expiry=datetime.fromisoformat(approval['expires_utc'])
@@ -108,7 +119,8 @@ def main():
                         result['classification']='INVALID_TEST'
                         result['reason']='ON/OFF tokens and therefore dynamic workload paths differ'
                 out.write(json.dumps({'job':row,'result':result,'job_wall_seconds':time.monotonic()-job_start},sort_keys=True)+'\n');out.flush()
-                if row['kind']=='capability' and result['B2_sanitizer']['classification']=='UNSUPPORTED' and result['B2_sanitizer'].get('reason')!='no_cuda_device':unsupported.add(row['tool'])
+                if row['kind']=='capability':
+                    if capability_rejected(result):unsupported.add(row['tool'])
                 elif technical_failure(result):raise RuntimeError('Technical failure: stop and deallocate before diagnosis')
                 completed+=1;print(json.dumps({'job_id':row['job_id'],'kind':row['kind'],'completed':completed}),flush=True)
                 if row['section']=='ai':

@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "state": "STOPPED_INVALID_SANITIZER_CLASSIFICATION",
+  "window": "hdsc-eval-1010a",
+  "protocol": "hdsc-evaluation-v1",
+  "plan_sha256": "9cbdc48695ecc666f66b9cc26aa5f08948c7bfb25b94cc0c6a0f631d94710ec5",
+  "approved_by_user": true,
+  "approval_utc": "2026-10-10T19:21:22.872000+00:00",
+  "planned_jobs": 1153,
+  "captured_job_rows": 52,
+  "captured_capability_rows": 3,
+  "captured_reserved_rq2_rows": 49,
+  "final_guest_job_count": null,
+  "final_guest_job_count_reason": "Complete evidence remains on retained VM disk; monitoring snapshot predates stop",
+  "sanitizer_comparison_accepted": false,
+  "sanitizer_tools_unsupported": [
+    "memcheck",
+    "initcheck",
+    "synccheck"
+  ],
+  "unsupported_diagnostic": "Confidential compute mode detected. compute-sanitizer will be disabled.",
+  "captured_snapshot_sha256": "154cd2618584149720acdcd89311f7ba602e69e527f8f7f12749c4b8f3bfddc0",
+  "captured_native_byte_audit": {
+    "state": "PASS_INDEPENDENT_RQ2_AUDIT",
+    "rows": 49,
+    "counts": {
+      "STATE_CONTINUITY_VIOLATION": 24,
+      "B1/PASS": 43,
+      "PASS": 25,
+      "B1/ALERT": 6
+    },
+    "runs_sha256": "761993bafdbf433ebbb8c9bcda9967078e520c297e943efb1b7f9c49cda4e6b3",
+    "detector_and_injector_imported": false,
+    "scope": [
+      "cuda"
+    ],
+    "reserved_evaluation_present": true
+  },
+  "scientific_scope": "Partial provenance and arithmetic audit only; interrupted attempt excluded from completed comparison. No RQ3/RQ4 completion claims.",
+  "start_request_utc": "2026-10-10T19:22:01.347966+00:00",
+  "operator_stop_utc": "2026-10-10T19:25:32.428176+00:00",
+  "deallocated_confirmed_utc": "2026-10-10T19:26:51.061853+00:00",
+  "start_request_to_confirmed_deallocation_seconds": 289.713887,
+  "vm_power_state": "PowerState/deallocated",
+  "disk_retained": true,
+  "resources_destroyed": 0,
+  "new_restart_approved": false,
+  "reserved_inputs_exposed": true,
+  "prior_original_results_unchanged": true,
+  "backup_state": "CAPTURED_ORIGINALS_VERIFIED_BY_FULL_REMOTE_GET_SHA256",
+  "correction_state": "PASS_276_LOCAL_TESTS_AND_41_ORIGINAL_DIAGNOSTIC_REGRESSIONS_IMAGES_NOT_REQUALIFIED",
+  "next_steps": [
+    "Preserve and remotely verify captured original evidence",
+    "Validate corrected parser, healthy capability gate and independent rejection audit",
+    "Requalify replacement images and freeze a new costed plan before requesting another restart",
+    "Recover full interrupted guest evidence at the next explicitly approved access; never silently pool or overwrite attempts"
+  ],
+  "backup_files": [
+    {
+      "blob": "a00aef207f5217b76ad0d3d32fe4bdcf5d694942f89acf7c2d59da9fc91f4802/interrupted-evidence.tar.gz",
+      "sha256": "a00aef207f5217b76ad0d3d32fe4bdcf5d694942f89acf7c2d59da9fc91f4802",
+      "bytes": 18332,
+      "remote_bytes_verified": true
+    },
+    {
+      "blob": "6decdb0df353e7a5eaba4fb58601421c30c7756e8f89e2859a2608fbc7bdc26d/interrupted-evidence-index.json",
+      "sha256": "6decdb0df353e7a5eaba4fb58601421c30c7756e8f89e2859a2608fbc7bdc26d",
+      "bytes": 1379,
+      "remote_bytes_verified": true
+    }
+  ],
+  "offline_observed_diagnostic_regression": {
+    "state": "PASS_OFFLINE_ORIGINAL_DIAGNOSTIC_REGRESSION",
+    "captured_disabled_tool_rows_checked": 41,
+    "original_files_changed": false,
+    "GPU_used": false
+  },
+  "local_unit_tests_passed": 276,
+  "secret_scan": "PASS_NO_FINDINGS"
+}

@@ -151,6 +151,7 @@ def execute(args):
         raise ValueError('Expiry guard changed since review')
     original=STATE/'work-sample-1009b';outputs=json.loads((original/'outputs.json').read_text())
     ssh=['ssh','-F','/dev/null','-i',str(original/'id_ed25519'),'-o','BatchMode=yes','-o','ConnectTimeout=5',
+         '-o','ServerAliveInterval=10','-o','ServerAliveCountMax=2',
          '-o','StrictHostKeyChecking=yes','-o','UserKnownHostsFile='+str(STATE/'fixed-work-1010a/known_hosts'),
          'cccontract@'+outputs['ssh_address']['value']]
     auth=subprocess.run(['gh','auth','status','--show-token'],capture_output=True,timeout=15)

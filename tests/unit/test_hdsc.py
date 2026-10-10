@@ -51,6 +51,17 @@ class HDSCTest(unittest.TestCase):
         self.assertEqual(sanitizer_result('racecheck',1,'','Not supported under Confidential Computing',obs)['classification'],'UNSUPPORTED')
         self.assertEqual(sanitizer_result('racecheck',86,'','RACECHECK SUMMARY: 2 hazards displayed',obs)['classification'],'ALERT')
 
+    def test_cc_disabled_instrumentation_is_not_a_detection(self):
+        # Exact diagnostic observed on the retained CC-ON H100, INC-0122.
+        text=('========= COMPUTE-SANITIZER\n'
+              '========= Error: Confidential compute mode detected. compute-sanitizer will be disabled.\n'
+              '========= ERROR SUMMARY: 1 error\n')
+        for tool in ('memcheck','initcheck','synccheck'):
+            result=sanitizer_result(tool,86,text,'',{'execution_status':'CUDA_SUCCESS'})
+            self.assertEqual(result,{'classification':'UNSUPPORTED','reason':'tool_rejected_environment'})
+        unknown=text.replace('Confidential compute mode detected. ','Unexpected environment. ')
+        self.assertEqual(sanitizer_result('memcheck',86,unknown,'',{'execution_status':'CUDA_SUCCESS'})['classification'],'INFRA_FAILURE')
+
     def test_dynamic_healthy_and_all_faults(self):
         for seed in range(82000,82008):
             for fault in (None,'L1','L2','C1','C2'):

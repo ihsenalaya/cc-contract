@@ -58,3 +58,13 @@ self-referential Git SHA.
 - Remaining hardware uncertainty: sanitizer/CC capability, dynamic CUDA and real application overhead require the proposed approved window. The three capability gates precede reserved testing; unexplained failure stops the VM.
 - Next task: **STOP. Await fresh explicit owner approval of this exact plan.** No approval receipt or execution-attempt file exists for this window.
 - H100 state: **DEALLOCATED**; retained VM/disk and guard verified read-only.
+
+## 2026-10-10T19:28:08.488706+00:00 — approved window stopped; retained VM deallocated
+
+- Owner explicitly approved the frozen 90-minute / 12-USD plan. Start: `2026-10-10T19:22:01.347966+00:00`; deallocated confirmed: `2026-10-10T19:26:51.061853+00:00`; conservative total: 289.713887 seconds.
+- INC-0122: Compute Sanitizer explicitly disabled itself under CC ON; parser misclassified its environment diagnostic as an alert. The healthy capability gate did not reject that alert. Operator immediately requested deallocation when raw output was inspected.
+- Snapshot contains 52 recorded jobs (3 capability + 49 reserved RQ2); final guest count is not known locally. Full originals remain on the retained disk. No sanitizer comparison or completed campaign is accepted. No thresholds or workloads tuned.
+- Original snapshot and a separate native-byte audit are preserved privately; public receipt: `results/manifests/hdsc-interrupted-window.json`. This audit does not validate sanitizer instrumentation.
+- Corrections: exact diagnostic recognition, fail-closed unknown disable messages, healthy-control gate, independent report rejection, bounded SSH connection-loss detection. All 276 local unit tests passed; all 41 captured disabled-tool outputs are correctly rejected by the independent audit and classified unsupported by the corrected parser. Secret scan passed. Captured originals were backed up with full remote GET/SHA-256 verification. Replacement images are not yet requalified.
+- Prior results and frozen plan remain immutable historical evidence. Reserved inputs have now been exposed; future work must explicitly disclose this interrupted attempt.
+- H100: **DEALLOCATED**, VM and disk retained, zero deletions. No new restart approved.

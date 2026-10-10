@@ -33,10 +33,15 @@ def sanitizer_audit(result):
     tool=result['tool'];finding=result['B2_sanitizer'];raw=result['raw_worker']
     if tool=='direct':return
     text=raw.get('stdout','')+'\n'+raw.get('stderr','') if raw else ''
+    rejected=any(s in text.lower() for s in ('not supported under confidential','not supported in confidential',
+        'debugging is not supported','not supported in cc-on',
+        'confidential compute mode detected. compute-sanitizer will be disabled.'))
     if finding['classification']=='UNSUPPORTED':
-        if not any(s in text.lower() for s in ('not supported under confidential','not supported in confidential','debugging is not supported','not supported in cc-on')):
+        if not rejected:
             raise ValueError('Unsupported sanitizer claim lacks original diagnostic')
         return
+    if finding['classification'] in ('PASS','ALERT') and (rejected or 'compute-sanitizer will be disabled' in text.lower()):
+        raise ValueError('Disabled instrumentation cannot establish a sanitizer detection or clean result')
     counts=re.findall(r'ERROR SUMMARY:\s*(\d+)\s+errors?',text)
     if finding['classification'] in ('PASS','ALERT'):
         if len(counts)!=1 or result['observation']['execution_status']!='CUDA_SUCCESS':raise ValueError('Incomplete sanitizer evidence')

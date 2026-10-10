@@ -29,11 +29,14 @@ and four fault pairs on a real pretrained TinyStories Transformer. These are not
 RQ2–RQ4 GPU results or evidence of general superiority. Historical GPU campaigns
 are preserved separately.
 
-The [new H100 plan](docs/environment/final-h100-evaluation-plan.md) schedules 1,153
-serial jobs / 1,433 workload requests, plus declared graph-setup forwards. It is
-**unapproved**; the retained H100 remains deallocated. Follow the
-[checkpoint journal](docs/research/hourly-progress.md). Reserved inputs must not be
-executed before freeze and new explicit approval.
+The [frozen H100 plan](docs/environment/final-h100-evaluation-plan.md) scheduled 1,153
+serial jobs / 1,433 workload requests, plus declared graph-setup forwards. The owner
+approved its execution, but the [attempt was stopped](docs/environment/hdsc-interrupted-window.md)
+after a sanitizer capability-classification error. The H100 is **deallocated**;
+its VM and disk are retained. Reserved inputs were exposed in this interrupted
+attempt; no completed comparison is claimed. Follow the
+[checkpoint journal](docs/research/hourly-progress.md). A new frozen plan and fresh
+explicit approval are required before another restart.
 
 Reproduce CPU-only native development checks without model downloads:
 

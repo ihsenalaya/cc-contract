@@ -30,9 +30,12 @@ def sanitizer_result(tool, returncode, stdout, stderr, observation):
     if observation.get("execution_status") == "UNSUPPORTED":
         return {"classification": "UNSUPPORTED", "reason": "no_cuda_device"}
     unsupported = ("not supported under confidential", "not supported in confidential",
-                   "debugging is not supported", "not supported in cc-on")
+                   "debugging is not supported", "not supported in cc-on",
+                   "confidential compute mode detected. compute-sanitizer will be disabled.")
     if any(message in text.lower() for message in unsupported):
         return {"classification": "UNSUPPORTED", "reason": "tool_rejected_environment"}
+    if "compute-sanitizer will be disabled" in text.lower():
+        return {"classification": "INFRA_FAILURE", "reason": "instrumentation_disabled_unknown_cause"}
     pattern = r"RACECHECK SUMMARY:\s*(\d+)\s+hazard" if tool == "racecheck" else r"ERROR SUMMARY:\s*(\d+)\s+errors?"
     counts = re.findall(pattern, text)
     if len(counts) != 1 or observation.get("execution_status") != "CUDA_SUCCESS":
