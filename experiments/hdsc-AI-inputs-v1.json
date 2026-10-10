@@ -1,0 +1,34 @@
+{
+  "development": {
+    "82000": "Once upon a time there was a little girl",
+    "82001": "The dog and the cat went to the park",
+    "82002": "One day a boy found a small red ball",
+    "82003": "The sun was bright and the bird could sing"
+  },
+  "reserved_evaluation": {
+    "93000": "A rabbit carried a basket of apples to the village",
+    "93001": "Mia opened the blue door and saw a friendly bear",
+    "93002": "The little boat floated across the quiet lake",
+    "93003": "Sam wanted to bake a cake for his sister",
+    "93004": "A fox found a yellow hat beside the old tree",
+    "93005": "The children planted a seed in the garden",
+    "93006": "A small dragon learned to share its toys",
+    "93007": "The puppy waited patiently beside the window",
+    "93008": "Lily and her grandfather walked to the river",
+    "93009": "A green frog heard a song coming from the forest"
+  },
+  "reserved_healthy": {
+    "104000": "The farmer gave the thirsty horse a drink",
+    "104001": "A kitten fell asleep inside a warm basket",
+    "104002": "Tom put on his boots before going outside",
+    "104003": "The owl watched the moon rise over the hill",
+    "104004": "A little mouse invited its friends to dinner",
+    "104005": "Ella found a smooth stone near the waterfall",
+    "104006": "The duck followed its mother around the pond",
+    "104007": "A happy squirrel collected nuts for the winter",
+    "104008": "Ben and his father repaired the wooden fence",
+    "104009": "The butterfly landed gently on a purple flower"
+  },
+  "tokenization": "last 16 tokens, left-pad eos; fixed batch=1, no KV cache",
+  "version": "hdsc-AI-inputs-v1"
+}

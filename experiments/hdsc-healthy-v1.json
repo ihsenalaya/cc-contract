@@ -1,0 +1,28 @@
+{
+  "inspection_policy": "Do not execute before freeze; never tune detector on outcomes",
+  "patterns": [
+    "single-stream",
+    "multi-stream",
+    "event-dependencies",
+    "double-buffering",
+    "graph-replay",
+    "generation-reuse",
+    "dynamic-branch",
+    "Transformer-healthy"
+  ],
+  "planned_runs": 80,
+  "seeds": [
+    104000,
+    104001,
+    104002,
+    104003,
+    104004,
+    104005,
+    104006,
+    104007,
+    104008,
+    104009
+  ],
+  "split": "reserved_evaluation",
+  "version": "hdsc-healthy-v1"
+}

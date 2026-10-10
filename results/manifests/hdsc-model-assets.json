@@ -1,0 +1,35 @@
+{
+  "model": "roneneldan/TinyStories-1M",
+  "revision": "77f1b168e219585646439073245fe87e56b3023e",
+  "trained_weights": true,
+  "files": {
+    "config.json": {
+      "sha256": "ff74c30d5ebb5ab1da0f2ea479adf7197c504b42b5522a858c334ab91ed4958c",
+      "bytes": 1021
+    },
+    "pytorch_model.bin": {
+      "sha256": "07f9609ea882b8163ff3b23d40e2b82cb715d409631beb15c84b164f3877dae7",
+      "bytes": 48578813
+    },
+    "tokenizer.json": {
+      "sha256": "f6ed3d307010c244c22aeffbde05f419cf277c23e64cf98b673cac5449cfeff5",
+      "bytes": 2107652
+    },
+    "tokenizer_config.json": {
+      "sha256": "3d76da0fd37493fbfcd3f0fa9757753d31f92e1779ebd9130809b45546a60261",
+      "bytes": 722
+    },
+    "special_tokens_map.json": {
+      "sha256": "98412137ae43c77f8af52eb51b19c3536d3242cb55339167d841005fa94a23b7",
+      "bytes": 438
+    },
+    "vocab.json": {
+      "sha256": "3ba3c3109ff33976c4bd966589c11ee14fcaa1f4c9e5e154c2ed7f99d80709e7",
+      "bytes": 798156
+    },
+    "merges.txt": {
+      "sha256": "1ce1664773c50f3e0cc8842619a93edc4624525b728b188a9e0be33b7726adc5",
+      "bytes": 456318
+    }
+  }
+}

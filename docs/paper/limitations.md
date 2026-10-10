@@ -1,0 +1,25 @@
+# Limitations and publication gates
+
+- RQ1 is a deterministic injected-fault pilot. No new NVIDIA vulnerability or
+  naturally occurring software defect was discovered.
+- HDSC trusts intent construction and instrumentation. Producer/stream/event
+  attribution is host-side; the AI consumer name is host-side too. This is not a
+  fully device-attested seven-field monitor or a substitute for GPU attestation.
+- Native packet and tiny-language-model boundaries are bounded. General kernels,
+  concurrency, arbitrary graph mutation and production serving remain untested.
+- Equal-output faults are constructed; their frequency is unknown. Exact B1 is
+  expected to work on changed outputs, and that positive baseline result is kept.
+- Racecheck is unsupported in CC. Other sanitizer tool support on the retained
+  host remains to be measured. Unsupported is never a clean/missed result.
+- LGT4CG metadata verification overlaps this problem. Available primary material
+  supports that overlap but does not settle its entire dynamic capability. The
+  scientific gap is provisional; no categorical novelty claim is justified.
+- The trained TinyStories model is small and uses fixed input width, no KV cache.
+  It supports a real-workload boundary test, not a Qwen7B performance claim.
+- Ten blocks give limited precision. Zero healthy alerts cannot establish a
+  universally small false-positive rate. Bootstrap results are descriptive for
+  this corpus, conditional on independent blocks, with repeated weights/inputs.
+- GPU timings, RQ2–RQ4 CUDA results and actual billing do not yet exist. Local
+  CPU results qualify code paths; local CUDA compilation is not CUDA execution.
+- Global deadline may censor a future campaign. Preserve partial runs and stop;
+  any continuation needs a new approved plan. No favorable-result stopping rule.

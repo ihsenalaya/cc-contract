@@ -1,0 +1,92 @@
+{
+  "AI_faults": {
+    "blocks": 10,
+    "faults": [
+      "L1",
+      "L2",
+      "C1",
+      "C2"
+    ],
+    "paired_healthy_injected": true,
+    "requests": 80
+  },
+  "RQ2": {
+    "blocks": 10,
+    "direct": 240,
+    "initcheck": 240,
+    "memcheck": 240,
+    "racecheck": 0,
+    "racecheck_reason": "UNSUPPORTED_CC",
+    "synccheck": 240
+  },
+  "RQ3": {
+    "faults": [
+      null,
+      "L1",
+      "L2",
+      "C1",
+      "C2"
+    ],
+    "runs": 50,
+    "seeds": [
+      93000,
+      93001,
+      93002,
+      93003,
+      93004,
+      93005,
+      93006,
+      93007,
+      93008,
+      93009
+    ]
+  },
+  "RQ4": {
+    "blocks": 10,
+    "measured_requests_per_mode": 10,
+    "modes": [
+      "BASELINE_OFF",
+      "CC_CONTRACT_ON"
+    ],
+    "requests": 260,
+    "setup_capture_forwards_per_instance": 3,
+    "setup_eager_forwards_per_instance": 9,
+    "warmup_requests_per_mode": 3
+  },
+  "healthy": {
+    "inspection_policy": "Do not execute before freeze; never tune detector on outcomes",
+    "patterns": [
+      "single-stream",
+      "multi-stream",
+      "event-dependencies",
+      "double-buffering",
+      "graph-replay",
+      "generation-reuse",
+      "dynamic-branch",
+      "Transformer-healthy"
+    ],
+    "planned_runs": 80,
+    "seeds": [
+      104000,
+      104001,
+      104002,
+      104003,
+      104004,
+      104005,
+      104006,
+      104007,
+      104008,
+      104009
+    ],
+    "split": "reserved_evaluation",
+    "version": "hdsc-healthy-v1"
+  },
+  "new_H100_authorized": false,
+  "search_Random_B3_B4": {
+    "future_primary_budget": "equal generated candidates",
+    "runs": 0,
+    "state": "DEFERRED_SECONDARY_QUESTION"
+  },
+  "state": "DRAFT_LOCAL_QUALIFICATION",
+  "version": "hdsc-evaluation-v1"
+}
