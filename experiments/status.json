@@ -76,10 +76,11 @@
         "docs/methodology/protocol-v0.2-draft.md"
       ],
       "remaining": [
-        "Hardware qualification and oracle/protocol freeze",
-        "Costed GPU campaign approval",
-        "Actual GPU evaluation with complete declared budgets"
-      ]
+        "Retained host requalification for the declared exact-integer fixed-work scope",
+        "Actual 140 successive GPU jobs and independent raw-case review",
+        "Broader oracle/power/evaluation criteria remain outside the bounded v0.3 campaign"
+      ],
+      "fixed_work_protocol": "docs/methodology/fixed-work-campaign-v0.3.md"
     },
     {
       "id": "E5",
@@ -90,10 +91,11 @@
         "docs/methodology/protocol-v0.2-draft.md"
       ],
       "remaining": [
-        "Hardware qualification and oracle/protocol freeze",
-        "Costed GPU campaign approval",
-        "Actual GPU evaluation with complete declared budgets"
-      ]
+        "Retained host requalification for the declared exact-integer fixed-work scope",
+        "Actual 140 successive GPU jobs and independent raw-case review",
+        "Broader oracle/power/evaluation criteria remain outside the bounded v0.3 campaign"
+      ],
+      "fixed_work_protocol": "docs/methodology/fixed-work-campaign-v0.3.md"
     },
     {
       "id": "E6",
@@ -207,5 +209,30 @@
     "evidence": "results/manifests/finite-work-sample-gpu-result.json",
     "result": "docs/environment/finite-work-sample-result.md",
     "selected_cases_independently_audited": 1400
+  },
+  "fixed_work_campaign": {
+    "state": "PREPARING_RETAINED_VM_RETRY",
+    "approval_granted": true,
+    "approval_scope": "USER_EXPLICIT_140_SUCCESSIVE_JOBS_OF_100_CASES_STOP_LOCAL_FIX_AND_RESUME",
+    "parallel_gpu_jobs": false,
+    "planned_jobs": 140,
+    "selected_cases_per_job": 100,
+    "actual_gpu_campaign_jobs_run": 0,
+    "protocol_version": "fixed-work-v0.3",
+    "protocol": "docs/methodology/fixed-work-campaign-v0.3.md",
+    "proposal": "docs/environment/fixed-work-campaign-window.md",
+    "progress": "docs/environment/fixed-work-campaign-progress.md",
+    "retained_window": "work-sample-1009b",
+    "vm_deallocated": true,
+    "resources_destroyed": 0,
+    "temporary_resources_retained": 13,
+    "conservative_prior_start_request_to_deallocation_seconds": 179.295374,
+    "maximum_next_window_minutes": 87,
+    "cumulative_vm_allowance_minutes": 90,
+    "total_forecast_budget_usd": 15,
+    "actual_billing_start_and_cost_established": false,
+    "full_E0_E8_complete": false,
+    "blocker": "STRICT_TERRAFORM_OS_DISK_ARM_ID_CASE_REFRESH_LOCAL_QUALIFICATION",
+    "gpu_results_claimed": false
   }
 }

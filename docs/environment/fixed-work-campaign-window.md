@@ -48,6 +48,16 @@ refreshed resource values and unchanged outputs. This operation updates local
 Terraform state, starts no VM and permits zero Azure resource mutations.
 The normal resume validator still rejects every unresolved drift entry.
 
+After an actual retained-VM start/deallocation, Azure may return the original
+OS disk ARM ID with different resource-group casing. A separate refresh-only
+mode may normalize only `os_disk[0].id` and `os_managed_disk_id` to the exact
+original disk ID confirmed by live VM/disk readbacks. Require unchanged actual
+VM UUID, disk attachment, all other values of all thirteen resources and all
+outputs. No substantive ID, configuration or Azure resource mutation is allowed.
+Its operational variable file comes from the current retained backend; preserve
+the original input/output receipts separately. This mode requires its own local
+qualification, saved-plan review and state-only apply verification before resume.
+
 Before starting compute, source tests, native CPU integration on both Kind
 workers (140 × 4 each), permissions, immutable image qualifications,
 independent original-case reviews and lifecycle error paths must pass.

@@ -39,6 +39,9 @@ TAGGED = frozenset({"azurerm_resource_group.window", "azurerm_virtual_network.wi
     "azurerm_network_security_group.window", "azurerm_public_ip.window",
     "azurerm_network_interface.window", "azurerm_logic_app_workflow.expiry",
     "azurerm_linux_virtual_machine.gpu"})
+REFRESH_COMPUTED_MODE = "computed-values"
+REFRESH_DISK_CASE_MODE = "os-disk-arm-id-case"
+REFRESH_MODES = (REFRESH_COMPUTED_MODE, REFRESH_DISK_CASE_MODE)
 REFRESH_ADDRESSES = frozenset({"azurerm_logic_app_workflow.expiry",
     "azurerm_network_interface.window", "azurerm_public_ip.window",
     "azurerm_role_definition.expiry", "azurerm_subnet.window", "azurerm_virtual_network.window"})
@@ -197,25 +200,7 @@ def validate_nic_readback(actual, original):
     return mac
 
 
-def validate_refresh_plan(plan, original_state, inputs, nic_readback):
-    """Accept six observed drift resources and one explicit VM empty-list normalization.
-
-    This does not authorize resource updates. The normal resume plan continues
-    to reject every resource_drift entry after this separate state operation.
-    """
-    original = state_resources(original_state)
-    if (plan.get("terraform_version") != "1.12.2" or plan.get("complete") is not True
-            or plan.get("errored") is not False):
-        raise ValueError("A complete Terraform 1.12.2 refresh plan is required")
-    variables = {key: row.get("value") for key, row in plan.get("variables", {}).items()}
-    expected_variables = dict(inputs)
-    expected_variables.setdefault("confidential_image_id", original["azurerm_linux_virtual_machine.gpu"]["source_image_id"])
-    expected_variables.setdefault("model_container_scope", "")
-    if variables != expected_variables:
-        raise ValueError("Refresh variables must equal the retained inputs")
-    drift = plan.get("resource_drift", [])
-    if len(drift) != 6 or {row.get("address") for row in drift} != REFRESH_ADDRESSES:
-        raise ValueError("Refresh permits exactly the six reviewed computed-value resources")
+def expected_computed_refresh(original, nic_readback):
     expected = copy.deepcopy(original)
     # Terraform normalizes this optional block during schema decoding without
     # listing it in resource_drift. Check it explicitly; never ignore VM fields.
@@ -260,6 +245,72 @@ def validate_refresh_plan(plan, original_state, inputs, nic_readback):
         "private_endpoint_network_policies", "private_link_service_network_policies_enabled",
         "route_table_id", "service_endpoint", "service_endpoint_policy_ids")}]
     vnet["subnet"][0]["security_group"] = nsg
+    return expected
+
+
+def expected_disk_id_case(original, vm_readback, disk_readback):
+    """Reconcile only the observed uppercase RG spelling of the same OS disk."""
+    gpu = original["azurerm_linux_virtual_machine.gpu"]
+    blocks = gpu.get("os_disk", [])
+    if len(blocks) != 1 or not isinstance(blocks[0], dict):
+        raise ValueError("Exactly one retained OS disk is required")
+    before = blocks[0].get("id")
+    name = blocks[0].get("name")
+    vm_prefix = gpu["id"].split("/providers/Microsoft.Compute/virtualMachines/")
+    if (len(vm_prefix) != 2 or not isinstance(before, str) or not isinstance(name, str)
+            or before != gpu.get("os_managed_disk_id")
+            or before != vm_prefix[0] + "/providers/Microsoft.Compute/disks/" + name):
+        raise ValueError("Original OS disk identity or resource group differs")
+    match = re.fullmatch(r"(/subscriptions/[^/]+/resourceGroups/)([^/]+)(/providers/Microsoft\.Compute/disks/[^/]+)", before)
+    if not match:
+        raise ValueError("Original OS disk ARM ID malformed")
+    after = match[1] + match[2].upper() + match[3]
+    if after == before:
+        raise ValueError("No reviewed OS disk RG case change exists")
+    vm_readback, disk_readback = vm_readback or {}, disk_readback or {}
+    actual_disk = vm_readback.get("storageProfile", {}).get("osDisk", {}).get("managedDisk", {}).get("id")
+    if (str(vm_readback.get("id", "")).lower() != gpu["id"].lower()
+            or str(vm_readback.get("vmId", "")).lower() != gpu["virtual_machine_id"].lower()
+            or actual_disk != after
+            or str(disk_readback.get("id", "")).lower() != before.lower()
+            or str(disk_readback.get("managedBy", "")).lower() != gpu["id"].lower()
+            or disk_readback.get("name") != name
+            or not re.fullmatch(r"[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}", str(disk_readback.get("uniqueId", "")))):
+        raise ValueError("Live original VM and OS disk case identity differ")
+    expected = copy.deepcopy(original)
+    expected["azurerm_linux_virtual_machine.gpu"]["os_disk"][0]["id"] = after
+    expected["azurerm_linux_virtual_machine.gpu"]["os_managed_disk_id"] = after
+    return expected
+
+
+def validate_refresh_plan(plan, original_state, inputs, nic_readback=None, *,
+                          normalization_mode=REFRESH_COMPUTED_MODE, vm_readback=None, disk_readback=None):
+    """Accept a separately reviewed computed-value or exact OS disk RG case refresh.
+
+    This does not authorize resource updates. The normal resume plan continues
+    to reject every resource_drift entry after this separate state operation.
+    """
+    original = state_resources(original_state)
+    if (plan.get("terraform_version") != "1.12.2" or plan.get("complete") is not True
+            or plan.get("errored") is not False):
+        raise ValueError("A complete Terraform 1.12.2 refresh plan is required")
+    variables = {key: row.get("value") for key, row in plan.get("variables", {}).items()}
+    expected_variables = dict(inputs)
+    expected_variables.setdefault("confidential_image_id", original["azurerm_linux_virtual_machine.gpu"]["source_image_id"])
+    expected_variables.setdefault("model_container_scope", "")
+    if variables != expected_variables:
+        raise ValueError("Refresh variables must equal the retained inputs")
+    drift = plan.get("resource_drift", [])
+    if normalization_mode == REFRESH_COMPUTED_MODE:
+        if len(drift) != 6 or {row.get("address") for row in drift} != REFRESH_ADDRESSES:
+            raise ValueError("Refresh permits exactly the six reviewed computed-value resources")
+        expected = expected_computed_refresh(original, nic_readback)
+    elif normalization_mode == REFRESH_DISK_CASE_MODE:
+        if len(drift) != 1 or drift[0].get("address") != "azurerm_linux_virtual_machine.gpu":
+            raise ValueError("Disk case refresh permits exactly one original VM drift")
+        expected = expected_disk_id_case(original, vm_readback, disk_readback)
+    else:
+        raise ValueError("Unknown reviewed state normalization mode")
     for row in drift:
         address, change = row["address"], row["change"]
         if (row.get("previous_address") or row.get("deposed") or change.get("importing")
@@ -298,44 +349,105 @@ def validate_refresh_plan(plan, original_state, inputs, nic_readback):
     return expected
 
 
+def refresh_readbacks(mode, original, actual_vm):
+    if mode == REFRESH_COMPUTED_MODE:
+        return {"nic-readback.json": window.az_json("network", "nic", "show", "--ids",
+                original["azurerm_network_interface.window"]["id"])}
+    if mode == REFRESH_DISK_CASE_MODE:
+        gpu = original["azurerm_linux_virtual_machine.gpu"]
+        blocks = gpu.get("os_disk", [])
+        disk_id = gpu.get("os_managed_disk_id")
+        if (len(blocks) != 1 or blocks[0].get("id") != disk_id or not isinstance(disk_id, str)
+                or not re.fullmatch(r"/subscriptions/[^/]+/resourceGroups/[^/]+/providers/Microsoft\.Compute/disks/[^/]+", disk_id)):
+            raise ValueError("Original OS disk readback identity malformed")
+        return {"vm-readback.json": actual_vm,
+                "disk-readback.json": window.az_json("disk", "show", "--ids", disk_id)}
+    raise ValueError("Unknown reviewed state normalization mode")
+
+
+def validate_bound_refresh(plan, state, inputs, mode, readbacks):
+    required = ({"nic-readback.json"} if mode == REFRESH_COMPUTED_MODE else
+                {"vm-readback.json", "disk-readback.json"} if mode == REFRESH_DISK_CASE_MODE else set())
+    if not required or set(readbacks) != required:
+        raise ValueError("Reviewed refresh readback set differs")
+    return validate_refresh_plan(plan, state, inputs, readbacks.get("nic-readback.json"),
+        normalization_mode=mode, vm_readback=readbacks.get("vm-readback.json"),
+        disk_readback=readbacks.get("disk-readback.json"))
+
+
+def verify_refresh_readback_identity(mode, saved, current):
+    if (mode == REFRESH_DISK_CASE_MODE
+            and saved["disk-readback.json"]["uniqueId"] != current["disk-readback.json"].get("uniqueId")):
+        raise ValueError("Live retained OS disk uniqueId changed since refresh planning")
+
+
+def refresh_case_changes(mode, original, expected):
+    if mode != REFRESH_DISK_CASE_MODE:
+        return {}
+    before, after = original["azurerm_linux_virtual_machine.gpu"], expected["azurerm_linux_virtual_machine.gpu"]
+    return {"azurerm_linux_virtual_machine.gpu.os_disk[0].id": {"before": before["os_disk"][0]["id"], "after": after["os_disk"][0]["id"]},
+            "azurerm_linux_virtual_machine.gpu.os_managed_disk_id": {"before": before["os_managed_disk_id"], "after": after["os_managed_disk_id"]}}
+
+
 def refresh_plan(args):
     old, directory = window.STATE / args.retained_window, window.STATE / args.refresh_id
     if old == directory or directory.exists():
         raise ValueError("A fresh refresh evidence directory is required")
-    inputs, outputs, state = load(old / "inputs.json"), load(old / "outputs.json"), load(old / "terraform.tfstate")
-    if inputs["window_id"] != args.retained_window:
+    mode = getattr(args, "state_normalization_mode", REFRESH_COMPUTED_MODE)
+    if mode not in REFRESH_MODES:
+        raise ValueError("Unknown reviewed state normalization mode")
+    original_inputs, original_outputs, state = load(old / "inputs.json"), load(old / "outputs.json"), load(old / "terraform.tfstate")
+    if original_inputs["window_id"] != args.retained_window:
         raise ValueError("Retained window identity differs")
     original = state_resources(state)
-    verify_outputs(inputs, outputs, original)
+    verify_outputs(original_inputs, original_outputs, original)
+    inputs, outputs = operational_inputs(original_inputs, state)
     gpu = original["azurerm_linux_virtual_machine.gpu"]
-    require_deallocated(gpu["id"], gpu["virtual_machine_id"])
-    actual_nic = window.az_json("network", "nic", "show", "--ids", original["azurerm_network_interface.window"]["id"])
-    validate_nic_readback(actual_nic, original)
+    actual_vm = require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+    readbacks = refresh_readbacks(mode, original, actual_vm)
+    if mode == REFRESH_COMPUTED_MODE:
+        validate_nic_readback(readbacks["nic-readback.json"], original)
+    else:
+        expected_disk_id_case(original, readbacks["vm-readback.json"], readbacks["disk-readback.json"])
     directory.mkdir(mode=0o700)
     for source, target in (("terraform.tfstate", "terraform.tfstate-before"), ("inputs.json", "inputs.json"), ("outputs.json", "outputs.json")):
         copy_new(old / source, directory / target)
-    write_new(directory / "nic-readback.json", actual_nic)
+    write_new(directory / "operational-inputs.json", inputs)
+    write_new(directory / "operational-outputs.json", outputs)
+    for name, data in readbacks.items():
+        write_new(directory / name, data)
     with (directory / "plan.log").open("x") as log:
         window.tf("init", "-input=false", "-reconfigure", f"-backend-config=path={old / 'terraform.tfstate'}", stdout=log, stderr=subprocess.STDOUT)
-        window.tf("plan", "-refresh-only", "-input=false", f"-var-file={directory / 'inputs.json'}", f"-out={directory / 'plan.tfplan'}", stdout=log, stderr=subprocess.STDOUT)
+        window.tf("plan", "-refresh-only", "-input=false", f"-var-file={directory / 'operational-inputs.json'}", f"-out={directory / 'plan.tfplan'}", stdout=log, stderr=subprocess.STDOUT)
     plan = saved_plan(directory)
     write_new(directory / "plan.json", plan)
-    validate_refresh_plan(plan, state, inputs, actual_nic)
+    expected = validate_bound_refresh(plan, state, inputs, mode, readbacks)
     if window.sha(old / "terraform.tfstate") != window.sha(directory / "terraform.tfstate-before"):
         raise ValueError("Retained backend changed during read-only refresh planning")
-    require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+    if any(window.sha(old / name) != window.sha(directory / name) for name in ("inputs.json", "outputs.json")):
+        raise ValueError("Original retained receipts changed during refresh planning")
+    actual_vm = require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+    current_readbacks = refresh_readbacks(mode, original, actual_vm)
+    verify_refresh_readback_identity(mode, readbacks, current_readbacks)
+    validate_bound_refresh(plan, state, inputs, mode, current_readbacks)
     summary = {"schema_version": 1, "state": "REVIEWED_REFRESH_ONLY_STATE_PLAN",
         "scope": "LOCAL_TERRAFORM_STATE_RECONCILIATION_ONLY", "refresh_id": args.refresh_id,
+        "state_normalization_mode": mode,
         "retained_window": args.retained_window, "planned_at_utc": utcnow().isoformat(),
         "plan_sha256": window.sha(directory / "plan.tfplan"), "plan_json_sha256": window.sha(directory / "plan.json"),
         "retained_state_path": str(old / "terraform.tfstate"), "retained_state_sha256": window.sha(directory / "terraform.tfstate-before"),
         "inputs_sha256": window.sha(directory / "inputs.json"), "outputs_sha256": window.sha(directory / "outputs.json"),
-        "nic_readback_sha256": window.sha(directory / "nic-readback.json"),
+        "operational_inputs_sha256": window.sha(directory / "operational-inputs.json"),
+        "operational_outputs_sha256": window.sha(directory / "operational-outputs.json"),
+        "operational_expiry_utc": inputs["expires_at_utc"],
+        "readback_sha256": {name: window.sha(directory / name) for name in readbacks},
         "retained_vm_id": gpu["id"], "retained_vm_uuid": gpu["virtual_machine_id"],
         "terraform_module_sha256": window.sha(window.MODULE / "main.tf"), "resume_controller_sha256": window.sha(HERE),
         "window_controller_sha256": window.sha(HERE.with_name("azure-window.py")),
-        "resource_drift_addresses": sorted(REFRESH_ADDRESSES), "azure_resource_mutations": 0,
-        "additional_state_normalizations": {"azurerm_linux_virtual_machine.gpu.termination_notification": {"before": None, "after": []}},
+        "resource_drift_addresses": sorted(row["address"] for row in plan["resource_drift"]), "azure_resource_mutations": 0,
+        "additional_state_normalizations": ({"azurerm_linux_virtual_machine.gpu.termination_notification": {"before": None, "after": []}}
+                                           if mode == REFRESH_COMPUTED_MODE else {}),
+        "reviewed_case_changes": refresh_case_changes(mode, original, expected),
         "created_resources": 0, "deleted_resources": 0, "vm_start_requested": False}
     write_new(directory / "summary.json", summary)
     print(json.dumps(summary, indent=2))
@@ -345,34 +457,49 @@ def refresh_apply(directory, supplied_hash):
     summary = load(directory / "summary.json")
     old = window.STATE / summary["retained_window"]
     backend = old / "terraform.tfstate"
+    mode = summary.get("state_normalization_mode")
     if (summary["refresh_id"] != directory.name or Path(summary["retained_state_path"]).resolve() != backend.resolve()
-            or summary["state"] != "REVIEWED_REFRESH_ONLY_STATE_PLAN" or summary["azure_resource_mutations"] != 0):
+            or summary["state"] != "REVIEWED_REFRESH_ONLY_STATE_PLAN" or summary["azure_resource_mutations"] != 0
+            or mode not in REFRESH_MODES):
         raise ValueError("Reviewed refresh state scope differs")
+    names = {"nic-readback.json"} if mode == REFRESH_COMPUTED_MODE else {"vm-readback.json", "disk-readback.json"}
+    if set(summary.get("readback_sha256", {})) != names:
+        raise ValueError("Reviewed refresh readback bindings differ")
     bindings = [(directory / "plan.tfplan", supplied_hash), (directory / "plan.tfplan", summary["plan_sha256"]),
         (directory / "plan.json", summary["plan_json_sha256"]), (backend, summary["retained_state_sha256"]),
         (directory / "terraform.tfstate-before", summary["retained_state_sha256"]),
         (directory / "inputs.json", summary["inputs_sha256"]), (old / "inputs.json", summary["inputs_sha256"]),
         (directory / "outputs.json", summary["outputs_sha256"]), (old / "outputs.json", summary["outputs_sha256"]),
-        (directory / "nic-readback.json", summary["nic_readback_sha256"]),
+        (directory / "operational-inputs.json", summary["operational_inputs_sha256"]),
+        (directory / "operational-outputs.json", summary["operational_outputs_sha256"]),
         (window.MODULE / "main.tf", summary["terraform_module_sha256"]), (HERE, summary["resume_controller_sha256"]),
         (HERE.with_name("azure-window.py"), summary["window_controller_sha256"])]
+    bindings.extend((directory / name, digest) for name, digest in summary["readback_sha256"].items())
     if any(window.sha(path) != digest for path, digest in bindings):
         raise ValueError("Reviewed refresh plan, backend or source changed")
     if any((directory / name).exists() for name in ("apply.log", "apply-receipt.json", "terraform.tfstate-after")):
         raise ValueError("Refresh operation already attempted; preserve original evidence")
-    original_state, inputs = load(directory / "terraform.tfstate-before"), load(directory / "inputs.json")
+    original_state, original_inputs = load(directory / "terraform.tfstate-before"), load(directory / "inputs.json")
     original = state_resources(original_state)
+    inputs, outputs = operational_inputs(original_inputs, original_state)
+    if (inputs != load(directory / "operational-inputs.json") or outputs != load(directory / "operational-outputs.json")
+            or inputs["expires_at_utc"] != summary["operational_expiry_utc"]):
+        raise ValueError("Reviewed operational inputs or outputs differ from current backend")
     plan = saved_plan(directory)
     if plan != load(directory / "plan.json"):
         raise ValueError("Saved refresh binary JSON differs from reviewed original")
-    expected = validate_refresh_plan(plan, original_state, inputs, load(directory / "nic-readback.json"))
+    readbacks = {name: load(directory / name) for name in names}
+    expected = validate_bound_refresh(plan, original_state, inputs, mode, readbacks)
+    if (summary["resource_drift_addresses"] != sorted(row["address"] for row in plan["resource_drift"])
+            or summary["reviewed_case_changes"] != refresh_case_changes(mode, original, expected)):
+        raise ValueError("Reviewed refresh summary changes differ from saved plan")
     gpu = original["azurerm_linux_virtual_machine.gpu"]
     if gpu["id"] != summary["retained_vm_id"] or gpu["virtual_machine_id"] != summary["retained_vm_uuid"]:
         raise ValueError("Reviewed refresh VM identity differs")
-    require_deallocated(gpu["id"], gpu["virtual_machine_id"])
-    actual_nic = window.az_json("network", "nic", "show", "--ids", original["azurerm_network_interface.window"]["id"])
-    if validate_nic_readback(actual_nic, original) != expected["azurerm_network_interface.window"]["mac_address"]:
-        raise ValueError("Actual NIC changed since refresh planning")
+    actual_vm = require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+    current_readbacks = refresh_readbacks(mode, original, actual_vm)
+    verify_refresh_readback_identity(mode, readbacks, current_readbacks)
+    validate_bound_refresh(plan, original_state, inputs, mode, current_readbacks)
     failure, verified = None, False
     try:
         with (directory / "apply.log").open("x") as log:
@@ -384,7 +511,10 @@ def refresh_apply(directory, supplied_hash):
                 or refreshed.get("serial") != original_state.get("serial", -1) + 1
                 or refreshed.get("outputs") != original_state["outputs"]):
             raise ValueError("Actual refreshed backend differs from the validated state-only result")
-        require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+        actual_vm = require_deallocated(gpu["id"], gpu["virtual_machine_id"])
+        current_readbacks = refresh_readbacks(mode, original, actual_vm)
+        verify_refresh_readback_identity(mode, readbacks, current_readbacks)
+        validate_bound_refresh(plan, original_state, inputs, mode, current_readbacks)
         verified = True
     except BaseException as error:
         failure = type(error).__name__
@@ -393,6 +523,7 @@ def refresh_apply(directory, supplied_hash):
         write_new(directory / "apply-receipt.json", {"schema_version": 1,
             "state": "VERIFIED_REFRESH_ONLY_STATE_RECONCILIATION" if verified else "FAILED_REFRESH_STATE_RECONCILIATION",
             "timestamp_utc": utcnow().isoformat(), "error_type": failure, "plan_sha256": supplied_hash,
+            "state_normalization_mode": mode,
             "before_state_sha256": summary["retained_state_sha256"], "after_state_sha256": window.sha(backend),
             "scope": "LOCAL_TERRAFORM_STATE_RECONCILIATION_ONLY", "azure_resource_mutations": 0,
             "vm_start_requested": False, "deallocation_verified": verified,
@@ -930,6 +1061,7 @@ def main(argv=None):
     parser.add_argument("--campaign", default="fixed-work-1010a")
     parser.add_argument("--retained-window", default="work-sample-1009b")
     parser.add_argument("--refresh-id")
+    parser.add_argument("--state-normalization-mode", choices=REFRESH_MODES, default=REFRESH_COMPUTED_MODE)
     parser.add_argument("--workload-bundle", type=Path)
     parser.add_argument("--ssh-source-cidr")
     parser.add_argument("--expires-at-utc", help="Preserve an explicit absolute deadline; retries may never extend it")
