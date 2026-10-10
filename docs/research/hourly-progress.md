@@ -86,3 +86,10 @@ self-referential Git SHA.
 - Application/CUDA sources and immutable images remain identical to the already Kind-qualified correction; original schedules, seeds and old results remain unchanged. No new image import is required.
 - Retail price rechecked: exact Linux on-demand East US 2 meter USD 6.98/hour; maximum 30-minute compute USD 3.49, proposed total USD 4.
 - H100 remains DEALLOCATED during all local work. Future executable plan/receipt bind recovery, 433 expected executed jobs and 720 explicit unsupported records; the interrupted attempt is excluded rather than pooled.
+
+## 2026-10-10T20:11:09.101461+00:00 — local qualification fulfilled; reduced plan frozen
+
+- Exact source `df88b4cf8a67d1c51751a9131b465b7b2e72156f`: [CI 38082539946](https://github.com/ihsenalaya/cc-contract/actions/runs/38082539946), 282 tests passed. Source/application identity and model hashes verified; local proof archive verified by full Azure GET.
+- Read-only Azure review confirms retained VM DEALLOCATED, matching VM/disk identities, seven ARM resources and valid independent guard. No mutations during review.
+- Executable plan SHA-256: `28e07560b63ecd77b86d6953413ce64d989eaee679e9e21efc31f6d601f59ff2`; 30-minute / USD 4 window, 433 expected executed jobs, 720 unsupported records without execution. Old evidence is recovered and verified first; no pooling.
+- The user's fresh conditional instruction is now fulfilled and recorded in a private plan-bound receipt. This is not a reuse of the completed-window approval. Publication precedes the authorized start; no additional permission request is needed.

@@ -1,0 +1,39 @@
+{
+  "state": "PASS_LOCAL_QUALIFICATION",
+  "source_commit": "df88b4cf8a67d1c51751a9131b465b7b2e72156f",
+  "source_CI": "https://github.com/ihsenalaya/cc-contract/actions/runs/38082539946",
+  "CI_conclusion": "success",
+  "CI_tests": 282,
+  "local_full_suite_tests": 281,
+  "final_targeted_tests": 37,
+  "images": {
+    "core": "ghcr.io/ihsenalaya/cc-contract-hdsc@sha256:6598ec487e92e40ac43c5a89c7c5c0f9d4cfa3c699739fa98a3136d6dd92164d",
+    "ai": "ghcr.io/ihsenalaya/cc-contract-hdsc-ai@sha256:55ee511446f8600f319ee09643c5cfa5d487b0397aab7949332f04c369ab778d"
+  },
+  "image_source_commit": "a33714f68b3764bff30a008e86cda8114d8e1bc2",
+  "image_qualification": "results/manifests/hdsc-correction-local-qualification.json",
+  "image_qualification_sha256": "cc034359301ec60f5f692e99f20bb7207e4e96cbc20c722abcd5101e89b09814",
+  "application_sources_unchanged": true,
+  "scope": "CPU_LOCAL_LIFECYCLE_AND_QUALIFIED_IMAGE_PROVENANCE_NO_NEW_CUDA_CLAIM",
+  "user_start_authorization": "Fresh conditional instruction; execute only after all local gates, frozen plan and verified inventory",
+  "max_minutes": 30,
+  "budget_usd": 4,
+  "expected_executed_jobs": 433,
+  "expected_unsupported_not_executed_jobs": 720,
+  "previous_attempt_pooling": false,
+  "backup_files": [
+    {
+      "blob": "233ee837380639880f8c46d53a2798a300d19e86699fc7f4c8504e0143c2218d/local-evidence.tar.gz",
+      "sha256": "233ee837380639880f8c46d53a2798a300d19e86699fc7f4c8504e0143c2218d",
+      "bytes": 6079,
+      "remote_bytes_verified": true
+    },
+    {
+      "blob": "5037c446c4a8fbcc519779b81b0bc94857486adf6522471496aaa9c5422144f9/evidence-index.json",
+      "sha256": "5037c446c4a8fbcc519779b81b0bc94857486adf6522471496aaa9c5422144f9",
+      "bytes": 939,
+      "remote_bytes_verified": true
+    }
+  ],
+  "completed_utc": "2026-10-10T20:10:06.921419+00:00"
+}
