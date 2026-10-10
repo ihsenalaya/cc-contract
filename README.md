@@ -39,8 +39,8 @@ These are controlled benchmark results, not evidence of discovered real bugs.
 Compute Sanitizer rejected the CC configuration; 720 dependent records were
 explicitly skipped and cannot support a sanitizer comparison.
 
-The Transformer phase failed after its image downloaded; its exact cause remains
-unconfirmed pending recovery of final guest logs. **70 AI jobs remain unvalidated**,
+The recovered Transformer traceback identifies a mask tensor allocation forbidden
+during CUDA Graph capture. Zero AI jobs completed. **70 AI jobs remain unvalidated**,
 including the overhead experiment. The VM is **deallocated**, with disk retained;
 the complete start-to-release interval was **13 min 12 s**. The earlier
 [interrupted attempt](docs/environment/hdsc-interrupted-window.md) was recovered

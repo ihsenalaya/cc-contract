@@ -77,6 +77,8 @@ class Transformer:
         torch.backends.cudnn.allow_tf32 = False
         self.model = AutoModelForCausalLM.from_pretrained(directory, local_files_only=True,
                          trust_remote_code=False, weights_only=True, attn_implementation="eager").eval().to(device)
+        from .hdsc_graph_attention import install
+        self.graph_attention_adapter = install(self.model)
         self.tokenizer = AutoTokenizer.from_pretrained(directory, local_files_only=True, trust_remote_code=False)
         self.buffers = [torch.zeros(19 if enabled else 16, dtype=torch.long, device=device) for _ in range(3)]
         self.graphs, self.outputs, self.snapshots = [], [], []
@@ -196,6 +198,7 @@ class Transformer:
         self.synchronize()
         wall_ns = time.perf_counter_ns() - started
         return {"backend": self.device, "enabled": self.enabled, "seed": seed, "fault": fault,
+                "graph_attention_adapter": self.graph_attention_adapter,
                 "tokens": outputs, "steps": rows, "wall_ns": wall_ns, "TTFT_ns": first_token_ns,
                 "GPU_stream_interval_ms": gpu_ms, "CPU_verifier_ns": verifier_ns,
                 "extra_copies": copies, "required_branch_syncs": synchronizations,

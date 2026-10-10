@@ -104,3 +104,12 @@ self-referential Git SHA.
 - VM start-to-confirmed-deallocation: 791.671670 seconds (13 min 12 s). VM/disk retained, zero deletion. H100: **DEALLOCATED**.
 - Local host correction forwards bounded error tails before automatic release without retry; original status survives cleanup errors. Next: user-authorized recovery-only window, zero experiments, 10-minute planned ceiling / USD 2 forecast, then immediate release and local diagnosis.
 - Validation: full local 283-test suite passed, followed by the final 41 targeted HDSC tests including three new recovery-only regressions (286 total tests expected in source CI). Shell syntax, compilation and public result-count checks passed. Frozen recovery plan SHA: `c80fa3037c06ce0933131d7e33e383b5e271cdb927f0b1ae26a2c027bde65fad`.
+
+## 2026-10-10T20:47:22.453345+00:00 — recovery complete; graph correction under local qualification
+
+- Published checkpoint `815212b1f53be0d8b5f0da7d4f98d5eec22757b8`; source CI [38084163134](https://github.com/ihsenalaya/cc-contract/actions/runs/38084163134) passed 286 tests.
+- Authorized recovery-only H100 window: start 20:34:56.779375 UTC, confirmed DEALLOCATED 20:37:46.337381 UTC, total 169.558006 seconds. Zero experiments/deletions; original archive and core identity verified and backed up.
+- INC-0132: first Transformer construction failed on a scalar mask tensor allocation during CUDA Graph capture; zero AI jobs completed. Native results remain valid.
+- Correction preallocates the same scalar, pins original source identity, preserves attention arithmetic/weights and applies equally to ON/OFF. Four trained-model CPU development prompts × three buffers have exact original/adapted logits. No GPU validation claim.
+- Fresh owner instruction authorizes H100 after complete local qualification, with no weakened experiments. Announced next scope: two development controls plus 70 AI jobs, 30-minute planned maximum / USD 4 forecast, stop on any technical error. The prior recovery authorization is not reused.
+- H100: **DEALLOCATED**. Next: qualified local AI image, exact-source CI, frozen executable AI-only plan, then the conditionally authorized window.

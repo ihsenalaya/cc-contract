@@ -32,18 +32,22 @@ print(json.dumps({'scope':'CPU_ONLY','runs':48,'dynamic_sequences':5,'cuda':'UNS
 '''
 AI = '''import json,pathlib,time
 from cc_contract.hdsc_ai import Transformer
+from cc_contract.hdsc_graph_attention import equivalence
 path=pathlib.Path('/tmp/model')
 deadline=time.monotonic()+180
 while not (path/'READY').exists():
  if time.monotonic()>deadline:raise RuntimeError('model copy deadline')
  time.sleep(.2)
 model=Transformer(path,'cpu')
+equivalences=[equivalence(model,seed) for seed in range(82000,82004)]
 for fault in ('L1','L2','C1','C2'):
  for active in (False,True):
   r=model.request(82000,fault,inject=active,capture_logits=False)
   assert sum(x['verdict']['classification']!='PASS' for x in r['steps'])==int(active)
 assert not model.torch.cuda.is_available()
-print(json.dumps({'scope':'CPU_ONLY','AI_pairs':4,'trained_model':True,'cuda':'UNSUPPORTED','torch':model.torch.__version__}))
+print(json.dumps({'scope':'CPU_ONLY','AI_pairs':4,'trained_model':True,'cuda':'UNSUPPORTED','torch':model.torch.__version__,
+                  'upstream_exact_logits':all(r['exact_logits_equal'] for r in equivalences),'equivalence_prompts':4,
+                  'graph_attention_adapter':model.graph_attention_adapter}))
 '''
 
 

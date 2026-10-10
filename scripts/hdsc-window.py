@@ -30,6 +30,13 @@ RESUME = dict(version='hdsc-resume-v1', previous_window='hdsc-eval-1010a',
     pooling='NONE_REPLACEMENT_MATRIX_DISCLOSE_PREVIOUS_EXPOSURE',
     expected_unsupported_tools=['memcheck','initcheck','synccheck'],
     expected_executed_jobs=433, expected_skipped_jobs=720)
+AI_RESUME = dict(version='hdsc-ai-resume-v1',previous_window='hdsc-eval-1010b',
+    previous_plan_sha256='28e07560b63ecd77b86d6953413ce64d989eaee679e9e21efc31f6d601f59ff2',
+    captured_prefix_rows=1083,
+    captured_prefix_sha256='38ea1e78ffbbe40cf68cd7987bcdcfda0039f72e52bae0d648b7957eeb3a2b2e',
+    pooling='DISJOINT_NATIVE_AND_AI_SECTIONS_WITH_EXPLICIT_SOURCE_PROVENANCE',
+    expected_executed_jobs=72,expected_skipped_jobs=0,development_graph_checks=2,
+    reserved_AI_jobs=70,native_jobs=0)
 
 
 def source_files():
@@ -40,7 +47,7 @@ def source_files():
         ROOT/'scripts/run-hdsc-section.py',ROOT/'results/manifests/hdsc-model-assets.json',
         ROOT/'scripts/analyze-hdsc-evaluation.py',ROOT/'scripts/audit-hdsc-rq2.py',ROOT/'scripts/audit-hdsc-development.py',
         ROOT/'docs/environment/final-h100-evaluation-plan.md',
-        ROOT/'docs/environment/hdsc-resumption-plan.md',ROOT/'scripts/hdsc-recovery.py',
+        ROOT/'docs/environment/hdsc-resumption-plan.md',ROOT/'docs/environment/hdsc-ai-resumption-plan.md',ROOT/'scripts/hdsc-recovery.py',
         ROOT/'infrastructure/hdsc/Dockerfile',ROOT/'infrastructure/hdsc/Dockerfile.ai'])
 
 
@@ -51,8 +58,11 @@ def check_plan(plan):
         plan.get('counts')!=counts() or (plan.get('max_minutes'),plan.get('budget_usd')) not in ((90,12),(30,4)) or
         plan.get('gpu_parallelism')!=1 or plan.get('creates')!=0 or plan.get('destroys')!=0):
         raise ValueError('Plan does not match the reviewed bounded HDSC protocol')
-    if (plan['max_minutes']==30 and plan.get('resumption')!=RESUME) or (plan['max_minutes']==90 and plan.get('resumption') is not None):
+    if (plan['max_minutes']==30 and plan.get('resumption') not in (RESUME,AI_RESUME)) or (plan['max_minutes']==90 and plan.get('resumption') is not None):
         raise ValueError('Resumption policy and reduced allowance must match exactly')
+    sections=['ai'] if plan.get('resumption')==AI_RESUME else ['core','ai']
+    if plan.get('execution_sections',['core','ai'])!=sections:
+        raise ValueError('Execution sections differ from the reviewed scope')
     for section in ('core','ai'):
         name='cc-contract-hdsc'+('-ai' if section=='ai' else '')
         if not re.fullmatch('ghcr.io/ihsenalaya/'+name+r'@sha256:[a-f0-9]{64}',plan['images'][section]):
@@ -86,7 +96,8 @@ def review(args):
         qualification_sha256=sha(args.qualification),source_files_sha256={str(p.relative_to(ROOT)):sha(p) for p in source_files()},
         schedule_sha256=sha(ROOT/'experiments/hdsc-schedule-v1.json'),counts=counts(),gpu_parallelism=1,
         creates=0,destroys=0,max_minutes=30,budget_usd=4,linux_retail_usd_per_hour=6.98,
-        compute_at_maximum_minutes_usd=3.49,resumption=RESUME,guard_id=live['guard']['id'],
+        compute_at_maximum_minutes_usd=3.49,resumption=AI_RESUME if args.ai_only else RESUME,
+        execution_sections=['ai'] if args.ai_only else ['core','ai'],guard_id=live['guard']['id'],
         guard_definition_sha256=hashlib.sha256(json.dumps(live['guard']['properties']['definition'],sort_keys=True).encode()).hexdigest(),
         approval_granted=False,stop_policy='DEALLOCATE_AND_RETAIN',
         source_CI=qualification['source_CI'],unmeasured_duration_assumption_minutes=[10,25])
@@ -141,7 +152,9 @@ def recover_previous(ssh,directory,policy):
     destination=directory/'recovered-previous';destination.mkdir(mode=0o700)
     archive=destination/'originals.tar.gz'
     with archive.open('xb') as out:
-        subprocess.run(ssh+['sudo -n python3 -'],input=(ROOT/'scripts/hdsc-recovery.py').read_bytes(),
+        previous=policy.get('previous_window','hdsc-eval-1010a')
+        if previous not in ('hdsc-eval-1010a','hdsc-eval-1010b'):raise ValueError('Unreviewed recovery directory')
+        subprocess.run(ssh+['sudo -n python3 - --window '+previous],input=(ROOT/'scripts/hdsc-recovery.py').read_bytes(),
             stdout=out,stderr=subprocess.PIPE,check=True,timeout=120)
     verify_archive(archive,destination)
     with tarfile.open(archive,'r:gz') as stream:
@@ -225,6 +238,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=('review','run'))
     p.add_argument('--directory',type=Path,required=True);p.add_argument('--qualification',type=Path)
     p.add_argument('--approval',type=Path);p.add_argument('--model',type=Path)
+    p.add_argument('--ai-only',action='store_true',help='Review only the remaining AI section plus its development gate')
     args=p.parse_args();os.umask(0o077)
     if not re.fullmatch(r'[a-z0-9-]{3,48}',args.directory.name):p.error('Use a new simple window directory name')
     if args.action=='review':

@@ -44,7 +44,9 @@ chmod -R a+rX "$work/model"
 chmod a+r "$work/plan.json" "$work/approval.json" "$work/run-hdsc-section.py"
 mkdir "$output/data"
 sudo -n chown 10001:10001 "$output/data"
-for section in core ai; do
+sections=$(python3 -c 'import json,sys; print(" ".join(json.load(open(sys.argv[1])).get("execution_sections",["core","ai"])))' "$work/plan.json")
+[[ "$sections" == 'core ai' || "$sections" == 'ai' ]]
+for section in $sections; do
   image=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["images"][sys.argv[2]])' "$work/plan.json" "$section")
   [[ "$image" =~ ^ghcr.io/ihsenalaya/cc-contract-hdsc(-ai)?@sha256:[a-f0-9]{64}$ ]]
   timeout 240 sudo -n docker --config /run/cc-hdsc-registry pull "$image" > "$output/pull-$section.log" 2>&1

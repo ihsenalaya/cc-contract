@@ -93,6 +93,31 @@ def analyze(directory,plan_path,schedule_path):
     plan=json.loads(plan_path.read_text());schedule_bytes=schedule_path.read_bytes()
     if hashlib.sha256(schedule_bytes).hexdigest()!=plan['schedule_sha256']:raise ValueError('Frozen schedule hash differs')
     expected=json.loads(schedule_bytes);jobs=[]
+    development_checks=[]
+    if plan.get('resumption',{}).get('version')=='hdsc-ai-resume-v1':
+        policy=plan['resumption']
+        if hashlib.sha256((directory/'core/jobs.jsonl').read_bytes()).hexdigest()!=policy['captured_prefix_sha256']:
+            raise ValueError('Completed native section differs from the admitted checkpoint')
+        for section,digest in (('core',policy['previous_plan_sha256']),('ai',hashlib.sha256(plan_path.read_bytes()).hexdigest())):
+            summary=json.loads((directory/section/'summary.json').read_text())
+            if summary['plan_sha256']!=digest:raise ValueError('Section plan provenance differs')
+        check=auditor('audit-hdsc-development')
+        for enabled in (False,True):
+            proof=json.loads((directory/'ai'/('development-ON.json' if enabled else 'development-OFF.json')).read_text())
+            eq=proof['equivalence'];request=proof['healthy_request']
+            if eq['scope']!='GPU_DEVELOPMENT_GRAPH_EQUIVALENCE' or eq['seed']!=82000 or eq['enabled']!=enabled or len(eq['buffers'])!=3:
+                raise ValueError('Development equivalence proof has wrong scope')
+            for index,row in enumerate(eq['buffers']):
+                a,b,c=row['original_logits'],row['adapted_eager_logits'],row['graph_logits']
+                if row['slot']!=index or len(a)!=50257 or not all(math.isfinite(v) for v in a) or a!=b or a!=c:
+                    raise ValueError('Original/eager/graph logits disagree')
+            request_audit(request,check)
+            if request['seed']!=82000 or request['enabled']!=enabled or request['fault'] is not None:
+                raise ValueError('Development healthy request differs')
+            if enabled and any(s['verdict']['classification']!='PASS' for s in request['steps']):
+                raise ValueError('Development healthy alert')
+            development_checks.append(request['tokens'])
+        if development_checks[0]!=development_checks[1]:raise ValueError('Development ON/OFF tokens disagree')
     for section in ('core','ai'):
         path=directory/section/'jobs.jsonl'
         actual=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
@@ -182,6 +207,7 @@ def analyze(directory,plan_path,schedule_path):
         executed_jobs=sum(j['result'].get('executed',True) for j in jobs),
         unsupported_not_executed_jobs=sum(j['result'].get('executed') is False for j in jobs),
         independently_verified_unsupported_tools=unsupported_tools,
+        independently_verified_development_graph_controls=len(development_checks),
         plan_sha256=hashlib.sha256(plan_path.read_bytes()).hexdigest(),RQ2_independent_audit=native_audit,
         RQ2_counts=baseline_counts,RQ2_paired_effects=comparisons,RQ3_runs=dynamic,AI_fault_pairs=ai,
         RQ3_healthy_vs_injected_alert_difference=effect(dynamic_pairs),

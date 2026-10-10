@@ -89,6 +89,26 @@ class HDSCWindowTest(unittest.TestCase):
         plan['source_files_sha256']['scripts/run-hdsc-host.sh']='0'*64
         with self.assertRaises(ValueError):controller.approval(plan,receipt,'b'*64,now)
 
+    def test_AI_resume_cannot_include_completed_native_jobs(self):
+        controller=module('hdsc-window');plan=self.plan(controller)
+        plan.update(max_minutes=30,budget_usd=4,resumption=controller.AI_RESUME,execution_sections=['ai'])
+        controller.check_plan(plan)
+        with self.assertRaises(ValueError):controller.check_plan({**plan,'execution_sections':['core','ai']})
+        changed={**controller.AI_RESUME,'development_graph_checks':0}
+        with self.assertRaises(ValueError):controller.check_plan({**plan,'resumption':changed})
+
+    def test_development_failure_prevents_reserved_AI_admission(self):
+        runner=module('run-hdsc-section');now=datetime.now(timezone.utc)
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'plan').write_text('{}');(root/'approval').write_text('{}')
+            args=['runner','--section','ai','--output',str(root/'out'),'--plan',str(root/'plan'),'--approval',str(root/'approval')]
+            plan={'execution_sections':['ai'],'resumption':{'version':'hdsc-ai-resume-v1'}}
+            with patch.object(sys,'argv',args),patch.object(runner,'validate_inputs',return_value=(plan,now+timedelta(minutes=20))), \
+                 patch.object(runner,'development_gate',side_effect=ValueError('graph logits differ')),patch.object(runner,'run_job') as run:
+                with self.assertRaisesRegex(ValueError,'graph logits differ'):runner.main()
+                run.assert_not_called()
+            self.assertEqual(json.loads((root/'out/summary.json').read_text())['completed_jobs'],0)
+
     def test_guest_refuses_expired_or_mismatched_schedule_without_running_jobs(self):
         runner=module('run-hdsc-section');now=datetime.now(timezone.utc)
         schedule_hash=hashlib.sha256((json.dumps(schedule(),sort_keys=True,indent=2)+'\n').encode()).hexdigest()

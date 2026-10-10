@@ -17,8 +17,8 @@
   "completed_and_audited_native_jobs": 363,
   "unsupported_not_executed_records": 720,
   "remaining_AI_jobs_without_locally_verified_completion": 70,
-  "AI_status": "Image pull success observed; guest exited 1; final AI logs retained on VM, not recovered locally",
-  "AI_cause_confirmed": false,
+  "AI_status": "CUDA Graph capture rejected GPT-Neo mask tensor construction; recovered guest summary confirms zero completed jobs",
+  "AI_cause_confirmed": true,
   "AI_breakdown": {
     "fault_pairs": 40,
     "separate_healthy": 10,
@@ -383,5 +383,7 @@
     "analysis_and_control_receipt_sha256": "79a3567e08e4f55bdf6e56c665dae26a3b83d8a81e1266528e6f96f39d149ab2",
     "core_original_receipt_sha256": "7b22428fbe502097c2c36546563f716b24f464c86b15ddff3abff5edb04a6593",
     "previous_original_receipt_sha256": "5369531bc0e4ed5f4ba5045e773af6eacbe9484e933b2f68857d250cbf010ab4"
-  }
+  },
+  "AI_completed_jobs": 0,
+  "recovery_evidence": "results/manifests/hdsc-log-recovery-result.json"
 }

@@ -105,3 +105,24 @@ discovered bugs. RQ2's device projection covers three fields; seven-field dynami
 relations rely in part on a trusted host adapter. No malicious-adapter, independently
 attested semantic-state, absolute model-correctness or Q1 novelty guarantee follows.
 The 50-run RQ1 pilot and historical 140-job campaign remain unchanged and separate.
+
+## Recovered AI diagnosis and follow-up preparation
+
+The separately approved recovery-only window completed in **169.558006 seconds**
+and confirmed DEALLOCATED with zero experiments and no deletion. Every recovered
+file, prior plan and completed core-record hash verified; originals are backed up
+with full Azure GET/SHA-256. [Recovery receipt](../../results/manifests/hdsc-log-recovery-result.json).
+
+The final AI summary confirms **zero completed jobs**. The first model construction
+failed at `GPTNeoSelfAttention._attn` when `torch.tensor(mask_value, ...)` ran during
+CUDA Graph capture: `operation not permitted when stream is capturing`. This
+supersedes the earlier diagnostic uncertainty. It is not an image-download error
+or evidence of model-output disagreement. INC-0132 records the confirmed cause.
+
+The local correction preallocates the identical FP32 scalar before capture and
+checks the pinned upstream implementation. It changes neither weights nor attention
+arithmetic; exact development CPU logits match. This adaptation must be disclosed
+and applied equally to both performance modes. It is not yet validated on CUDA.
+The [AI-only follow-up plan](hdsc-ai-resumption-plan.md) requires two actual GPU
+development controls before admitting any of the remaining 70 reserved AI jobs.
+No successful GPU result is inferred from CPU checks.

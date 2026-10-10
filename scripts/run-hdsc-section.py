@@ -90,6 +90,31 @@ def validate_inputs(plan_bytes, approval, now):
     return plan,expiry
 
 
+def development_gate(model_path,output,expiry):
+    """Two development model instances, outside reserved counts and timing."""
+    import gc
+    import torch
+    from cc_contract.hdsc_ai import Transformer
+    from cc_contract.hdsc_graph_attention import equivalence
+    tokens=[]
+    for enabled in (False,True):
+        if (expiry-datetime.now(timezone.utc)).total_seconds()<300:
+            raise TimeoutError('Insufficient allowance for development gate and release')
+        signal.alarm(180)
+        model=Transformer(model_path,'cuda',enabled)
+        proof=equivalence(model,82000)
+        request=model.request(82000,capture_logits=True)
+        with (output/('development-ON.json' if enabled else 'development-OFF.json')).open('x') as f:
+            json.dump(dict(equivalence=proof,healthy_request=request),f);f.write('\n')
+        if technical_failure(request) or enabled and any(s['verdict']['classification']!='PASS' for s in request['steps']):
+            raise RuntimeError('Healthy development graph control failed')
+        tokens.append(request['tokens'])
+        signal.alarm(0)
+        del model;gc.collect();torch.cuda.empty_cache()
+        print(json.dumps(dict(development_graph_control='ON' if enabled else 'OFF',state='PASS')),flush=True)
+    if tokens[0]!=tokens[1]:raise ValueError('Development ON/OFF outputs differ')
+
+
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--section',choices=('core','ai'),required=True)
@@ -98,11 +123,15 @@ def main():
     args=p.parse_args()
     plan_bytes=args.plan.read_bytes();approval=json.loads(args.approval.read_text())
     plan,expiry=validate_inputs(plan_bytes,approval,datetime.now(timezone.utc))
+    if args.section not in plan.get('execution_sections',['core','ai']):
+        raise ValueError('Section outside approved execution scope')
     args.output.mkdir(parents=True,exist_ok=False)
     rows=[r for r in schedule() if r['section']==args.section]
     signal.signal(signal.SIGALRM,job_timeout)
     unsupported=set();completed=0;start=time.monotonic();performance_pairs={}
     try:
+        if plan.get('resumption',{}).get('version')=='hdsc-ai-resume-v1':
+            development_gate(args.model,args.output,expiry)
         with (args.output/'jobs.jsonl').open('x') as out:
             for row in rows:
                 if sum(p.stat().st_size for p in args.output.parent.rglob('*') if p.is_file())>2*1024**3:
