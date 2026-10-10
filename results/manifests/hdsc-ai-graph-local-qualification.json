@@ -1,0 +1,28 @@
+{
+  "state": "PASS_LOCAL_QUALIFICATION",
+  "source_commit": "7a90394807436945c419fd0271410ddecd413844",
+  "CI_conclusion": "success",
+  "source_CI": "https://github.com/ihsenalaya/cc-contract/actions/runs/38085197644",
+  "images": {
+    "core": "ghcr.io/ihsenalaya/cc-contract-hdsc@sha256:6598ec487e92e40ac43c5a89c7c5c0f9d4cfa3c699739fa98a3136d6dd92164d",
+    "ai": "ghcr.io/ihsenalaya/cc-contract-hdsc-ai@sha256:a77efb0fe7a0422f5c32e361d7cd7a62a04eda295f8c0ec0b45b9e8c11be9b3a"
+  },
+  "image_sources": {
+    "core": "a33714f68b3764bff30a008e86cda8114d8e1bc2",
+    "ai": "7a90394807436945c419fd0271410ddecd413844"
+  },
+  "core_execution_in_next_window": false,
+  "full_local_tests": 288,
+  "source_CI_tests": 288,
+  "PyTorch_container_tests": 3,
+  "CPU_trained_equivalence_prompts": 4,
+  "buffers_per_prompt": 3,
+  "upstream_logits_exactly_equal": true,
+  "CPU_performance_ON_OFF_tokens_equal": true,
+  "Kind_receipt_sha256": "234a7c060f237fd47af52ea814ea5ba513ced5c612ea85e3cdfd4720dbaf6370",
+  "registry_config_digest": "sha256:f3af3928f001cb6c2c94f05b39ceae4432a905f700133c066d98e367676178cd",
+  "GPU_graph_correction_validated": false,
+  "secret_scan": "PASS",
+  "private_evidence_receipt_sha256": "6d4db51a371fef41038d7fbcd916822326190d5fc7c1a4d25014e28f07c2c981",
+  "unsupported_local_checks": "No local CUDA device; three PyTorch tests run in the AI image, not source CI"
+}

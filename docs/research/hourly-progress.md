@@ -113,3 +113,11 @@ self-referential Git SHA.
 - Correction preallocates the same scalar, pins original source identity, preserves attention arithmetic/weights and applies equally to ON/OFF. Four trained-model CPU development prompts × three buffers have exact original/adapted logits. No GPU validation claim.
 - Fresh owner instruction authorizes H100 after complete local qualification, with no weakened experiments. Announced next scope: two development controls plus 70 AI jobs, 30-minute planned maximum / USD 4 forecast, stop on any technical error. The prior recovery authorization is not reused.
 - H100: **DEALLOCATED**. Next: qualified local AI image, exact-source CI, frozen executable AI-only plan, then the conditionally authorized window.
+
+## 2026-10-10T20:55:37.438608+00:00 — AI correction qualified; conditional authorization fulfilled
+
+- Frozen executable source `7a90394807436945c419fd0271410ddecd413844`; [CI 38085197644](https://github.com/ihsenalaya/cc-contract/actions/runs/38085197644) passed 288 tests. Full local suite passed 288 tests; three additional actual PyTorch image tests passed (Torch-dependent class skipped in source CI).
+- Trained CPU model: exact upstream/adapted logits on four development prompts and three buffers each. CPU ON/OFF performance harness tokens match. Kind actual image passed four fault pairs and trained-model equivalence; namespace cleaned up.
+- AI image published as `ghcr.io/ihsenalaya/cc-contract-hdsc-ai@sha256:a77efb0fe7a0422f5c32e361d7cd7a62a04eda295f8c0ec0b45b9e8c11be9b3a`; registry index/platform bytes and Kind config digest verified. All local evidence privately backed up with full remote GET.
+- Executable plan SHA `fc992fd61490766db9a7c5abd516f715dc8f5726468f397df6b1314f0bed887b`: only AI, two development gates + 70 jobs, 30 minutes / USD 4 forecast. Completed native jobs are not repeated. The owner’s newest conditional start instruction is recorded separately; the recovery-only permission is not reused.
+- Inventory confirms retained VM/disk identities and DEALLOCATED before execution. H100 graph correction remains unvalidated until the two actual development checks pass. Any discrepancy stops before reserved AI admission. Negative experimental outcomes remain reportable.
