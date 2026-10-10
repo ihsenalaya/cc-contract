@@ -21,6 +21,7 @@ to private Azure storage. All thirteen remote objects were fully read back and
 matched their local SHA-256 and length; local originals remain preserved.
 
 See [execution receipt](../../results/manifests/fixed-work-campaign-execution.json)
+[offline audit instructions](../reproducibility/fixed-work-offline-audit.md),
 and [remaining H100 work](remaining-h100-experiments.md).
 All remaining review and publication use CPU only, after confirmed deallocation.
 
