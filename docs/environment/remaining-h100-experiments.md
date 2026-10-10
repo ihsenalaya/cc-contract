@@ -29,3 +29,7 @@ retained VM/disk. Stop and resolve failures locally before any approved resume.
 See [current execution proof](../../results/manifests/fixed-work-campaign-execution.json),
 [experiment status](../../experiments/status.json) and
 [historical prerequisites](../../experiments/historical-cases.json).
+
+The user explicitly requires a **new approval before any further H100 use**,
+including restarting the retained VM. Completed-window authorizations do not
+authorize another allocation. Continue only offline work until approval.

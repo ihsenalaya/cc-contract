@@ -16,3 +16,7 @@ Verify each deliverable before proceeding. Every failed check is an incident.
 Keep protocols versioned; do not change metrics to improve observed results.
 Images must be built locally and qualified on Kind before GHCR publication.
 Do not enable remote/cloud image builds in CI.
+
+Every new H100 allocation or restart now requires fresh explicit user approval.
+Completed-window authorizations do not permit another GPU resume. Continue
+local audits, preparation and publication while the retained VM is deallocated.

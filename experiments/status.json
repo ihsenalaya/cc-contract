@@ -238,6 +238,8 @@
     "actual_start_request_to_deallocation_seconds": 3380.039786,
     "cumulative_conservative_start_request_to_deallocation_seconds": 3559.3351599999996,
     "independent_raw_case_audit_state": "IN_PROGRESS",
-    "private_Azure_backup_state": "VERIFIED_ORIGINAL_ARCHIVE_FULL_REMOTE_GET"
+    "private_Azure_backup_state": "VERIFIED_ORIGINAL_ARCHIVE_FULL_REMOTE_GET",
+    "further_H100_use_requires_new_explicit_user_approval": true,
+    "next_H100_window_approved": false
   }
 }
