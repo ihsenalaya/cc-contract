@@ -1,0 +1,6 @@
+fault,runs,activated,cuda_success,detected,missed,false_positives,mean_worker_seconds,mean_detector_microseconds
+HEALTHY,10,0,10,0,0,0,0.9350268945,39.521
+L1,10,10,10,10,0,,0.9739338234,47.7714
+L2,10,10,10,10,0,,0.9339259056,39.251000000000005
+C1,10,10,10,10,0,,0.9367964107,38.691
+C2,10,10,10,10,0,,0.9343318063,45.8612

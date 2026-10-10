@@ -1,0 +1,26 @@
+{
+  "container": "evidence",
+  "remote_complete_bytes_verified": true,
+  "files": [
+    {
+      "name": "originals.tar.gz",
+      "sha256": "dc9ad97597562a026a6a22547beec08cd1fa5efc2574736bff5e7276fb49d0f6",
+      "bytes": 12066,
+      "verified_utc": "2026-10-10T16:59:48.592897+00:00"
+    },
+    {
+      "name": "state-continuity-gpu-evidence-20261010.tar.gz",
+      "sha256": "1b8f4e3df1a6c031ecdd8cfcfbbd984cf168f27b00715369b67ff4c336f32e6e",
+      "bytes": 42535,
+      "verified_utc": "2026-10-10T16:59:50.537082+00:00"
+    },
+    {
+      "name": "state-continuity-gpu-evidence-20261010-manifest.json",
+      "sha256": "adf501cc5020ef173e3c301c91d897ac195b7b13bb42d2d9fbd17cf30d6a52db",
+      "bytes": 5209,
+      "verified_utc": "2026-10-10T16:59:52.207233+00:00"
+    }
+  ],
+  "protocol": "state-continuity-pilot-v0.1",
+  "state": "PRIVATE_AZURE_ORIGINALS_AND_AUDIT_FULL_REMOTE_GET_VERIFIED"
+}

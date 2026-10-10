@@ -1,0 +1,98 @@
+{
+  "protocol": "state-continuity-pilot-v0.1",
+  "state": "COMPLETED_AND_INDEPENDENTLY_AUDITED_GPU_PILOT",
+  "decision": "GO_MECHANISM_FEASIBILITY_ONLY",
+  "actual_runs": 50,
+  "metrics": [
+    {
+      "fault": "HEALTHY",
+      "runs": 10,
+      "activated": 0,
+      "cuda_success": 10,
+      "detected": 0,
+      "missed": 0,
+      "false_positives": 0,
+      "mean_worker_seconds": 0.9350268945,
+      "mean_detector_microseconds": 39.521
+    },
+    {
+      "fault": "L1",
+      "runs": 10,
+      "activated": 10,
+      "cuda_success": 10,
+      "detected": 10,
+      "missed": 0,
+      "false_positives": null,
+      "mean_worker_seconds": 0.9739338234,
+      "mean_detector_microseconds": 47.7714
+    },
+    {
+      "fault": "L2",
+      "runs": 10,
+      "activated": 10,
+      "cuda_success": 10,
+      "detected": 10,
+      "missed": 0,
+      "false_positives": null,
+      "mean_worker_seconds": 0.9339259056,
+      "mean_detector_microseconds": 39.251000000000005
+    },
+    {
+      "fault": "C1",
+      "runs": 10,
+      "activated": 10,
+      "cuda_success": 10,
+      "detected": 10,
+      "missed": 0,
+      "false_positives": null,
+      "mean_worker_seconds": 0.9367964107,
+      "mean_detector_microseconds": 38.691
+    },
+    {
+      "fault": "C2",
+      "runs": 10,
+      "activated": 10,
+      "cuda_success": 10,
+      "detected": 10,
+      "missed": 0,
+      "false_positives": null,
+      "mean_worker_seconds": 0.9343318063,
+      "mean_detector_microseconds": 45.8612
+    }
+  ],
+  "scientific_source_commit": "ddff8775705a85c278d208b1ba504d18226b7551",
+  "controller_source_commit": "d5ae2d7ebb14796a2d4c7e44a64f4c0d2fb4f4e7",
+  "image": "ghcr.io/ihsenalaya/cc-contract-continuity@sha256:fd60712704b01ca33988aa2734fc0da8cc7c0041eb57669c9237be87df9cc068",
+  "host": {
+    "driver": "595.91.07, NVIDIA H100 NVL",
+    "kernel": "6.8.0-1066-azure-fde",
+    "cc_mode": "CC status: ON",
+    "cc_environment": "CC Environment: PRODUCTION",
+    "secure_boot": "SecureBoot enabled"
+  },
+  "actual_harness_wall_seconds": 47.156502532000005,
+  "VM_start_request_utc": "2026-10-10T16:48:26.844002+00:00",
+  "VM_deallocated_utc": "2026-10-10T16:52:42.934647+00:00",
+  "VM_request_to_deallocation_seconds": 256.090645,
+  "observed_billing_cost": null,
+  "approved_forecast_budget_usd": 5,
+  "original_archive_sha256": "dc9ad97597562a026a6a22547beec08cd1fa5efc2574736bff5e7276fb49d0f6",
+  "original_archive_bytes": 12066,
+  "raw_runs_sha256": "b2c8a936c5000bf144975ff7b135a0a1aa548a4d84ab4a885a4a3a7cd5afbcfb",
+  "independent_audit_sha256": "9b43f1bed1f3205d668e50961d7ce89b7005f46714023b6b160771cdd69e6cab",
+  "independent_off_proof_sha256": "a86aaff142660a8ffde8592d052ab5f264b5dbaabf2445fbc49d0f882639e9a6",
+  "plan_sha256": "4c4c466f55564fb7c2d30506647924ca3f20fc644b70850a16f03d1c1437629c",
+  "approval_sha256": "a9918a964e98b08b4b7c3e0fd4c73ed2eebd60888d69d54664063a2fccdc3b74",
+  "table_sha256": {
+    "faults.csv": "5a68421ec7dc3bd7930a36972d292c39593c0a3ac2e10c8a917593e6bf039310",
+    "runs.csv": "d99cef7a3b42fb3e4979d9e1ab32f25806e12a06e028e2ab49a713791ed0ee58"
+  },
+  "resources_destroyed": 0,
+  "VM_and_disk_retained": true,
+  "further_H100_use_authorized": false,
+  "discovered_vulnerabilities": 0,
+  "B3_B4_superiority_established": false,
+  "total_GPU_instrumentation_overhead_measured": false,
+  "independent_GPU_attestation_validated_by_this_pilot": false,
+  "historical_E4_E5_results_changed": false
+}

@@ -1,4 +1,9 @@
-# State-continuity pilot v0.1 — proposal, not authorization
+# State-continuity pilot v0.1 — archived proposal
+
+The user subsequently approved this scope. The [completed result](state-continuity-pilot-result.md)
+records 50 audited real H100 runs and deallocation after 4 min 16 s.
+The proposal below preserves the preparation checkpoint, before authorization.
+Its approval is now consumed; any further H100 use requires a new decision.
 
 **STOP: the existing H100 remains deallocated. Fresh explicit user approval is
 required. No cloud compute was started, created or modified during preparation.**

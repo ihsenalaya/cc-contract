@@ -1,14 +1,19 @@
 {
   "protocol": "state-continuity-pilot-v0.1",
-  "state": "APPROVED_PRESTART_API_CORRECTION_LOCAL_QUALIFIED",
+  "state": "COMPLETED_AND_INDEPENDENTLY_AUDITED_GPU_PILOT",
   "source_commit": "ddff8775705a85c278d208b1ba504d18226b7551",
   "proposal": "docs/environment/state-continuity-pilot-window.md",
-  "evidence": "results/manifests/state-continuity-local-qualification.json",
+  "evidence": "results/manifests/state-continuity-gpu-result.json",
   "maximum_gpu_runs": 50,
-  "actual_gpu_runs": 0,
+  "actual_gpu_runs": 50,
   "local_model_qualified": true,
-  "H100_approval_granted": true,
+  "H100_approval_granted": false,
   "retained_VM_deallocated": true,
   "historical_E4_E5_results_modified": false,
-  "scientific_protocol_changed": false
+  "scientific_protocol_changed": false,
+  "completed_window_approval_consumed": true,
+  "decision": "GO_MECHANISM_FEASIBILITY_ONLY",
+  "result": "docs/environment/state-continuity-pilot-result.md",
+  "further_H100_use_requires_new_explicit_approval": true,
+  "VM_request_to_deallocation_seconds": 256.090645
 }

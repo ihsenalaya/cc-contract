@@ -5,9 +5,10 @@ Experimental software for **Stateful Contract-Guided Testing of Host–Device Da
 This repository implements and records experiments; it is not a paper manuscript.
 Latest checkpoint: the [140-job H100 campaign](docs/environment/fixed-work-campaign-result.md)
 is independently audited and published. Its retained VM is deallocated.
-The separate [state-continuity pilot](docs/environment/state-continuity-pilot-window.md)
-has passed CPU/Kind qualification and local CUDA compilation; its proposed
-50 real GPU runs require fresh user approval and have not started.
+The separate [state-continuity pilot](docs/environment/state-continuity-pilot-result.md)
+completed 50 real H100 runs: 40/40 injected divergences detected with CUDA
+success and 0/10 healthy alerts. Its complete VM window was 4 min 16 s;
+the VM is deallocated, and any further H100 use requires fresh approval.
 The implementation includes a CPU model, conservative sequence validator,
 integer/metadata oracles, CUDA adapters and local Kubernetes qualification.
 No CPU result establishes CUDA correctness, GPU attestation or method superiority.
